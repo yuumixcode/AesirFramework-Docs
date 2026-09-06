@@ -1,0 +1,62 @@
+[project]
+site_name = "AesirFramework 文档"
+site_url = "https://yuumixcode.github.io/AesirFramework-Docs/"
+site_description = "AesirFramework 官方文档 —— 渐进式 MVC 架构框架 Aesir Architecture 与功能模块 Aesir Modules(Unity / 团结引擎)"
+site_author = "yuumixcode"
+copyright = "© 2026 Runestone Yuumix · MIT License"
+repo_url = "https://github.com/yuumixcode/AesirFramework-Docs"
+repo_name = "yuumixcode/AesirFramework-Docs"
+edit_uri = "edit/main/docs/"
+nav = [
+  { "首页" = "index.md" },
+  { "Aesir Architecture" = [
+      { "概览" = "architecture/index.md" },
+      { "快速开始" = "architecture/getting-started.md" },
+      { "特性" = "architecture/features.md" },
+      { "兼容性" = "architecture/compatibility.md" },
+  ]},
+  { "Aesir Modules" = [
+      { "概览" = "modules/index.md" },
+      { "快速开始" = "modules/getting-started.md" },
+      { "特性" = "modules/features.md" },
+      { "兼容性" = "modules/compatibility.md" },
+  ]},
+  { "FAQ" = "faq.md" },
+  { "支持" = "support.md" },
+  { "GitHub" = "https://github.com/yuumixcode/AesirFramework" },
+]
+extra_css = ["stylesheets/extra.css"]
+
+[project.theme]
+variant = "modern"
+language = "zh"
+features = [
+  "navigation.instant",
+  "navigation.tracking",
+  "navigation.tabs",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.indexes",
+  "navigation.footer",
+  "search.suggest",
+  "search.highlight",
+  "content.code.copy",
+  "content.action.edit",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "indigo"
+accent = "indigo"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "indigo"
+accent = "indigo"
+
+[project.plugins.search]
+lang = ["zh", "en"]
+separator = "[\\s\\u200b\\-]+"

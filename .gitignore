@@ -1,0 +1,9 @@
+# Zensical 构建输出
+site/
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统
+.DS_Store
