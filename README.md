@@ -35,6 +35,7 @@ docs/
 
 - 提交信息风格:`docs: 中文单行主题`
 - 内容语言:中文(站点语言配置 `zh`)
-- 站点为骨架阶段,页面内容陆续从框架各包 `Documentation/` 整理发布
+- 内容来源:从框架主仓库各包 `Documentation/` 与包 README 核查整理,版本口径与主仓库 package.json 保持一致(当前 0.17.0)
+- 事实核查基线:安装 URL、角色矩阵、三档渐进、API 名称均以包内 README 为准;包内文档更新后同步本站
 
 MIT License © 2026 Runestone Yuumix
