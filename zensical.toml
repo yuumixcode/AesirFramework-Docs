@@ -13,14 +13,22 @@ nav = [
       { "概览" = "architecture/index.md" },
       { "快速开始" = "architecture/getting-started.md" },
       { "特性" = "architecture/features.md" },
+      { "架构概念" = "architecture/concepts.md" },
+      { "响应式与事件" = "architecture/observable.md" },
+      { "示例总览" = "architecture/samples.md" },
+      { "包内更新器" = "architecture/updater.md" },
       { "兼容性" = "architecture/compatibility.md" },
   ]},
   { "Aesir Modules" = [
       { "概览" = "modules/index.md" },
       { "快速开始" = "modules/getting-started.md" },
       { "特性" = "modules/features.md" },
+      { "UI 框架" = "modules/ui.md" },
+      { "场景模块" = "modules/scene.md" },
+      { "事件模块" = "modules/events.md" },
       { "兼容性" = "modules/compatibility.md" },
   ]},
+  { "更新日志" = "changelog.md" },
   { "FAQ" = "faq.md" },
   { "支持" = "support.md" },
   { "GitHub" = "https://github.com/yuumixcode/AesirFramework" },
@@ -60,3 +68,31 @@ accent = "indigo"
 [project.plugins.search]
 lang = ["zh", "en"]
 separator = "[\\s\\u200b\\-]+"
+
+# Markdown 扩展(声明该表后会完全替换默认扩展集,需列全)
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.tables]
+
+[project.markdown_extensions.toc]
+toc_depth = 3
+permalink = true
+
+[project.markdown_extensions."pymdownx.highlight"]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+
+[project.markdown_extensions."pymdownx.inlinehilite"]
+[project.markdown_extensions."pymdownx.superfences"]
+
+[project.markdown_extensions."pymdownx.tabbed"]
+alternate_style = true
+
+[project.markdown_extensions."pymdownx.details"]
+
+[project.markdown_extensions."pymdownx.tasklist"]
+custom_checkbox = true

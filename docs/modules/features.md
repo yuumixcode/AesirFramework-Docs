@@ -42,7 +42,7 @@
 
 > 尚未在实际项目中验证,API 可能调整。
 
-双轨订阅事件系统:`[AesirListener]` 特性静态订阅 + `AddListener<T>` 动态 Lambda 订阅,共存于同一分发流程,按 5 档优先级(First / High / Medium / Low / Last)排序执行;静态绑定经**表达式树编译委托**优化反射开销(仅首次编译有成本,调用零反射)。
+双轨订阅事件系统:`[AesirListener]` 特性静态订阅 + `AddListener<T>` 动态 Lambda 订阅,共存于同一分发流程,按 4 档优先级(First / High / Medium / Last)排序执行;静态绑定经**表达式树编译委托**优化反射开销(仅首次编译有成本,调用零反射)。详见[事件模块](events.md)。
 
 ```csharp
 // 1. 定义事件参数(数据载体)

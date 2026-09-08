@@ -77,7 +77,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 ### 事件模块(EventModule)为什么标"实验性"?
 
-双轨订阅(Attribute + Script)、5 档优先级与表达式树优化已实现并编译通过,但**尚未在实际项目中验证,API 可能调整**;简单场景建议优先用 MiniEvent / ObservableValue。
+双轨订阅(Attribute + Script)、4 档优先级与表达式树优化已实现并有测试覆盖,但**尚未在实际项目中验证,API 可能调整**;简单场景建议优先用 MiniEvent / ObservableValue。
 
 ## 未找到答案?
 

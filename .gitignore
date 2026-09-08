@@ -7,3 +7,5 @@ __pycache__/
 
 # 系统
 .DS_Store
+# Codely 本地工具链
+.codely-cli/

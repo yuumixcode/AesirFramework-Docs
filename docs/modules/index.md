@@ -7,7 +7,7 @@
 | 模块 | 状态 | 说明 |
 |------|------|------|
 | **UI** | 已实现 | `UIModule` 单例(Manager of Managers)+ `UIRoot` 四层 Canvas + 面板生命周期 + 可插拔资源加载 |
-| **Event** | ⚠️ 实验性 | `EventModule` 双轨订阅(Attribute + Script)+ 5 档优先级 + 表达式树优化;尚未在实际项目中验证 |
+| **Event** | ⚠️ 实验性 | `EventModule` 双轨订阅(Attribute + Script)+ 4 档优先级 + 表达式树优化;尚未在实际项目中验证 |
 | **Scene** | 已实现 | `SceneModule` 启动 / 叠加场景管理 + 编辑器工具(SceneManagerWindow / BootstrapSceneHelper) |
 
 另有两项**可选能力**:
@@ -23,5 +23,8 @@
 ## 继续阅读
 
 - [快速开始](getting-started.md) — 安装、UIRoot 与第一个面板
-- [特性一览](features.md) — UI / Event / Scene 三模块详解
+- [特性一览](features.md) — UI / Event / Scene 三模块速览
+- [UI 框架](ui.md) — UIRoot / UIModule / 面板生命周期 / Binder
+- [场景模块](scene.md) — SceneModule / SceneAssetWrapper / Addressables
+- [事件模块](events.md) — 双轨订阅与优先级(实验性)
 - [兼容性](compatibility.md) — 可选依赖(Odin / Addressables / Input System)

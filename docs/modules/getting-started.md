@@ -37,7 +37,7 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.17.0
 
 ### 1. 创建 UIRoot
 
-菜单 `GameObject → Aesir Modules → Create UIRoot`,一键构建四层 Canvas(Background / Normal / Popup / Top)+ UICamera + EventSystem。层 Canvas / UICamera / EventSystem 为序列化引用持久化,构建后可自由调整。
+菜单 `GameObject → Aesir Modules → UI → Create UIRoot`,一键构建四层 Canvas(Background / Normal / Popup / Top)+ UICamera + EventSystem。层 Canvas / UICamera / EventSystem 为序列化引用持久化,构建后可自由调整。
 
 ### 2. 编写面板脚本
 

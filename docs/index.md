@@ -23,7 +23,8 @@ Aesir Architecture 之上的功能模块集 —— UI 框架(Manager-of-Managers
 ## 快速链接
 
 - [Aesir Architecture 概览](architecture/index.md) / [Aesir Modules 概览](modules/index.md)
-- [常见问题 FAQ](faq.md) / [支持](support.md)
+- [示例总览](architecture/samples.md) — 计数器六档对照 + PlaneWar 实战小游戏
+- [更新日志](changelog.md) / [常见问题 FAQ](faq.md) / [支持](support.md)
 - 源码仓库:[yuumixcode/AesirFramework](https://github.com/yuumixcode/AesirFramework)(MIT)
 
 ## 版本信息
