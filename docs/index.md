@@ -1,5 +1,8 @@
 ---
 description: "AesirFramework 是面向 Unity / 团结引擎 2022.3+ 的渐进式 MVC 架构框架与功能模块集合。"
+hide:
+  - navigation
+  - toc
 ---
 
 # AesirFramework

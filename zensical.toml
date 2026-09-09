@@ -58,12 +58,16 @@ media = "(prefers-color-scheme: light)"
 scheme = "default"
 primary = "indigo"
 accent = "indigo"
+toggle.icon = "material/brightness-7"
+toggle.name = "切换至夜间模式"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
 primary = "indigo"
 accent = "indigo"
+toggle.icon = "material/brightness-4"
+toggle.name = "切换至日间模式"
 
 [project.plugins.search]
 # 0.0.58+ 重写 search 插件后仅支持 enabled / separator;
