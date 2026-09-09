@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install zensical
+      - run: pip install "zensical==0.0.60"  # 锁定版本，避免 0.x 期间上游破坏性变更导致部署失败
       - run: zensical build --strict
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
