@@ -1,5 +1,199 @@
-/* AesirFramework-Docs 站点自定义样式(骨架阶段,随内容建设逐步补充) */
+/* AesirFramework-Docs 站点自定义样式 */
+
+:root {
+  --aesir-accent: #5b5ce2;
+  --aesir-accent-strong: #4748c6;
+  --aesir-accent-soft: rgba(91, 92, 226, 0.1);
+  --aesir-ink: #1d2330;
+  --aesir-muted: #657084;
+  --aesir-border: rgba(29, 35, 48, 0.12);
+  --aesir-surface: #f7f8fc;
+}
+
+[data-md-color-scheme="slate"] {
+  --aesir-accent: #9a9bff;
+  --aesir-accent-strong: #b5b6ff;
+  --aesir-accent-soft: rgba(154, 155, 255, 0.13);
+  --aesir-ink: #f2f3ff;
+  --aesir-muted: #b4bbce;
+  --aesir-border: rgba(226, 229, 255, 0.16);
+  --aesir-surface: rgba(255, 255, 255, 0.045);
+}
 
 .md-typeset .md-button {
   margin: 0.25rem 0.25rem 0.25rem 0;
+  border-radius: 0.35rem;
+  font-weight: 600;
+}
+
+.md-typeset .md-button--primary {
+  background: var(--aesir-accent);
+  border-color: var(--aesir-accent);
+}
+
+.md-typeset .md-button--primary:hover,
+.md-typeset .md-button--primary:focus {
+  background: var(--aesir-accent-strong);
+  border-color: var(--aesir-accent-strong);
+}
+
+/* Homepage hero: restrained product-page treatment, still inside the docs system. */
+.md-typeset .aesir-hero {
+  position: relative;
+  margin: 1.5rem 0 3rem;
+  padding: clamp(1.5rem, 4vw, 3.25rem);
+  overflow: hidden;
+  border: 1px solid var(--aesir-border);
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(circle at 92% 8%, var(--aesir-accent-soft), transparent 34%),
+    linear-gradient(135deg, var(--aesir-surface), transparent 68%);
+  box-shadow: 0 1rem 3rem rgba(33, 38, 72, 0.06);
+}
+
+.md-typeset .aesir-hero::after {
+  position: absolute;
+  right: 2.25rem;
+  bottom: 1.5rem;
+  width: 7rem;
+  height: 7rem;
+  border: 1px solid var(--aesir-accent-soft);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.md-typeset .aesir-hero > p:first-child {
+  max-width: 48rem;
+  margin-bottom: 0.85rem;
+  color: var(--aesir-ink);
+  font-size: clamp(1.2rem, 2.2vw, 1.65rem);
+  line-height: 1.45;
+  font-weight: 650;
+}
+
+.md-typeset .aesir-hero > p:nth-child(2) {
+  max-width: 52rem;
+  color: var(--aesir-muted);
+  font-size: 1rem;
+}
+
+.md-typeset .aesir-hero__actions {
+  position: relative;
+  z-index: 1;
+  margin: 1.4rem 0 1rem;
+}
+
+.md-typeset .aesir-hero__meta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  color: var(--aesir-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.md-typeset .aesir-hero__meta span {
+  padding: 0.32rem 0.6rem;
+  border: 1px solid var(--aesir-border);
+  border-radius: 999px;
+  background: var(--aesir-surface);
+}
+
+.md-typeset .aesir-package-grid,
+.md-typeset .aesir-value-grid {
+  display: grid;
+  gap: 1rem;
+  margin: 1.25rem 0 2.75rem;
+}
+
+.md-typeset .aesir-package-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.md-typeset .aesir-value-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.md-typeset .aesir-package-card,
+.md-typeset .aesir-value-card {
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--aesir-border);
+  border-radius: 0.55rem;
+  background: var(--aesir-surface);
+}
+
+.md-typeset .aesir-package-card {
+  padding: 1.25rem 1.35rem 1.4rem;
+}
+
+.md-typeset .aesir-value-card {
+  padding: 1.1rem 1.2rem;
+}
+
+.md-typeset .aesir-package-card > h3,
+.md-typeset .aesir-value-card > p:first-child {
+  margin-top: 0.35rem;
+  color: var(--aesir-ink);
+}
+
+.md-typeset .aesir-card__eyebrow {
+  display: inline-block;
+  color: var(--aesir-accent-strong);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.md-typeset .aesir-package-card ul {
+  margin-bottom: 1.1rem;
+}
+
+.md-typeset .aesir-package-card .md-button {
+  font-size: 0.72rem;
+}
+
+.md-typeset .aesir-value-card > p:first-child {
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.md-typeset .aesir-value-card > p:last-child {
+  margin-bottom: 0;
+  color: var(--aesir-muted);
+  font-size: 0.88rem;
+}
+
+@media screen and (max-width: 768px) {
+  .md-typeset .aesir-package-grid,
+  .md-typeset .aesir-value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .md-typeset .aesir-hero {
+    margin-top: 1rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .md-typeset .aesir-hero::after {
+    right: -2rem;
+    bottom: -2rem;
+  }
+
+  .md-typeset .aesir-hero__meta {
+    gap: 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
 }
