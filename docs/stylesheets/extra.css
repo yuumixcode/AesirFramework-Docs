@@ -63,7 +63,15 @@
   pointer-events: none;
 }
 
-.md-typeset .aesir-hero > p:first-child {
+.md-typeset .aesir-hero > h1 {
+  margin: 0 0 0.75rem;
+  color: var(--aesir-ink);
+  font-size: clamp(2rem, 3.6vw, 2.75rem);
+  font-weight: 750;
+  letter-spacing: -0.015em;
+}
+
+.md-typeset .aesir-hero > p:first-of-type {
   max-width: 48rem;
   margin-bottom: 0.85rem;
   color: var(--aesir-ink);
@@ -72,7 +80,7 @@
   font-weight: 650;
 }
 
-.md-typeset .aesir-hero > p:nth-child(2) {
+.md-typeset .aesir-hero > p:nth-of-type(2) {
   max-width: 52rem;
   color: var(--aesir-muted);
   font-size: 1rem;
@@ -115,7 +123,7 @@
 }
 
 .md-typeset .aesir-value-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .md-typeset .aesir-package-card,
@@ -169,6 +177,12 @@
   font-size: 0.88rem;
 }
 
+@media screen and (max-width: 1024px) {
+  .md-typeset .aesir-value-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media screen and (max-width: 768px) {
   .md-typeset .aesir-package-grid,
   .md-typeset .aesir-value-grid {
@@ -196,4 +210,28 @@
   *::after {
     scroll-behavior: auto !important;
   }
+}
+
+/* ===== 全站版式:收窄双侧栏 + 缩小 nav/TOC 字体,放大中间内容区 =====
+   主题默认:两侧栏各 12.1rem、nav 字体 0.7rem,61rem 栅格内内容区约 36.8rem。
+   调整后:左导航 10rem(页面标题较长)、右目录 9.5rem(成员名较短),
+   nav/TOC 字体 0.60rem,内容区扩至约 41.5rem(+13%)。
+   .md-grid 保持 61rem 不变 —— 所有页面(含 Scripting API)两侧空白一致。 */
+
+.md-sidebar--primary {
+  width: 10rem;
+}
+
+.md-sidebar--secondary {
+  width: 9.5rem;
+}
+
+/* 左侧导航与右侧目录共用 .md-nav */
+.md-nav {
+  font-size: 0.60rem;
+}
+
+/* 长标识符(泛型/嵌套类型名)在侧栏内允许换行,不溢出 */
+.md-nav__link {
+  overflow-wrap: anywhere;
 }
