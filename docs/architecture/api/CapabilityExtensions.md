@@ -31,7 +31,7 @@ public static class CapabilityExtensions
 | 名称 | 描述 |
 | :--- | :--- |
 | [`GetModel(ICanGetModel)`](#method-getmodel-icangetmodel) | 获取已注册的 Model。未注册时由 GetModel{T} 抛出异常； 已注册但尚未初始化时，抛出注册顺序错误或循环依赖异常。 |
-| [`GetService(ICanGetService)`](#method-getservice-icangetservice) | 获取已注册的 Service。未注册时由 GetService{T} 抛出异常； 已注册但尚未初始化时，抛出注册顺序错误或循环依赖异常。 |
+| [`GetService(ICanGetService)`](#method-getservice-icangetservice) | 获取已注册的 Service。未注册时由 GetService{T} 抛出异常； 已注册但尚未初始化时抛出——Service 间依赖为注册顺序问题，Model 初始化阶段调用则属两阶段初始化的必然约束。 |
 | [`ExecuteQuery(ICanExecuteQuery)`](#method-executequery-icanexecutequery) | 执行无参查询 |
 | [`ExecuteQuery(ICanExecuteQuery, IQuery<TResult>)`](#method-executequery-icanexecutequery-iquery-tresult) | 执行带参查询 |
 | [`ExecuteCommand(ICanExecuteCommand)`](#method-executecommand-icanexecutecommand) | 执行无参命令 |
@@ -84,7 +84,7 @@ public static class CapabilityExtensions
 
 ### GetService(ICanGetService) {#method-getservice-icangetservice}
 
-获取已注册的 Service。未注册时由 GetService{T} 抛出异常； 已注册但尚未初始化时，抛出注册顺序错误或循环依赖异常。
+获取已注册的 Service。未注册时由 GetService{T} 抛出异常； 已注册但尚未初始化时抛出——Service 间依赖为注册顺序问题，Model 初始化阶段调用则属两阶段初始化的必然约束。
 
 ``` csharp
 [Extension]

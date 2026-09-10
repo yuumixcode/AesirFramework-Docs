@@ -30,8 +30,8 @@ Mono 生命周期事件扩展方法集合。
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`RegisterCustomLifecycle(GameObject, MonoLifecycleEvent, Action, int)`](#method-registercustomlifecycle-gameobject-monolifecycleevent-action-int) | 添加生命周期事件监听。 |
-| [`RegisterCustomLifecycle(MonoBehaviour, MonoLifecycleEvent, Action, int)`](#method-registercustomlifecycle-monobehaviour-monolifecycleevent-action-int) | 添加生命周期事件监听。 |
+| [`RegisterCustomLifecycle(GameObject, MonoLifecycleEvent, Action, int)`](#method-registercustomlifecycle-gameobject-monolifecycleevent-action-int) | 添加生命周期事件监听，并绑定到 go 的销毁事件自动移除。 |
+| [`RegisterCustomLifecycle(MonoBehaviour, MonoLifecycleEvent, Action, int)`](#method-registercustomlifecycle-monobehaviour-monolifecycleevent-action-int) | 添加生命周期事件监听，并绑定到 mono 所在 GameObject 的销毁事件自动移除。 |
 | [`RegisterCustomLifecycle(object)`](#method-registercustomlifecycle-object) | 快捷注册（任意对象）。扫描实现的所有 ICustomXXX 接口， 将对应方法自动注册到匹配的生命周期事件中。 |
 | [`RegisterCustomLifecycle(MonoBehaviour)`](#method-registercustomlifecycle-monobehaviour) | 快捷注册（MonoBehaviour 专用）。扫描实现的所有 ICustomXXX 接口， 将对应方法自动注册到匹配的生命周期事件中，并在 GameObject 销毁时自动取消订阅。 |
 | [`UnregisterCustomLifecycle(GameObject, MonoLifecycleEvent, Action)`](#method-unregistercustomlifecycle-gameobject-monolifecycleevent-action) | 移除生命周期事件监听。 |
@@ -56,7 +56,7 @@ Mono 生命周期事件扩展方法集合。
 
 ### RegisterCustomLifecycle(GameObject, MonoLifecycleEvent, Action, int) {#method-registercustomlifecycle-gameobject-monolifecycleevent-action-int}
 
-添加生命周期事件监听。
+添加生命周期事件监听，并绑定到 go 的销毁事件自动移除。返回的句柄与销毁自动移除等效，重复 Dispose 安全。
 
 ``` csharp
 [Extension]
@@ -87,7 +87,7 @@ Mono 生命周期事件扩展方法集合。
 
 ### RegisterCustomLifecycle(MonoBehaviour, MonoLifecycleEvent, Action, int) {#method-registercustomlifecycle-monobehaviour-monolifecycleevent-action-int}
 
-添加生命周期事件监听。
+添加生命周期事件监听，并绑定到 mono 所在 GameObject 的销毁事件自动移除。返回的句柄与销毁自动移除等效，重复 Dispose 安全。
 
 ``` csharp
 [Extension]

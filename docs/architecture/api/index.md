@@ -93,7 +93,7 @@ description: "Runestone.AesirArchitecture 命名空间的 Scripting API 参考"
 | [`IController<T>`](<IController{T}.md>) | 泛型控制器接口。绑定指定上下文类型，实现者自动获得 Context 绑定。 |
 | [`ICustomAfterUpdate`](<ICustomAfterUpdate.md>) | 自定义 AfterUpdate 生命周期。对应 AfterUpdate。 |
 | [`ICustomBeforeUpdate`](<ICustomBeforeUpdate.md>) | 自定义 BeforeUpdate 生命周期。对应 BeforeUpdate。 |
-| [`ICustomFixedUpdate`](<ICustomFixedUpdate.md>) | 自定义生命周期接口集合。实现这些接口的类可通过 Register(object) 自动注册到对应的生命周期事件。 |
+| [`ICustomFixedUpdate`](<ICustomFixedUpdate.md>) | 自定义 FixedUpdate 生命周期。对应 MonoLifecycleEvent.FixedUpdate。 |
 | [`ICustomLateUpdate`](<ICustomLateUpdate.md>) | 自定义 LateUpdate 生命周期。对应 LateUpdate。 |
 | [`ICustomOnApplicationFocus`](<ICustomOnApplicationFocus.md>) | 自定义 OnApplicationFocus 生命周期。对应 OnApplicationFocus。 |
 | [`ICustomOnApplicationPause`](<ICustomOnApplicationPause.md>) | 自定义 OnApplicationPause 生命周期。对应 OnApplicationPause。 |

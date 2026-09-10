@@ -22,7 +22,7 @@ public static class AesirArchitecturePlayerLoop
 基于 PlayerLoop 的生命周期钩子系统，无需 MonoBehaviour 即可接入游戏级帧回调。
 通过 Register 注册回调，order 越小越先执行；系统自动在域加载时注入 PlayerLoop。
 
-注入自愈：PlayerLoop 注入可能被第三方 SDK 用其缓存的副本调用 PlayerLoop.SetPlayerLoop 覆盖， 导致钩子静默失效。框架通过 EnsureInjected 自愈：域加载时、每次 Register 时、 以及 MonoLifecycleProxy 运行期间周期性检测并补插缺失的注入点；用户也可手动调用。
+注入自愈：PlayerLoop 注入可能被第三方 SDK 用其缓存的副本调用 PlayerLoop.SetPlayerLoop 覆盖， 导致钩子静默失效。框架通过 EnsureInjected 自愈：域加载时与每次 Register 时检测并补插缺失的注入点（注册即自愈）；用户也可手动调用。
 
 ## 方法
 
@@ -34,7 +34,7 @@ public static class AesirArchitecturePlayerLoop
 | :--- | :--- |
 | [`GetHookCount(AesirArchitectureLifecyclePhase)`](#method-gethookcount-aesirarchitecturelifecyclephase) | 获取指定阶段的已注册回调数量 |
 | [`EnsureInjected()`](#method-ensureinjected) | 确保两个注入点存在于当前 PlayerLoop。已存在时为空操作，缺失时重新注入。 |
-| [`Register(AesirArchitectureLifecyclePhase, Action, int)`](#method-register-aesirarchitecturelifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 回调持有者销毁前必须调用 Unregister 注销；若未注销，回调将永久残留并阻止目标对象被回收。 |
+| [`Register(AesirArchitectureLifecyclePhase, Action, int)`](#method-register-aesirarchitecturelifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册；匿名委托只能依赖该句柄注销——若均未注销，回调将永久残留并阻止目标对象被回收。 |
 | [`Reset()`](#method-reset) | 清空所有回调 |
 | [`Unregister(AesirArchitectureLifecyclePhase, Action)`](#method-unregister-aesirarchitecturelifecyclephase-action) | 注销回调。 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。 |
 
@@ -92,10 +92,10 @@ public static void EnsureInjected()
 ### Register(AesirArchitectureLifecyclePhase, Action, int) {#method-register-aesirarchitecturelifecyclephase-action-int}
 
 注册回调，order 越小越先执行，默认 0。
-回调持有者销毁前必须调用 Unregister 注销；若未注销，回调将永久残留并阻止目标对象被回收。
+返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。
 
 ``` csharp
-public static void Register(AesirArchitectureLifecyclePhase phase, Action callback, int order = 0)
+public static AutoRemoveListenerHandle Register(AesirArchitectureLifecyclePhase phase, Action callback, int order = 0)
 ```
 **参数**
 
@@ -106,6 +106,16 @@ public static void Register(AesirArchitectureLifecyclePhase phase, Action callba
 | `phase` | `AesirArchitectureLifecyclePhase` |
 | `callback` | `Action` |
 | `order` | `int` |
+
+</div>
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 |
+| :--- |
+| `AutoRemoveListenerHandle` |
 
 </div>
 

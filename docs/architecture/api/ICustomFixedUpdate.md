@@ -17,7 +17,7 @@ description: "Runestone.AesirArchitecture.ICustomFixedUpdate 的 API 文档"
 public interface ICustomFixedUpdate
 ```
 
-自定义生命周期接口集合。实现这些接口的类可通过 Register(object) 自动注册到对应的生命周期事件。
+自定义 FixedUpdate 生命周期。对应 MonoLifecycleEvent.FixedUpdate。
 
 ## 方法
 
