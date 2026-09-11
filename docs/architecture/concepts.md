@@ -19,7 +19,7 @@
 
 | 角色 | 组合的能力 | 写入路径 |
 |------|-----------|---------|
-| `IModel` | GetModel, GetService | 自身持有 `ObservableValue`,仅通过写方法 / Command 修改 |
+| `IModel` | GetModel | 自身持有 `ObservableValue`,仅通过写方法 / Command 修改 |
 | `IService` | GetModel, GetService | 可直写 Model;**故意不能**执行 Command/Query(命令入口应由 Controller/Presenter 触发) |
 | `IView` | GetModel, GetService | 只读 |
 | `IController` | GetModel, GetService, ExecuteCommand, ExecuteQuery | MVC 入口 |

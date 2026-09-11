@@ -24,8 +24,9 @@ nav = [
       { "快速开始" = "modules/getting-started.md" },
       { "特性" = "modules/features.md" },
       { "UI 框架" = "modules/ui.md" },
-      { "场景模块" = "modules/scene.md" },
       { "事件模块" = "modules/events.md" },
+      { "音频模块" = "modules/audio.md" },
+      { "场景模块" = "modules/scene.md" },
       { "兼容性" = "modules/compatibility.md" },
   ]},
   { "Scripting API" = [

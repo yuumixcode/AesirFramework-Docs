@@ -42,7 +42,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 ## MiniEvent — 零分配轻量事件
 
-直接多播调用、稳态零分配,异常语义 = 原生 C# 事件(fail-fast,一个监听者抛异常会中断后续监听者):
+直接多播调用、Invoke 路径稳态零分配,异常语义 = 原生 C# 事件(fail-fast,一个监听者抛异常会中断后续监听者):
 
 ```csharp
 MiniEvent doorOpened = new MiniEvent();

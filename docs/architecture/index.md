@@ -10,7 +10,7 @@
 
 | 角色 | 接口 | 能力 | 职责 |
 |------|------|------|------|
-| **Model** | `IModel` → `AbstractModel` | GetModel, GetService | 数据层;持有 `ObservableValue<T>`,修改必经写方法 |
+| **Model** | `IModel` → `AbstractModel` | GetModel | 数据层;持有 `ObservableValue<T>`,修改必经写方法 |
 | **Service** | `IService` → `AbstractService` | GetModel, GetService | 跨模块协调;可直写 Model,不能执行 Command/Query |
 | **View** | `IView` | GetModel, GetService(只读) | 表现层;自订阅 Model 通知刷新 |
 | **Controller** | `IController` | GetModel, GetService, **ExecuteCommand**, **ExecuteQuery** | MVC 模式入口(推荐) |
@@ -49,6 +49,6 @@ RAA 最鲜明的特征是**按档位渐进** —— 从最少概念跑通闭环,
 - [特性一览](features.md) — ObservableValue / MiniEvent / PlayerLoop 等核心机制
 - [架构概念](concepts.md) — 能力接口组合 / Context 生命周期 / Domain Reload 安全
 - [响应式与事件](observable.md) — 通知体系与事件机制决策表
-- [示例总览](samples.md) — 计数器六档对照 + PlaneWar 实战(9 个可导入示例)
+- [示例总览](samples.md) — 计数器六档对照 + PlaneWar 实战(10 个可导入示例)
 - [包内更新器](updater.md) — unitypackage 安装的一键更新
 - [兼容性](compatibility.md) — Unity 版本 / Odin 可选集成

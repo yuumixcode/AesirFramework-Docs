@@ -4,7 +4,7 @@ Aesir Modules 的 UI 框架采用 Manager-of-Managers 单例模式:`UIRoot` 负�
 
 ## UIRoot —— UI 根节点
 
-菜单 `GameObject → Aesir Modules → UI → Create UIRoot` 一键构建:
+菜单 `GameObject → Aesir Modules → Create UIRoot` 一键构建:
 
 - **四层 Canvas**:Background(sortingOrder 100)/ Normal(200)/ Popup(300)/ Top(400),每层为 ScreenSpaceCamera 画布 + CanvasScaler + GraphicRaycaster
 - **UICamera**:正交、depth 1、cullingMask 为 UI 与 TransparentFX 层
@@ -30,7 +30,13 @@ Aesir Modules 的 UI 框架采用 Manager-of-Managers 单例模式:`UIRoot` 负�
 `PrewarmAll()` 通过协程**逐帧**预实例化,分摊首次打开的实例化卡顿。
 
 !!! warning "注册键 = 面板实例的实际类型"
-    以基类类型 `Show` 后,需以实际类型(或面板内 `HideSelf()`)关闭。推荐始终用面板具体类型调用泛型 API。
+    面板注册表以实例的**实际类型**为键。预制体上挂载的脚本是注册类型的派生类时:
+
+    - 以基类类型重复 `Show`:**报错拒绝**,不会重复实例化
+    - 以基类类型 `Hide` / `Get`:**警告提示**实际类型后静默返回
+    - 面板内 `HideSelf()` 始终以实际类型调用,永远安全
+
+    最佳实践:**注册、显示、关闭、获取统一使用同一类型**。
 
 ## 面板生命周期
 
@@ -44,6 +50,17 @@ Aesir Modules 的 UI 框架采用 Manager-of-Managers 单例模式:`UIRoot` 负�
 - 面板以**停用状态**实例化:`Awake` / `OnEnable` 推迟到 Show 激活时才触发,保证 `OnEnable` 可安全访问 `OnInit` 之后才有值的引用
 - 面板被外部销毁 / 场景卸载时,`AesirBasePanel.OnDestroy` 自动反向清理 UIModule 注册表,无残留
 
+### OnClose 与 OnDestroy 的职责分界
+
+| 销毁路径 | 触发的回调 |
+|---------|-----------|
+| `Hide` 且 `DestroyOnHide=true`(受控销毁) | `OnHide` → `OnClose` → `Destroy` → `OnDestroy` |
+| `Hide` 且 `DestroyOnHide=false` | 仅 `OnHide`(实例缓存复用) |
+| 场景卸载 / 外部 `Destroy(gameObject)` | 仅 `OnDestroy` |
+
+!!! warning "事件解绑必须放 OnDestroy"
+    `OnClose` 只在**受控销毁路径**调用;场景卸载、外部 `Destroy` 等非受控销毁只触发 `OnDestroy`。事件解绑与订阅释放请放在 `OnDestroy`(或 `OnClose` + `OnDestroy` 两处) —— 仅写在 `OnClose` 会在场景切换时泄漏(MiniEvent / ObservableValue 的订阅没有死引用清理兜底)。
+
 面板基类家族:
 
 | 基类 | 角色 | 用途 |
@@ -54,18 +71,20 @@ Aesir Modules 的 UI 框架采用 Manager-of-Managers 单例模式:`UIRoot` 负�
 
 ## 可插拔资源加载
 
-默认 `ResourcesUILoader`(预制体路径约定为**面板类型名**)。实现 `IUIAssetLoader` 可替换为 Addressables 等方案:
+默认 `ResourcesUILoader`(预制体路径约定为**面板类型名**)。实现 `IUIAssetLoader` 可替换为其他同步可达方案:
 
 ```csharp
 public interface IUIAssetLoader
 {
     GameObject Load(string path);
-    void Unload(GameObject prefab);
 }
 
 // 注入自定义加载器
 UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
 ```
+
+!!! warning "加载契约为同步语义"
+    `Load` 需同步返回预制体。Addressables 等异步管线无法在接口内表达等待 —— `Handle.Result` 同步等待在 WebGL 会死锁、在其他平台阻塞主线程。推荐做法:**预加载完成后经自定义 loader 查缓存同步返回**。预制体引用由 UIModule 注册表持有,契约不设释放方法。
 
 ## DDOL 机制
 
@@ -74,6 +93,13 @@ UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
 - `AesirModules` 宿主:运行时创建恒为 DDOL
 - `UIRoot`:预放置与运行时创建统一由该字段控制
 - `UIModule`:字段仅在**预放置为根物体**时生效;运行时自动创建时挂载于 `[Aesir Modules]` 宿主下,跟随宿主决策
+
+## 设计边界
+
+- **层级体系是封闭集** —— `UILayer` 固定四层(Background / Normal / Popup / Top),层序基准硬编码为 100 / 200 / 300 / 400 且每次初始化强制覆盖;新增层级需修改框架源码
+- **无 per-panel Canvas** —— 同层多面板共享层 Canvas(同图集合批友好);需要动画隔离 / 独立渲染请在面板预制体内自行添加子 Canvas。同层内渲染顺序仅由 Show 顺序决定
+- **主相机需自行排除 UI 层** —— UICamera 的 cullingMask 只含 UI 与 TransparentFX 层,主游戏相机若也包含 UI 层会重复渲染
+- **不做** —— 面板导航栈 / 返回、全局模态遮罩管理、异步加载接口、层扩展配置
 
 ## Binder 组件绑定(需 Odin Inspector)
 

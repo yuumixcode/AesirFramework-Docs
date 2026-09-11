@@ -1,6 +1,6 @@
 # Aesir Architecture 示例总览
 
-包内含 **9 个可导入示例**(Package Manager → Aesir Architecture → Samples 标签页按需导入),外加 1 个仓库内编辑器示例。所有示例:
+包内含 **10 个可导入示例**(Package Manager → Aesir Architecture → Samples 标签页按需导入),外加 1 个仓库内编辑器示例。所有示例:
 
 - 位于包内 `Samples/` 目录(仓库浏览时直接可见、场景可直接打开运行)
 - 程序集为**运行时程序集 + 整文件 `#if UNITY_EDITOR`**:编辑器内可编译、可挂载、可 Play;玩家构建整体剔除,示例类型 0 入包
@@ -45,6 +45,10 @@
 ### ObservableValue(需 Odin Inspector)
 
 `ObservableValue<T>` 自定义 Drawer 演示:int / float / string / bool / Vector2 基础类型与 struct / class 复合类型在 Inspector 中的编辑与通知。
+
+### ObservableCollections
+
+`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` 变更事件用法:订阅 Added / Removed / Replaced / Updated / Cleared,经 ContextMenu 触发增删改查与集合运算。
 
 ## PlaneWar 实战(Mono 版)
 

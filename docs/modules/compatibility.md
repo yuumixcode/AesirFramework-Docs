@@ -19,8 +19,9 @@
 ### Odin Inspector(`ODIN_INSPECTOR`)
 
 - Binder 组件绑定全家桶位于独立 Odin 程序集(`Runestone.AesirModules.OdinInspector`),未安装 Odin 时整体排除
-- UI / Scene 模块的 AttributeProcessor 样式增强同理条件编译
-- 核心功能(UIModule / UIRoot / SceneModule)无 Odin 完整可用
+- UI / Scene / Audio 模块的 AttributeProcessor 样式增强同理条件编译;脚本文档生成模块强依赖 Odin(未安装自动排除)
+- `SceneAssetWrapper` 的 Inspector 面板效果(拖拽赋值 / 着色 / 一键修复)依赖 Odin;未安装时仅保证 API 可用(`FromScenePath` 构造 / 代码赋值 / TryGet 家族)
+- 核心功能(UIModule / UIRoot / SceneModule / AudioModule / EventModule)无 Odin 完整可用
 
 ### Addressables(`AESIR_MODULES_ADDRESSABLES`)
 

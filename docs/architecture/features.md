@@ -22,7 +22,7 @@ count.SetValueSilently(5);
 
 ## MiniEvent — 零分配轻量事件
 
-直接多播调用、零分配,异常语义 = 原生 C# 事件(fail-fast)。`AddListener` 返回 `AutoRemoveListenerHandle`,泄漏防护是 API 形态:
+直接多播调用、Invoke 路径零分配,异常语义 = 原生 C# 事件(fail-fast)。`AddListener` 返回 `AutoRemoveListenerHandle`,泄漏防护是 API 形态:
 
 ```csharp
 MiniEvent doorOpened = new MiniEvent();

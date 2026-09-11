@@ -37,7 +37,7 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.20.0
 
 ### 1. 创建 UIRoot
 
-菜单 `GameObject → Aesir Modules → UI → Create UIRoot`,一键构建四层 Canvas(Background / Normal / Popup / Top)+ UICamera + EventSystem。层 Canvas / UICamera / EventSystem 为序列化引用持久化,构建后可自由调整。
+菜单 `GameObject → Aesir Modules → Create UIRoot`,一键构建四层 Canvas(Background / Normal / Popup / Top)+ UICamera + EventSystem。层 Canvas / UICamera / EventSystem 为序列化引用持久化,构建后可自由调整。
 
 ### 2. 编写面板脚本
 
@@ -49,7 +49,7 @@ public class MainMenuPanel : AesirBasePanel
     protected override void OnInit() { }                 // 首次实例化后调用一次
     protected override void OnShow(object payload) { }   // 每次显示时调用(含首次)
     protected override void OnHide() { }                 // 隐藏时调用
-    protected override void OnClose() { }                // 销毁前调用
+    protected override void OnClose() { }                // 受控销毁(Hide + DestroyOnHide=true)前调用
 }
 ```
 
@@ -74,11 +74,11 @@ UIModule.Hide<ConfirmDialogPanel>();
 UIModule.Prewarm<MainMenuPanel>();
 ```
 
-> **生命周期细节**:面板以停用状态实例化(Awake / OnEnable 推迟到 Show 激活时才触发,保证 OnEnable 可安全访问 OnInit 之后才有值的引用),按 挂层 → `Initialize` → `Show` 顺序驱动;面板注册以实例的**实际类型**为键,以基类类型 Show 后需以实际类型(或面板内 `HideSelf()`)关闭。
+> **生命周期细节**:面板以停用状态实例化(Awake / OnEnable 推迟到 Show 激活时才触发,保证 OnEnable 可安全访问 OnInit 之后才有值的引用),按 挂层 → `Initialize` → `Show` 顺序驱动;面板注册以实例的**实际类型**为键,以基类类型 Show 后需以实际类型(或面板内 `HideSelf()`)关闭。`OnClose` 仅在受控销毁路径调用,事件解绑请放 `OnDestroy`。
 
 ### 4. 自定义资源加载(可选)
 
-默认从 Resources 目录加载(`ResourcesUILoader`,预制体路径约定为面板类型名)。实现 `IUIAssetLoader` 即可替换为 Addressables 等:
+默认从 Resources 目录加载(`ResourcesUILoader`,预制体路径约定为面板类型名)。实现 `IUIAssetLoader` 即可替换为其他同步可达方案(加载契约为同步语义):
 
 ```csharp
 UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
@@ -91,8 +91,11 @@ Package Manager → Aesir Modules → **Samples**:
 | 示例 | 说明 |
 |------|------|
 | `Events/01_KeyPress` | 事件模块基本发布-订阅:按键发布事件、`[AesirListener]` 静态订阅 |
+| `Events/02_Filters` | 订阅者过滤器对照示例:`WithTag`+`InsideCollider2D` 双重过滤与 `OnlySelf` 家族命令 |
+| `Events/03_SOAsset` | SO 资产化:事件资产配置载荷,`UnityEventOnAesirEvent` 零代码桥接 UnityEvent 回调 |
+| `Audio/01_BasicUsage` | 音频模块基础用法:SFX 播放、BGM 淡入淡出切歌、三通道音量与静音持久化 |
 
 ## 下一步
 
-- [特性一览](features.md) — UI / Event / Scene 三模块与 Binder
+- [特性一览](features.md) — 五模块与 Binder 速览
 - [概览](index.md) — 模块总览与包结构
