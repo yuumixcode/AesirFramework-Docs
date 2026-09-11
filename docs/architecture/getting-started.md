@@ -12,7 +12,7 @@
 Unity Package Manager → 左上角 `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.18.0
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.20.0
 ```
 
 版本分支由 CI 自动按包目录 subtree split 生成,仓库只保留最新版本分支。

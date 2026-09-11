@@ -23,7 +23,7 @@ hide:
 
 <div class="aesir-hero__meta">
 <span>Unity / 团结引擎 2022.3+</span>
-<span>Architecture + Modules 0.18.0</span>
+<span>Architecture + Modules 0.20.0</span>
 <span>MIT License</span>
 </div>
 
@@ -36,7 +36,7 @@ hide:
 === "Aesir Architecture"
 
     ```text
-    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.18.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.20.0
     ```
 
 === "Aesir Modules"
@@ -44,8 +44,8 @@ hide:
     Modules 依赖 Architecture。安装 Modules 时请同时添加两个固定版本分支：
 
     ```text
-    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.18.0
-    https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.18.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.20.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.20.0
     ```
 
 === "unitypackage"

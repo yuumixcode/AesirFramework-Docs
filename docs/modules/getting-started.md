@@ -11,13 +11,13 @@
 Unity Package Manager → `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.18.0
+https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.20.0
 ```
 
 只安装 Aesir Modules 时,请同时添加 Aesir Architecture 的 Git URL(UPM 对 Git URL 安装的包不会自动解析包内 dependencies 声明为 Registry 引用):
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.18.0
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.20.0
 ```
 
 或编辑 `Packages/manifest.json`:
@@ -25,8 +25,8 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.18.0
 ```json
 {
   "dependencies": {
-    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.18.0",
-    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.18.0"
+    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.20.0",
+    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.20.0"
   }
 }
 ```

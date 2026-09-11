@@ -11,11 +11,40 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.18.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.18.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.20.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.20.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.20.0] - 2026-09-11
+
+### Aesir Architecture
+
+- 新增《设计变更记录》文档——废弃机制(事件总线/ModelReplaced/120 帧轮询/初始化失败回滚/异常吞噬等十组)与设计来源统一收录,源码注释此后只描述当前行为
+- 注释精简(12 文件):移除源码注释中的历史演进叙述(更名史/fake-null 演进史/复刻来源等),重复 remarks 去重
+- 修复 `AesirArchitecture.DontDestroyOnLoad` 遗留 CS0108 编译警告(补 `new` 修饰符,行为不变)
+
+### Aesir Modules
+
+- **事件模块分发增强与 SO 资产化**——订阅者过滤器(`ISubscriberFilter` + `WithTag`/`WithPriority`/`SameSceneAsEmitter`/`OnlySelf`/`InsideCollider2D`,fail-closed);死引用清理(分发期自动移除已销毁订阅者);性能监控(`executionMsLimit`,默认关闭);`AesirEventArgsSO` 资产发布者 + `UnityEventOnAesirEvent` 桥接组件 + `SubclassSelector` 子类下拉;热路径绑定键缓存(分发热路径稳态零分配,编译委托加速 ~78 倍);新增 22 用例与 `02_Filters`/`03_SOAsset` 示例
+- **新增音频模块(2D)**——`AudioModule` 全静态门面:SFX 独占音源轮询(每播音调/音量独立,无每播实例化开销)、BGM 淡入淡出与同曲幂等、Master/BGM/SFX 三通道音量与静音 PlayerPrefs 持久化;30 用例与 `01_BasicUsage` 示例
+- **场景模块行为层补齐**——`SceneModule` 补 DDOL 字段(修复预放置实例被自己的 `LoadSceneSingle` 销毁)、新增 `SetActiveScene` 与场景事件广播、`onProgress` 进度回调、`SceneAssetWrapper` 悬空判定;20 用例与专属文档
+- **UI 模块注册表重构(含破坏性变更)**——三字典合并单注册表(键=实际类型,基类类型调用 ShowPanel 报错拒绝/HidePanel/GetPanel 警告)、层 Canvas 缺失 fail-fast 中止、`HidePanel<T>` 约束收紧为 `MonoBehaviour, IUIPanel`;移除 `UIModule.RegisterUIRoot` 与 `IUIAssetLoader.Unload`(破坏性);13 用例与专属文档
+- **ScriptDocGenerator 修复与增强**——生成器三处输出 bug 修复(单成员类丢章节/常量表过滤写反/空继承章节)、Zensical 生成器参数与备注全链路输出、面板配置域重载不再丢失、默认输出目录移出 Assets、UI Toolkit 窗口移除(Odin 窗口为唯一入口)、Summary 工具改为 `[Summary]` 特性优先语义
+- 修复 `AesirListenerAttribute` 缺 `AllowMultiple`、`SubscriberPriority` 文档口径修正(实为 4 档 First/High/Medium/Last)
+
+## [0.19.0] - 2026-09-11
+
+### Aesir Architecture
+
+- 新增 `IContext` / `AbstractContext<T>` 的 `UnregisterModel<TModel>` / `UnregisterService<TService>`——按类型键摘除注册并释放实例(幂等,注销后再注册追加到顺序末尾)
+- 新增 `AesirArchitecture.DontDestroyOnLoad` 只读属性——暴露 DDOL 决策取值,供运行时查询与编辑器条件提示复用
+- 修复 Odin AttributeProcessor 两处信息框宣称与实现不符(类级条件 Warning 补齐/DDOL 警告改条件显示);`AbstractSubmodule.Dispose` 重置 `Initialized`;快捷档示例 Model 改只读属性暴露、严格档示例缓存 Query 实例复用
+
+### Aesir Modules
+
+- 版本号与 Aesir Architecture 同步更新至 `0.19.0`,本包本版本无功能性变更
 
 ## [0.18.0] - 2026-09-10
 
