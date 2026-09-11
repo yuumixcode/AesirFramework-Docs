@@ -149,7 +149,6 @@ features = [
   "navigation.instant",
   "navigation.tracking",
   "navigation.tabs",
-  "navigation.sections",
   "navigation.top",
   "navigation.indexes",
   "navigation.footer",
