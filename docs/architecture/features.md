@@ -60,6 +60,17 @@ AesirArchitecturePlayerLoop.EnsureInjected();
 
 可用阶段:`BeforeUpdate`(Update 前)、`AfterUpdate`(PostLateUpdate 后)。
 
+## AesirScheduler — 帧粒度时间调度
+
+纯 C# 静态 API,为无协程能力的 Model / Service / Command 提供合法延时手段;经 PlayerLoop BeforeUpdate 钩子结算,无需任何场景物体:
+
+```csharp
+AesirScheduler.Delay(3f, () => Debug.Log("3 秒后(帧粒度)"));
+AesirScheduler.NextFrame(() => RefreshView());   // 下一帧执行
+```
+
+有意收窄的能力边界:帧粒度精度(任务最早下一帧执行)、游戏时间(受 `timeScale` 影响)、一次性任务——无句柄、无取消、无暂停、不池化;仅主线程;空队列时钩子零成本。回调内再调度的新任务从下一帧开始参与结算。
+
 ## MonoLifecycleProxy — 生命周期代理
 
 将 Unity 原生回调统一为可订阅的 MiniEvent;调用期增删监听为**快照语义**(挂起队列趟末应用,对齐原生多播委托),稳态零分配。PlaneWar 示例中与 MiniEvent、ObservableValue 组合运用。
