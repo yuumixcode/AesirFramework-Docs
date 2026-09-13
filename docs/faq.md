@@ -75,9 +75,9 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 用 `public Action Xxx { get; set; }` 代替了 `event`。接口中声明 `event Action Xxx;` —— 编译期限制外部只能 `+=` / `-=`。
 
-### 事件模块(EventModule)为什么标"实验性"?
+### 事件模块(EventModule)与 MiniEvent 怎么选?
 
-双轨订阅(Attribute + Script)、4 档优先级与表达式树优化已实现并有测试覆盖,但**尚未在实际项目中验证,API 可能调整**;简单场景建议优先用 MiniEvent / ObservableValue。
+跨模块解耦、按 4 档优先级编排订阅者、需要精确投递过滤器或 Inspector 配置(SO 资产化 / UnityEvent 桥接)时用 EventModule;单类型自包含事件、追求零开销直调时用 MiniEvent / ObservableValue。两者可共存 —— EventModule 负责发布-订阅调度,MiniEvent / ObservableValue 负责"事件实例"与"数据驱动"语义。
 
 ## 未找到答案?
 

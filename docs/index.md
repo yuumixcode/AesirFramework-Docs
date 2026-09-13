@@ -93,9 +93,11 @@ AesirFramework 由两个同号发布的包组成。先用 **Aesir Architecture**
 
 ### Aesir Modules
 
-建立在 Architecture 之上的功能模块集合。用 `UIRoot` / `UIModule` 管理面板生命周期，用 SceneModule 处理场景引用与加载，并按需启用事件模块。
+建立在 Architecture 之上的功能模块集合：UI 框架、事件模块、音频模块、场景模块与脚本文档生成工具（需 Odin）。
 
 - UI：四层 Canvas、面板生命周期与 Binder
+- Events：双轨订阅事件系统（过滤器、SO 资产化）
+- Audio：SFX 轮询、BGM 淡入淡出与音量持久化
 - Scene：场景加载、卸载与 `SceneAssetWrapper`
 - 可选集成：Odin Inspector、Addressables、Input System
 

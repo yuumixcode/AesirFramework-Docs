@@ -4,9 +4,9 @@
 
 ## 核心能力
 
-- **SFX** —— 固定数量独占音源轮询(默认 8,可配):等效池化,无每播实例化开销;每次播放的局部音量与音调独立生效;源全忙时按轮询序抢占最旧;`pitchJitter` 音调随机抖动防止机械感
-- **BGM** —— 专用循环音源:同曲在播时幂等返回(跨场景重复触发不打断音乐);切换支持协程淡入淡出(基于 `unscaledDeltaTime`,slow motion 不变调)
-- **音量与静音** —— Master / BGM / SFX 三通道乘法链 + 三通道静音(Master 总闸),设置即时生效并经 PlayerPrefs 持久化(重启自动恢复,键前缀可配)
+- **SFX** —— 固定数量独占音源轮询(默认 8,可配):等效池化,无每播实例化开销;每次播放的局部音量与音调独立生效;源全忙时按轮询序抢占最旧;`pitchJitter` 音调随机抖动防止机械感(最终音调钳制到 [0.01, 3],任意 pitch 与 jitter 组合不会反播)
+- **BGM** —— 专用循环音源:同曲在播且无进行中淡变时幂等返回(跨场景重复触发不打断音乐;淡出进行中重播同曲会取消淡出并续接);切换支持协程淡入淡出(基于 `unscaledDeltaTime`,slow motion 不变调)
+- **音量与静音** —— Master / BGM / SFX 三通道乘法链 + 三通道静音(Master 总闸),设置即时生效并经 PlayerPrefs 持久化(重启自动恢复,键前缀可配);音量 setter 每次赋值即落键,连续拖动的滑条请在拖动结束时一次性写入
 - **暂停** —— `PauseAll` / `ResumeAll` 一对,适合暂停菜单与切后台
 
 ## 快速开始
@@ -25,7 +25,7 @@ AudioModule.PlayBgm(bgmClip);
 // 切歌:淡出旧曲 1.5 秒 → 淡入新曲 1.5 秒
 AudioModule.PlayBgm(sceneB, fadeSeconds: 1.5f);
 
-// 音量:设置即生效、即持久化
+// 音量:设置即生效、即持久化(setter 每次赋值即落键,连续拖动请在拖动结束一次性写入)
 AudioModule.SfxVolume = 0.5f;
 AudioModule.MasterMute = true;
 ```
@@ -36,8 +36,8 @@ AudioModule.MasterMute = true;
 
 | API | 说明 |
 |-----|------|
-| `PlaySfx(clip, volume, pitch, pitchJitter)` | 播放音效(fire-and-forget) |
-| `PlayBgm(clip, fadeSeconds)` | 播放 BGM;同曲在播幂等返回 |
+| `PlaySfx(clip, volume, pitch, pitchJitter)` | 播放音效(fire-and-forget;最终音调钳制 [0.01, 3]) |
+| `PlayBgm(clip, fadeSeconds)` | 播放 BGM;同曲在播且无淡变进行中时幂等返回(淡出中重播同曲取消淡出续接) |
 | `StopBgm(fadeSeconds)` | 淡出停止(`CurrentBgm` 保留) |
 | `PauseAll()` / `ResumeAll()` | 暂停 / 恢复全部音源 |
 | `MasterVolume` / `BgmVolume` / `SfxVolume` | 三通道音量(0-1,乘法链:通道 × 总) |
@@ -65,10 +65,12 @@ AudioModule.MasterMute = true;
 | AudioMixer 集成 | 音量直接写入音源;Snapshot / DSP 需资产管线时自建 |
 | 每音效独立 Stop / 播完回调 | `PlaySfx` 为 fire-and-forget;回调需求用 [MiniEvent](../architecture/observable.md) |
 | AudioListener 管理 | 调用方保证场景恰好一个 Listener(相机默认自带) |
+| NaN `fadeSeconds` 防御 | 参数约定合法数值;NaN 会污染淡变系数使音量链全 NaN,误用不设防 |
+| 轮询抢占的瞬态爆音 | 全忙抢占最旧音源热切换 clip 有可闻爆音;在意瞬态噪声请降低触发密度或自建音源做包络 |
 
 ## 示例
 
-`Audio/01_BasicUsage` —— OnGUI 面板驱动全部 API:SFX 播放(含音调抖动)、BGM 立即播放与 1.5 秒淡入淡出切换、淡出停止、暂停恢复、三通道音量滑条与静音开关、`CurrentBgm` 状态显示。
+`Audio/01_BasicUsage` —— OnGUI 面板驱动全部 API:SFX 播放(含音调抖动)、BGM 立即播放与 1.5 秒淡入淡出切换、淡出停止、暂停恢复、三通道音量滑条(演示拖动结束落键)与静音开关、`CurrentBgm` 状态显示。
 
 ## 继续阅读
 

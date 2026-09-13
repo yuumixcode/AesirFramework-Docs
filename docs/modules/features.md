@@ -42,11 +42,9 @@
 
 独立程序集;启用 Input System 包时自动以 `InputSystemUIInputModule` 替换 UIRoot 的默认输入模块。
 
-## 事件模块(⚠️ 实验性)
+## 事件模块
 
-> 尚未在实际项目中验证,API 可能调整。
-
-双轨订阅事件系统:`[AesirListener]` 特性静态订阅 + `AddListener<T>` 动态 Lambda 订阅,共存于同一分发流程,按 4 档优先级(First / High / Medium / Last)排序执行;静态绑定经**表达式树编译委托**优化反射开销(分发热路径稳态零反射零分配)。内置**订阅者过滤器**(精确投递)、**死引用自动清理**与可选**分发耗时告警**;支持 **SO 资产化**(`AesirEventArgsSO` + `UnityEventOnAesirEvent` 桥接),非程序员可在 Inspector 配置事件。详见[事件模块](events.md)。
+双轨订阅事件系统:`[AesirListener]` 特性静态订阅 + `AddListener<T>` 动态 Lambda 订阅,共存于同一分发流程,按 4 档优先级(First / High / Medium / Last)稳定排序执行(同档按注册顺序);分发基于注册表快照迭代并支持重入发布(回调内可安全同步发布事件)。静态绑定经**表达式树编译委托**优化反射开销(分发热路径零反射、零字符串分配、零装箱)。内置**订阅者过滤器**(精确投递)、**死引用自动清理**与可选**分发耗时告警**;支持 **SO 资产化**(`AesirEventArgsSO` + `UnityEventOnAesirEvent` 桥接),非程序员可在 Inspector 配置事件。详见[事件模块](events.md)。
 
 ```csharp
 // 1. 定义事件参数(数据载体)
