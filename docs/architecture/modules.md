@@ -186,13 +186,48 @@ AesirArchitecturePlayerLoop.Register(
 
 ### AesirScheduler — 帧粒度时间调度(0.21.0 新增) {#module-aesir-scheduler}
 
-纯 C# 静态 API,为无协程能力的 Model / Service / Command 提供合法的延时执行手段;任务经 BeforeUpdate 钩子结算,无需任何场景物体,首次使用自动注册钩子:
+**为什么需要它**:纯 C# 层(Model / Service / Command)没有任何原生延时手段 —— `StartCoroutine` 是 MonoBehaviour 实例方法,`Invoke` 同理,`Task.Delay` 不接 Unity 主线程与 `timeScale`。AesirScheduler 用两个 API 补上这个缺口;任务经 BeforeUpdate 钩子结算,无需任何场景物体,首次使用自动注册钩子:
 
 ```csharp
 AesirScheduler.Delay(3f, () => Debug.Log("3 秒后(帧粒度)"));
 AesirScheduler.NextFrame(() => RefreshView());   // 下一帧执行,等价于 Delay(0f)
 int pending = AesirScheduler.PendingCount;        // 待结算任务数
 ```
+
+#### 与 PlayerLoop 帧钩子的分工 {#module-scheduler-vs-hook}
+
+`AesirArchitecturePlayerLoop` 与 AesirScheduler 是互补的两层,不是替代关系:**前者是"帧驱动"原语**(每帧持续调用,直到注销),**后者是"延时"原语**(到点调用一次,触发即自动出队)。用帧钩子手写延时可行,但等于每次都在实现一个没有测试保护的迷你调度器:
+
+```csharp
+// 手写版:"3 秒后执行一次"的帧钩子实现
+float deadline = Time.time + 3f;
+AutoRemoveListenerHandle handle = default;
+handle = AesirArchitecturePlayerLoop.Register(
+    AesirArchitectureLifecyclePhase.BeforeUpdate, () =>
+{
+    if (Time.time < deadline) return;   // ① 到期前每帧空转
+    MyAction();
+    handle.Dispose();                    // ② 忘写这行 = 回调永久滞留钩子,每帧空转到域重载
+});
+```
+
+| 维度 | 帧钩子手写延时 | AesirScheduler |
+|------|--------------|----------------|
+| 空转成本 | 任务期内每帧轮询;N 个延时任务占 N 个钩子槽 | N 个任务共享 1 个钩子槽(懒注册,空队列时钩子零成本直接返回) |
+| 清理责任 | 忘记 Dispose 即泄漏 | 触发即自动出队,无需清理 |
+| 计时 | 自己比对 `Time.time` | 内建游戏时间计时,`timeScale = 0` 期间正确暂停 |
+| 每任务分配 | 闭包捕获 deadline / handle,产生堆分配 | 结构体任务写入复用列表,调度机制稳态零分配 |
+| 边界语义 | 自己保证(同帧投递?回调内再注册?触发后重跑?) | BornFrame 守卫(最早下一帧)、先出队后投递(异常不重跑)、快照投递,测试用例锁定 |
+
+类比 MonoBehaviour 世界:`Update()` 与 `yield WaitForSeconds` 的关系 —— 有 Update 并不意味着不需要 WaitForSeconds;AesirScheduler 就是纯 C# 层的 WaitForSeconds / `yield null`。
+
+**选型** —— 三种时间需求,三个去处:
+
+| 需求 | 用什么 |
+|------|--------|
+| 每帧持续执行(逐帧逻辑) | `AesirArchitecturePlayerLoop.Register`(或 ICustomUpdate 接口) |
+| 一次性延时 / 下一帧 | `AesirScheduler.Delay` / `NextFrame` |
+| 周期性重复(每 0.5 秒刷一次) | 不做 —— 帧钩子 + 自身计时,或业务层协程 |
 
 有意收窄的能力边界:
 
