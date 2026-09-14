@@ -11,11 +11,32 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.20.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.20.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.21.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.21.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.21.0] - 2026-09-14
+
+> 本版为《全仓锐评》优化方案的集中落地:修复两包全部 P1/P2 级正确性缺陷、补齐测试盲区、事件模块摘除"实验性"标注,并新增 `AesirScheduler` 时间调度原语。验证基线:EditMode 612/610 通过、PlayMode 21/21 全绿(batchmode)。
+
+### Aesir Architecture
+
+- **包内更新器全面升级**——新增 Odin Inspector 界面(与 IMGUI 兜底共用逻辑)、更新日志面板(按远程 tag 拉取包内 CHANGELOG 展示本地→远程区间段落)与更新前确认框;修复预发布版本比较(rc 与正式版判等)、移除单包更新入口(防版本撕裂)、残留清理移到导入成功之后
+- **新增 `AesirScheduler` 帧粒度时间调度原语**——`Delay(seconds, callback)` / `NextFrame(callback)` 纯 C# 静态 API,经 PlayerLoop BeforeUpdate 钩子结算,为无协程能力的 Model / Service / Command 提供合法延时手段;有意收窄(帧粒度/游戏时间/一次性任务/不池化)
+- package.json samples 登记 `RuntimeInitializeLoadType` 示例(共 11 个可导入示例)
+- 修复 DDOL 根物体保护(预放置为子物体时跟随宿主)、脏排序只重排脏列表、QuickCreateSO 空资源名
+- 测试扩充:View/触发器族、工具类、更新器 19→32、MiniEvent RemoveListener;PlayMode 测试卫生(断言拆分/卸载等待/全量 Warning 捕获/真实时间窗)
+
+### Aesir Modules
+
+- **事件模块三缺陷修复(全仓最严重单点)**——重入分发(回调内再发布事件)不再覆写共享参数数组;分发改注册表快照迭代(回调内退订/注册不干扰本趟);优先级稳定排序(同档按注册顺序);摘除"实验性"标注,文档改写快照与重入安全语义、零分配口径收敛
+- **音频模块修复**——补 `ResetStatics` 静态重置(RAM 唯一漏掉的单例铁律)、`PlayBgm` 淡出中重播同曲取消淡出续接(幂等误伤)、`PlaySfx` 音调钳制 [0.01, 3] 不再反播;示例音量滑条改"拖动结束落键"
+- **UI 模块**——`ShowPanel`/`PrewarmPanel` 注册时序前移(OnShow 抛异常不泄漏、递归 Show 不重复实例化);re-show 强转改 `as` 判空、`InstantiateInactive` try/finally 恢复源预制体、`RegisterPrefab` 换路径诊断警告
+- **场景模块**——`UnloadAllAddedScenes` 快照迭代(广播期间嵌套加载/卸载不干扰本趟)、Single 成功路径 `SetActiveScene` 前 `IsValid` 校验;**新增 RAM 首个 PlayMode 测试套件**(真实加载成功路径 4 用例,`Tests/Runtime/`)
+- **ScriptDocGenerator**——XML 实体解码(泛型实体不再双重转义)、多成员代码块归属分析(fail-closed 跳过告警)、Default 生成器与 Zensical 收敛共享 `MemberGrouper` 引擎(582→343 行)、杂项六项修复
+- 测试扩充:EventModuleTests 22→32、AudioModuleTests 30→38、UIModuleTests 13→17、XmlSummaryToolTests 25→34、新增 Zensical 输出 7 用例
 
 ## [0.20.0] - 2026-09-11
 
