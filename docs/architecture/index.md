@@ -47,6 +47,7 @@ RAA 最鲜明的特征是**按档位渐进** —— 从最少概念跑通闭环,
 
 - [快速开始](getting-started.md) — 安装与第一个 MVC 示例
 - [特性一览](features.md) — ObservableValue / MiniEvent / PlayerLoop 等核心机制
+- [内置功能模块](modules.md) — Event / Observable / CustomLifecycle / Locator / Utilities 五大模块详解
 - [架构概念](concepts.md) — 能力接口组合 / Context 生命周期 / Domain Reload 安全
 - [响应式与事件](observable.md) — 通知体系与事件机制决策表
 - [示例总览](samples.md) — 计数器六档对照 + PlaneWar 实战(10 个可导入示例)

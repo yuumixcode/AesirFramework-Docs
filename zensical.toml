@@ -13,6 +13,7 @@ nav = [
       { "概览" = "architecture/index.md" },
       { "快速开始" = "architecture/getting-started.md" },
       { "特性" = "architecture/features.md" },
+      { "内置功能模块" = "architecture/modules.md" },
       { "架构概念" = "architecture/concepts.md" },
       { "响应式与事件" = "architecture/observable.md" },
       { "示例总览" = "architecture/samples.md" },
