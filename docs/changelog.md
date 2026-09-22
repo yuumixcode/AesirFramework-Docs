@@ -11,11 +11,23 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.21.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.21.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.22.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.22.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.22.0] - 2026-09-22
+
+### Aesir Architecture
+
+- **可观察集合升级为 ObservableCollections 轻量内置子集** —— 新增 `ObservableQueue<T>`,四种集合统一单轨变更通知 `AddListener` / `RemoveListener`(`MiniEvent<T>` 承载,返回 `AutoRemoveListenerHandle`,可绑定 Unity 生命周期自动移除):无变更的写操作不通知、批量操作逐项通知、字典值更新以 Replace 表达(旧值在 OldItem)、Move 单事件、Sort / Reverse / Clear 统一 Reset;Odin Inspector 内联调试面板(可选);与上游 Cysharp 库可在同一项目共存(程序集/包名/命名空间三层隔离)
+- **Removed(破坏性变更)** —— 轻量事件 API 全套(`AddXxxListener` 与四个事件参数类型)、原生 `CollectionChanged` 事件与 `SortOperation<T>` 移除,语义并入单轨事件(迁移:改订阅 `AddListener`,按 `e.Action` 分流);移除内部加锁与 `SyncRoot`(集合边界统一为仅主线程使用)
+- 测试改写为单轨断言(含句柄绑定 GameObject OnDisable 集成用例),RAA Editor EditMode 186 用例全绿
+
+### Aesir Modules
+
+- 与 Aesir Architecture 0.22.0 版本同步发布,本包无功能变更
 
 ## [0.21.0] - 2026-09-14
 
