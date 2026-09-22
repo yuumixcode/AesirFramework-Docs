@@ -64,10 +64,6 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`AesirArchitecturePlayerLoop.AesirArchitectureScriptRunBeforeUpdate`](<Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.AesirArchitectureScriptRunBeforeUpdate.md>) | PlayerLoop 子系统 type 标识，在 Update 之前执行 |
 | [`AesirArchitecturePlayerLoop.HookEntry`](<Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.HookEntry.md>) | 回调条目，记录单个生命周期回调及其排序信息 |
 | [`AutoRemoveListenerHandle`](<Runestone/AesirArchitecture/AutoRemoveListenerHandle.md>) | 自动移除监听句柄。包装注销回调。 |
-| [`CollectionAddEventArgs<T>`](<Runestone/AesirArchitecture/CollectionAddEventArgs{T}.md>) | 集合添加事件参数。包含被添加项及其索引。 |
-| [`CollectionRemoveEventArgs<T>`](<Runestone/AesirArchitecture/CollectionRemoveEventArgs{T}.md>) | 集合移除事件参数。包含被移除项及其移除前所在索引。 |
-| [`CollectionReplaceEventArgs<T>`](<Runestone/AesirArchitecture/CollectionReplaceEventArgs{T}.md>) | 集合替换事件参数。包含替换位置索引、旧项与新项。 |
-| [`DictionaryUpdateEventArgs<TKey, TValue>`](<Runestone/AesirArchitecture/DictionaryUpdateEventArgs{TKey, TValue}.md>) | 字典更新事件参数。包含键、旧值与新值。 |
 | [`MonoLifecycleProxy.ListenerEntry`](<Runestone/AesirArchitecture/MonoLifecycleProxy.ListenerEntry.md>) | 监听条目，记录单个回调及其排序信息 |
 | [`MonoLifecycleProxy.PendingChange`](<Runestone/AesirArchitecture/MonoLifecycleProxy.PendingChange.md>) | 挂起变更条目，记录调用期间累积的一次监听增删操作 |
 | [`ObservableDictionary<TKey, TValue>.Enumerator<TKey, TValue>`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.Enumerator{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |

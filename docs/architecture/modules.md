@@ -102,7 +102,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 只读接口(`IReadOnlyObservableList<T>` 等)无 `out`、为不变型:结构体事件参数与协变冲突(CS1961),这是有意取舍而非疏漏。同步视图 / R3 集成 / 环形缓冲等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)(MIT)——两者可**共存**:程序集与命名空间完全隔离,同一项目可同时安装,同文件双 `using` 并裸引用同名类型时需命名空间别名(CS0104)。
 
-深入用法见[响应式与事件](observable.md)。
+深入用法见[可观察集合](observable-collections.md)。
 
 ---
 
