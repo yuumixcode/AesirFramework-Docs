@@ -88,17 +88,19 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 [ObservableList\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableList{T}.md) / [ObservableDictionary\<TKey, TValue\>](scripting-api/Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md) / [ObservableHashSet\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableHashSet{T}.md) —— 组合 BCL 集合存储 + MiniEvent 事件,与 ObservableValue 同一套读写分离与句柄模式:
 
-| 集合 | 变更事件 | 事件参数 |
-|------|---------|---------|
-| `ObservableList<T>` | Added / Removed / Replaced / Cleared | `CollectionAddEventArgs<T>` 等 readonly struct(含 Index / Item / OldItem / NewItem) |
-| `ObservableDictionary<TKey, TValue>` | Added / Removed / Updated / Cleared | Added / Removed 直传 `KeyValuePair`,Updated 用 `DictionaryUpdateEventArgs`(含 Key / OldValue / NewValue) |
-| `ObservableHashSet<T>` | Added / Removed / Cleared | 单值直传 `Action<T>` |
+| Action | 载荷字段 |
+|--------|---------|
+| `Add` | `NewItem` / `NewStartingIndex` |
+| `Remove` | `OldItem` / `OldStartingIndex`(变更前索引) |
+| `Replace` | `NewItem` + `OldItem`(旧值) |
+| `Move` | 被移动元素 + 移动前后两个索引 |
+| `Reset` | 无附加字段(Clear / Sort / Reverse 共用,按重建视图处理) |
 
-事件参数约定:**单值载荷直传,多字段才造结构体 EventArgs** —— 不为单值引入 EventArgs 类型。
+事件语义:无变更的写操作不通知(赋相同值 / Remove 不存在元素 / Clear 空集合);批量操作(`AddRange` / `InsertRange` / `RemoveRange` / 集合代数运算)逐项通知;字典值更新以 `Replace` 表达;字典与 HashSet 无索引概念,载荷索引固定 -1;写操作完成后才通知(回调中集合已是变更后状态),fail-fast 与原生事件一致。另含上游没有的 `ObservableQueue<T>`(队列)。
 
 ### 不变型只读接口(有意设计)
 
-只读接口(`IReadOnlyObservableList<T>` 等)无 `out`、为不变型:结构体事件参数与协变冲突(CS1961),这是有意取舍而非疏漏。Move / Sort / 同步视图等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)(MIT)。
+只读接口(`IReadOnlyObservableList<T>` 等)无 `out`、为不变型:结构体事件参数与协变冲突(CS1961),这是有意取舍而非疏漏。同步视图 / R3 集成 / 环形缓冲等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)(MIT)——两者可**共存**:程序集与命名空间完全隔离,同一项目可同时安装,同文件双 `using` 并裸引用同名类型时需命名空间别名(CS0104)。
 
 深入用法见[响应式与事件](observable.md)。
 

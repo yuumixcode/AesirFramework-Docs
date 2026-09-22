@@ -27,18 +27,24 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 ## 可观察集合家族
 
-`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` —— 组合 BCL 集合存储 + MiniEvent 零分配事件,与 ObservableValue 同一套读写分离与事件模式:
+`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` / `ObservableQueue<T>` —— 组合 BCL 集合存储 + MiniEvent 零分配事件,与 ObservableValue 同一套读写分离与句柄模式。
 
-| 集合 | 变更事件 | 事件参数 |
-|------|---------|---------|
-| `ObservableList<T>` | Added / Removed / Replaced / Cleared | `CollectionAddEventArgs<T>` 等 readonly struct(含 Index / Item / OldItem / NewItem) |
-| `ObservableDictionary<TKey, TValue>` | Added / Removed / Updated / Cleared | Added/Removed 直传 `KeyValuePair`;Updated 用 `DictionaryUpdateEventArgs`(含 Key / OldValue / NewValue) |
-| `ObservableHashSet<T>` | Added / Removed / Cleared | 单值直传 `Action<T>` |
+单一变更通知 `AddListener`(返回 `AutoRemoveListenerHandle`:可用 using 作用域清理,或经 `RemoveListenerExtensions` 绑定 Unity 生命周期自动移除监听),按 `CollectionChangedEventArgs<T>.Action` 分流:
 
-只读接口(`IReadOnlyObservableList<T>` 等)为**不变型**(无 `out`):结构体事件参数与协变冲突(CS1961),这是有意设计。监听 API 均返回 `AutoRemoveListenerHandle`。
+| Action | 载荷字段 |
+|--------|---------|
+| `Add` | `NewItem` / `NewStartingIndex` |
+| `Remove` | `OldItem` / `OldStartingIndex`(变更前索引) |
+| `Replace` | `NewItem` + `OldItem`(旧值) |
+| `Move` | 被移动元素 + 移动前后两个索引 |
+| `Reset` | 无附加字段(Clear / Sort / Reverse 共用,按重建视图处理) |
 
-!!! note "高级能力边界"
-    Move / Sort / 同步视图 / R3 集成等高级能力**不做**,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)(MIT,设计参考已收录于 Third Party Notices)。
+语义要点:无变更的写操作不通知(赋相同值 / Remove 不存在元素 / Clear 空集合);批量操作(`AddRange` / `InsertRange` / `RemoveRange` / 集合代数运算)逐项通知;字典值更新以 `Replace` 表达;字典与 HashSet 无索引概念,载荷索引固定 -1。
+
+只读接口(`IReadOnlyObservableList<T>` 等)为**不变型**(无 `out`):结构体事件参数与协变冲突(CS1961),这是有意设计。
+
+!!! note "高级能力边界与上游共存"
+    同步视图 / R3 集成 / 环形缓冲 / XAML 绑定等高级能力**不做**,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)(MIT,设计参考已收录于 Third Party Notices)。**两者可共存**:程序集与命名空间完全隔离,同一项目可同时安装两库;同文件双 `using` 并裸引用同名类型时需命名空间别名(CS0104)。
 
 ## MiniEvent — 零分配轻量事件
 

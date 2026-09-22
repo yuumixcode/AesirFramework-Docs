@@ -18,7 +18,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 count.SetValueSilently(5);
 ```
 
-**可观察集合家族**:`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` 提供 Added / Removed / Replaced / Updated / Cleared 变更通知,与 ObservableValue 同一套读写分离与事件模式。Move / Sort / 同步视图等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)。
+**可观察集合家族**:`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` / `ObservableQueue<T>` 提供单轨变更通知 `AddListener`——无变更不通知、批量操作逐项通知、Sort / Reverse / Clear 走 Reset、监听句柄可绑定 Unity 生命周期自动移除,与 ObservableValue 同一套读写分离与句柄模式。同步视图 / R3 集成等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)——两者可共存(程序集与命名空间完全隔离,同一项目可同时安装)。
 
 ## MiniEvent — 零分配轻量事件
 

@@ -48,7 +48,7 @@
 
 ### ObservableCollections
 
-`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` 变更事件用法:订阅 Added / Removed / Replaced / Updated / Cleared,经 ContextMenu 触发增删改查与集合运算。
+`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` 变更通知用法:单轨订阅 `AddListener`(按 Action 分流 Add / Remove / Replace / Move / Reset),经 ContextMenu 触发增删改查与集合运算。
 
 ## PlaneWar 实战(Mono 版)
 
