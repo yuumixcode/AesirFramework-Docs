@@ -10,7 +10,7 @@ Aesir Architecture 为独立游戏内置的四种高频集合 —— `Observable
 |------|---------|---------|
 | [ObservableList\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableList{T}.md) | 背包、任务列表、排行榜 | `AddRange` / `InsertRange` / `RemoveRange` / `Move` / `Sort` / `Reverse` |
 | [ObservableDictionary\<TKey, TValue\>](scripting-api/Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md) | 配置表、属性表、名称索引 | 索引器分流(新键 Add / 已有键 Replace 含旧值) |
-| [ObservableHashSet\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableHashSet{T}.md) | 在线玩家、去重标记 | `ISet<T>` 集合代数(`UnionWith` / `ExceptWith` 等,逐项通知) |
+| [ObservableHashSet\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableHashSet{T}.md) | 在线玩家、去重标记 | Add / Remove / Contains 与批量增删(0.23.0 起不再继承 `ISet<T>`,不含集合代数——需要时用内部 `HashSet<T>` 或上游) |
 | `ObservableQueue<T>` | 消息队列、回合队列 | `EnqueueRange` / `DequeueRange`(队尾入队 / 队首出队) |
 
 四者统一经 `AddListener` / `RemoveListener` 订阅变更,并各自提供 `ClearListeners()` 一次清空全部监听。
@@ -38,7 +38,7 @@ var handle = list.AddListener(e =>
 语义要点:
 
 - **无变更的写操作不通知** —— 索引器赋相同值、Remove 不存在的元素、Clear 空集合、HashSet 添加重复元素,一律静默
-- **批量操作逐项通知** —— `AddRange` / `InsertRange` / `RemoveRange` / 集合代数运算,每个实际变更的元素触发一次事件(零中间集合);需要整批合并处理时在回调内自行缓冲
+- **批量操作逐项通知** —— `AddRange` / `InsertRange` / `RemoveRange`,每个实际变更的元素触发一次事件(零中间集合);需要整批合并处理时在回调内自行缓冲
 - **写操作完成后才通知** —— 回调中读取集合已是变更后的状态;监听回调不应抛异常(fail-fast 与原生事件一致)
 - **Sort / Reverse / Clear 走 Reset** —— 无附加字段,监听方按「重建视图」处理;少于 2 个元素的排序 / 反转视为无变化,不通知
 - **无索引概念的集合索引固定 -1** —— 字典与 HashSet 的载荷索引恒为 -1;列表的 Remove / Replace 携带变更前索引

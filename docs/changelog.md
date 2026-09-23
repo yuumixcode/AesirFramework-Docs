@@ -11,11 +11,28 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.22.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.22.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.23.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.23.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.23.0] - 2026-09-23
+
+### Aesir Architecture
+
+本批为全仓锐评修复与"保持极简"定位收敛,含破坏性变更(详见包内 CHANGELOG 的 [0.23.0] 段)。
+
+- **Added**: `ObservableQueue<T>` 专属测试(8 用例,补齐四集合专属测试的最后缺口); AesirScheduler NaN 延时回归用例
+- **Changed**: AesirScheduler NaN 延时语义与文档对齐(NaN 传播 = 永不触发); `ObservableList<T>.Move` 同索引零变化不通知; `MiniEvent` / `MiniEvent<T>` 的 AddListener 补 null 守卫; `ObservableQueue<T>` 结构补齐对齐其余三集合(sealed / `[Serializable]` / 结构体枚举器 / 构造 null 容忍); 根 README 失实宣称修正、测试数与示例计数更新、快速开始改版为最小五概念快车道
+- **Removed(破坏性变更)**: `ObservableHashSet<T>` 集合代数全套 10 方法(`IObservableHashSet<T>` 不再继承 `ISet<T>`,需要时用内部 `HashSet<T>` 或上游 Cysharp.ObservableCollections); `ObservableList<T>` 区间 Sort / Reverse 重载; ReadOnlySpan 批量重载(保留 `T[]` 与 `IEnumerable<T>` 双轨); Dictionary / HashSet 构造器收敛至「默认 / 初始元素 / 比较器」三个; `ObservableValue<T>.SetValue` 别名; 调试 / 测试专用面收窄 internal(`IContext` 与 `IGenericLocator<T>` 各删 4 个接口成员、`MiniEvent.GetListeners`、`AesirArchitecturePlayerLoop.Reset` 等)
+- **Renamed(破坏性变更)**: `ObservableValue<T>.Clear()` → `ClearListeners()`——命名对齐集合家族语义
+
+### Aesir Modules
+
+- **Added**: Binder 代码生成器同类型多组件测试 ×2(按出现序号取 `GetComponents<T>()[n]`); SceneModule 批量卸载重入 PlayMode 回归
+- **Fixed**: Binder 三处 P1(Missing 脚本组件空引用 / 增量模式命名空间错位致自动挂载静默失效 / 同类型多组件错绑)+ partial 模式重生成幂等; SceneModule 批量卸载重入洞(嵌套 UnloadAllAddedScenes 截断外层快照); UIModule / AudioModule / EventModule 重复实例销毁粒度统一 `Destroy(this)`; `PrewarmPanel` 补键语义守卫; 三个测试 asmdef 补 `ODIN_INSPECTOR` 装配守卫; SDG 缩进正则修正与 SourceScanner 显式接口实现文档键错配修复(fail-closed 告警)
+- **Changed**: 更新器双窗口编排上提共享控制器 `AesirUpdateController`(消除 ~200 行双真源); `ui-module.md` 补 Binder 两条边界声明(仅编辑期构建 / 生成产物使用 Odin 特性)
 
 ## [0.22.0] - 2026-09-22
 

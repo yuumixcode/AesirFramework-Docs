@@ -13,7 +13,7 @@ public IReadOnlyObservableValue<int> Count => count;
 
 // 写入(值变化才通知)
 count.Value++;
-count.SetValue(10);
+count.Value = 10;
 
 // 静默设置(不触发通知,适合初始化 / 存档回填)
 count.SetValueSilently(5);
