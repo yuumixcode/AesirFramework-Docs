@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IQuery<TResult> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteQuery`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -20,11 +20,11 @@ description: "Runestone.AesirArchitecture.IQuery<TResult> 的 API 文档"
 ## 声明
 
 ``` csharp
-public interface IQuery<TResult> : Runestone.AesirArchitecture.IContextHolder, 
+public interface IQuery<TResult> : Runestone.AesirArchitecture.ICanExecuteQuery, 
+Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.ICanSetContext, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-Runestone.AesirArchitecture.ICanExecuteQuery 
+Runestone.AesirArchitecture.ICanGetService 
 ```
 
 查询接口。通过 Query 执行读操作并返回结果，无副作用。

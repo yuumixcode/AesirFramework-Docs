@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.ObservableValue<T> 的 API 文档"
 
 **继承链:** `System.Object` → `ObservableValue<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.IReadOnlyObservableValue<T>`，`Runestone.AesirArchitecture.IObservableValue<T>`
+**实现接口:** `Runestone.AesirArchitecture.IObservableValue<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableValue<T>`
 
 **类型参数**
 
@@ -23,8 +23,8 @@ description: "Runestone.AesirArchitecture.ObservableValue<T> 的 API 文档"
 
 ``` csharp
 [Serializable]
-public sealed class ObservableValue<T> : Runestone.AesirArchitecture.IReadOnlyObservableValue<T>, 
-Runestone.AesirArchitecture.IObservableValue<T> 
+public sealed class ObservableValue<T> : Runestone.AesirArchitecture.IObservableValue<T>, 
+Runestone.AesirArchitecture.IReadOnlyObservableValue<T> 
 ```
 
 可观察属性实现。
@@ -131,10 +131,9 @@ public T Value { get; set; }
 | :--- | :--- |
 | [`AddListener(Action<T>)`](#method-addlistener-action-t) | 添加监听者。回调参数为新值。 |
 | [`AddListenerAndInvoke(Action<T>)`](#method-addlistenerandinvoke-action-t) | 添加监听并立即触发一次当前值，用于初始化时同步监听方状态。 |
-| [`Clear()`](#method-clear) | 清除所有监听。 |
+| [`ClearListeners()`](#method-clearlisteners) | 清除所有监听。 |
 | [`InvokeEvent()`](#method-invokeevent) | 触发值变更通知，用于强制刷新订阅方状态。 |
 | [`RemoveListener(Action<T>)`](#method-removelistener-action-t) | 移除监听者。 |
-| [`SetValue(T)`](#method-setvalue-t) | 设置值。语义等价于 Value 的 setter。 |
 | [`SetValueSilently(T)`](#method-setvaluesilently-t) | 静默设置值，不触发通知。用于反序列化或批量更新后统一触发。 |
 
 </div>
@@ -214,16 +213,16 @@ public AutoRemoveListenerHandle AddListenerAndInvoke(Action<T> callback)
 
 </div>
 
-### Clear() {#method-clear}
+### ClearListeners() {#method-clearlisteners}
 
 清除所有监听。
 
 **备注**
 
-清除所有监听引用，防止因监听者未释放导致的内存泄漏。
+清除所有监听引用，防止因监听者未释放导致的内存泄漏。 命名对齐可观察集合的 ClearListeners——清除的是监听者而非值本身。
 
 ``` csharp
-public void Clear()
+public void ClearListeners()
 ```
 
 ### InvokeEvent() {#method-invokeevent}
@@ -253,24 +252,6 @@ public void RemoveListener(Action<T> callback)
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
 | `callback` | `Action<T>` | 先前通过 AddListener 注册的回调函数。 |
-
-</div>
-
-### SetValue(T) {#method-setvalue-t}
-
-设置值。语义等价于 Value 的 setter。
-
-``` csharp
-public void SetValue(T v)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `v` | `T` | 要设置的新值。 |
 
 </div>
 

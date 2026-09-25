@@ -33,14 +33,12 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读�
 
 **备注**
 
-内部组合 List{T} 存储元素，使用 MiniEvent 管理监听者——Invoke 路径零分配（直接多播调用）。 注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配，勿在每帧订阅场景使用。
+内部组合 List{T} 存储元素，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配 （直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
 [SerializeField] 标记 items 字段使其可在 Inspector 中编辑初始元素； 反序列化填充不触发任何事件（与 ObservableValue{T} 行为一致）。
 
-写操作完成后才触发事件，监听者回调中读取到的集合已是变更后的状态。 无变更的操作不触发事件：Remove 不存在的元素、Clear 空列表、索引器赋相同值。
+变更通知为单一事件（AddListener）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 无变更的操作不通知（Remove 不存在的元素、Clear 空列表、索引器赋相同值）； 批量操作（AddRange / InsertRange / RemoveRange）逐项通知； Sort() / Reverse() / Clear 以 Reset 通知（无附加字段，监听方按"重建视图"处理）。
 
 遍历性能：foreach 具体类型走结构体枚举器，零分配；通过 IReadOnlyObservableList{T} / IEnumerable{T} 接口遍历会装箱一次枚举器（与 BCL List{T} 行为一致）。
-
-需要 Move、Sort、SynchronizedView、R3 集成等高级能力时，建议使用完整方案 Cysharp.ObservableCollections。
 
 ## 属性
 

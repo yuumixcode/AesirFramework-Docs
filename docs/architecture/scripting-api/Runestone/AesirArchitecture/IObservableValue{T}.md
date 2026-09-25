@@ -55,26 +55,7 @@ public T Value { get; set; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`SetValue(T)`](#method-setvalue-t) | 设置值。语义等价于 Value 的 setter，便于以方法形式调用。 |
 | [`SetValueSilently(T)`](#method-setvaluesilently-t) | 静默设置值，不触发通知。用于反序列化或批量更新后统一触发。 |
-
-</div>
-
-### SetValue(T) {#method-setvalue-t}
-
-设置值。语义等价于 Value 的 setter，便于以方法形式调用。
-
-``` csharp
-public abstract void SetValue(T value)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `value` | `T` | 要设置的新值。 |
 
 </div>
 

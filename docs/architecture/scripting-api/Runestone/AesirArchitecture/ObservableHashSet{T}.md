@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.ObservableHashSet<T> 的 API 文档"
 
 **继承链:** `System.Object` → `ObservableHashSet<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.ISet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`Runestone.AesirArchitecture.IObservableHashSet<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `Runestone.AesirArchitecture.IObservableHashSet<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -23,12 +23,12 @@ description: "Runestone.AesirArchitecture.ObservableHashSet<T> 的 API 文档"
 
 ``` csharp
 [Serializable]
-public sealed class ObservableHashSet<T> : Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>, 
-System.Collections.Generic.ISet<T>, 
+public sealed class ObservableHashSet<T> : Runestone.AesirArchitecture.IObservableHashSet<T>, 
+Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>, 
 System.Collections.Generic.IEnumerable<T>, 
 System.Collections.IEnumerable, 
-Runestone.AesirArchitecture.IObservableHashSet<T>, 
 System.Collections.Generic.ICollection<T>, 
+Runestone.AesirArchitecture.IObservableCollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 
@@ -37,16 +37,12 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只�
 
 **备注**
 
-内部组合 HashSet{T} 存储元素，使用 MiniEvent 管理监听者——Invoke 路径零分配（直接多播调用）。
+内部组合 HashSet{T} 存储元素，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配 （直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
 [SerializeField] 标记 set 字段——Unity 原生不序列化 HashSet{T}， 安装 Odin Inspector 后该字段可被 Odin 序列化，便于在 Inspector 中编辑初始元素（与 ObservableDictionary{TKey, TValue} 行为一致）。
 
-写操作完成后才触发事件，监听者回调中读取到的集合已是变更后的状态。 无变更的操作不触发事件：Add 重复元素、Remove 不存在的元素、Clear 空集合。
-
-集合代数操作逐项触发事件：UnionWith / ExceptWith 逐项复用 Add / Remove，天然去重； IntersectWith / SymmetricExceptWith 需物化参数集合与自身快照（各两次临时分配，低频批量操作可接受）， SymmetricExceptWith 先触发全部 Removed、再触发全部 Added。
+变更通知为单一事件（AddListener）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 无变更的操作不通知（Add 重复元素、Remove 不存在的元素、Clear 空集合）； 批量操作（AddRange / RemoveRange）逐项通知实际变更的元素； Clear 以 Reset 通知。 集合无索引概念，载荷索引固定 -1。
 
 遍历性能：foreach 具体类型走结构体枚举器，零分配；通过 IReadOnlyObservableHashSet{T} / IEnumerable{T} 接口遍历会装箱一次枚举器（与 BCL HashSet{T} 行为一致）。
-
-需要同步视图、R3 集成等高级能力时，建议使用完整方案 Cysharp.ObservableCollections。
 
 ## 构造方法
 
@@ -55,8 +51,9 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只�
 | 名称 | 描述 |
 | :--- | :--- |
 | [`ObservableHashSet()`](#constructor-observablehashset) | 默认构造，创建空集合。 |
-| [`ObservableHashSet(IEnumerable<T>)`](#constructor-observablehashset-ienumerable-t) | 指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。 |
-| [`ObservableHashSet(int)`](#constructor-observablehashset-int) | 指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。 |
+| [`ObservableHashSet(IEnumerable<T>)`](#constructor-observablehashset-ienumerable-t) | 指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。 |
+| [`ObservableHashSet(IEqualityComparer<T>)`](#constructor-observablehashset-iequalitycomparer-t) | 指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。 |
+| [`ObservableHashSet(int)`](#constructor-observablehashset-int) | 指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。 |
 
 </div>
 
@@ -70,7 +67,7 @@ public ObservableHashSet<T>()
 
 ### ObservableHashSet(IEnumerable<T>) {#constructor-observablehashset-ienumerable-t}
 
-指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。
+指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。
 
 ``` csharp
 public ObservableHashSet<T>(IEnumerable<T> initialItems)
@@ -86,9 +83,27 @@ public ObservableHashSet<T>(IEnumerable<T> initialItems)
 
 </div>
 
+### ObservableHashSet(IEqualityComparer<T>) {#constructor-observablehashset-iequalitycomparer-t}
+
+指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。
+
+``` csharp
+public ObservableHashSet<T>(IEqualityComparer<T> comparer)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `comparer` | `IEqualityComparer<T>` | — |
+
+</div>
+
 ### ObservableHashSet(int) {#constructor-observablehashset-int}
 
-指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。
+指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。
 
 ``` csharp
 public ObservableHashSet<T>(int capacity)
@@ -110,10 +125,19 @@ public ObservableHashSet<T>(int capacity)
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`Comparer`](#property-comparer) | 内部 HashSet{T} 使用的元素比较器。 |
 | [`IsReadOnly`](#property-isreadonly) | 固定返回 false，该集合可写。 |
 | [`Count`](#property-count) | 元素数量。 |
 
 </div>
+
+### Comparer {#property-comparer}
+
+内部 HashSet{T} 使用的元素比较器。
+
+``` csharp
+public IEqualityComparer<T> Comparer { get; }
+```
 
 ### IsReadOnly {#property-isreadonly}
 
@@ -139,29 +163,20 @@ public int Count { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AddAddedListener(Action<T>)`](#method-addaddedlistener-action-t) | — |
-| [`AddClearedListener(Action)`](#method-addclearedlistener-action) | — |
-| [`AddRemovedListener(Action<T>)`](#method-addremovedlistener-action-t) | — |
+| [`AddListener(Action<CollectionChangedEventArgs<T>>)`](#method-addlistener-action-collectionchangedeventargs-t) | — |
 | [`GetEnumerator()`](#method-getenumerator) | 返回遍历元素的结构体枚举器，foreach 具体类型时零分配。 |
-| [`Add(T)`](#method-add-t) | 添加元素，实际添加时触发 Added 事件（参数为该元素）。 |
+| [`Add(T)`](#method-add-t) | 添加元素，实际添加时触发 Add 通知（参数为该元素）。 |
 | [`Contains(T)`](#method-contains-t) | 判断是否包含指定元素。 |
-| [`IsProperSubsetOf(IEnumerable<T>)`](#method-ispropersubsetof-ienumerable-t) | 判断当前集合是否为 other 的真子集。 |
-| [`IsProperSupersetOf(IEnumerable<T>)`](#method-ispropersupersetof-ienumerable-t) | 判断当前集合是否为 other 的真超集。 |
-| [`IsSubsetOf(IEnumerable<T>)`](#method-issubsetof-ienumerable-t) | 判断当前集合是否为 other 的子集。 |
-| [`IsSupersetOf(IEnumerable<T>)`](#method-issupersetof-ienumerable-t) | 判断当前集合是否为 other 的超集。 |
-| [`Overlaps(IEnumerable<T>)`](#method-overlaps-ienumerable-t) | 判断当前集合与 other 是否存在共同元素。 |
-| [`Remove(T)`](#method-remove-t) | 移除指定元素，成功时触发 Removed 事件（参数为该元素）。 |
-| [`SetEquals(IEnumerable<T>)`](#method-setequals-ienumerable-t) | 判断当前集合与 other 是否包含完全相同的元素。 |
-| [`Clear()`](#method-clear) | 清空集合。集合非空时触发 Cleared 事件；已为空时不触发。 |
-| [`ClearListeners()`](#method-clearlisteners) | 清空所有事件监听。 |
+| [`Remove(T)`](#method-remove-t) | 移除指定元素，成功时触发 Remove 通知（参数为该元素）。 |
+| [`TryGetValue(T, ref T)`](#method-trygetvalue-t-ref-t) | 按键取回集合中实际存储的等值元素（用于取回引用类型元素本身）。 |
+| [`AddRange(IEnumerable<T>)`](#method-addrange-ienumerable-t) | 批量添加元素序列，逐项触发 Add 通知（仅实际新增的元素）。 |
+| [`AddRange(T[])`](#method-addrange-t) | 批量添加元素数组，逐项触发 Add 通知（仅实际新增的元素）。 |
+| [`Clear()`](#method-clear) | 清空集合。集合非空时以 Reset 通知；已为空时不通知。 |
+| [`ClearListeners()`](#method-clearlisteners) | 清空所有变更监听。 |
 | [`CopyTo(T[], int)`](#method-copyto-t-int) | 从指定数组索引开始复制元素到目标数组。 |
-| [`ExceptWith(IEnumerable<T>)`](#method-exceptwith-ienumerable-t) | 差集运算：逐项复用 Remove，仅对实际存在的元素触发 Removed 事件。 |
-| [`IntersectWith(IEnumerable<T>)`](#method-intersectwith-ienumerable-t) | 交集运算：移除不在 other 中的元素，逐项触发 Removed 事件。 |
-| [`RemoveAddedListener(Action<T>)`](#method-removeaddedlistener-action-t) | — |
-| [`RemoveClearedListener(Action)`](#method-removeclearedlistener-action) | — |
-| [`RemoveRemovedListener(Action<T>)`](#method-removeremovedlistener-action-t) | — |
-| [`SymmetricExceptWith(IEnumerable<T>)`](#method-symmetricexceptwith-ienumerable-t) | 对称差集运算：移除双方共有的元素，添加仅 other 拥有的元素。 |
-| [`UnionWith(IEnumerable<T>)`](#method-unionwith-ienumerable-t) | 并集运算：逐项复用 Add，仅对实际新增的元素触发 Added 事件。 |
+| [`RemoveListener(Action<CollectionChangedEventArgs<T>>)`](#method-removelistener-action-collectionchangedeventargs-t) | — |
+| [`RemoveRange(IEnumerable<T>)`](#method-removerange-ienumerable-t) | 批量移除元素序列，逐项触发 Remove 通知（仅实际被移除的元素）。 |
+| [`RemoveRange(T[])`](#method-removerange-t) | 批量移除元素数组，逐项触发 Remove 通知（仅实际被移除的元素）。 |
 
 </div>
 
@@ -180,10 +195,10 @@ public int Count { get; }
 
 </div>
 
-### AddAddedListener(Action<T>) {#method-addaddedlistener-action-t}
+### AddListener(Action<CollectionChangedEventArgs<T>>) {#method-addlistener-action-collectionchangedeventargs-t}
 
 ``` csharp
-public AutoRemoveListenerHandle AddAddedListener(Action<T> callback)
+public AutoRemoveListenerHandle AddListener(Action<CollectionChangedEventArgs<T>> callback)
 ```
 
 **参数**
@@ -192,59 +207,7 @@ public AutoRemoveListenerHandle AddAddedListener(Action<T> callback)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action<T>` | — |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `AutoRemoveListenerHandle` | — |
-
-</div>
-
-### AddClearedListener(Action) {#method-addclearedlistener-action}
-
-``` csharp
-public AutoRemoveListenerHandle AddClearedListener(Action callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action` | — |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `AutoRemoveListenerHandle` | — |
-
-</div>
-
-### AddRemovedListener(Action<T>) {#method-addremovedlistener-action-t}
-
-``` csharp
-public AutoRemoveListenerHandle AddRemovedListener(Action<T> callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action<T>` | — |
+| `callback` | `Action<CollectionChangedEventArgs<T>>` | — |
 
 </div>
 
@@ -278,7 +241,7 @@ public ObservableHashSet<T>.Enumerator<T> GetEnumerator()
 
 ### Add(T) {#method-add-t}
 
-添加元素，实际添加时触发 Added 事件（参数为该元素）。
+添加元素，实际添加时触发 Add 通知（参数为该元素）。
 
 ``` csharp
 public bool Add(T item)
@@ -300,7 +263,7 @@ public bool Add(T item)
 
 | 类型 | 说明 |
 | :--- | :--- |
-| `bool` | 新添加返回 true；元素已存在时不触发事件，返回 false。 |
+| `bool` | 新添加返回 true；元素已存在时不触发通知，返回 false。 |
 
 </div>
 
@@ -332,149 +295,9 @@ public bool Contains(T item)
 
 </div>
 
-### IsProperSubsetOf(IEnumerable<T>) {#method-ispropersubsetof-ienumerable-t}
-
-判断当前集合是否为 other 的真子集。
-
-``` csharp
-public bool IsProperSubsetOf(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 比较集合。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 是真子集返回 true，否则返回 false。 |
-
-</div>
-
-### IsProperSupersetOf(IEnumerable<T>) {#method-ispropersupersetof-ienumerable-t}
-
-判断当前集合是否为 other 的真超集。
-
-``` csharp
-public bool IsProperSupersetOf(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 比较集合。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 是真超集返回 true，否则返回 false。 |
-
-</div>
-
-### IsSubsetOf(IEnumerable<T>) {#method-issubsetof-ienumerable-t}
-
-判断当前集合是否为 other 的子集。
-
-``` csharp
-public bool IsSubsetOf(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 比较集合。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 是子集返回 true，否则返回 false。 |
-
-</div>
-
-### IsSupersetOf(IEnumerable<T>) {#method-issupersetof-ienumerable-t}
-
-判断当前集合是否为 other 的超集。
-
-``` csharp
-public bool IsSupersetOf(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 比较集合。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 是超集返回 true，否则返回 false。 |
-
-</div>
-
-### Overlaps(IEnumerable<T>) {#method-overlaps-ienumerable-t}
-
-判断当前集合与 other 是否存在共同元素。
-
-``` csharp
-public bool Overlaps(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 比较集合。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 存在共同元素返回 true，否则返回 false。 |
-
-</div>
-
 ### Remove(T) {#method-remove-t}
 
-移除指定元素，成功时触发 Removed 事件（参数为该元素）。
+移除指定元素，成功时触发 Remove 通知（参数为该元素）。
 
 ``` csharp
 public bool Remove(T item)
@@ -496,16 +319,16 @@ public bool Remove(T item)
 
 | 类型 | 说明 |
 | :--- | :--- |
-| `bool` | 找到并移除返回 true；元素不存在时不触发事件，返回 false。 |
+| `bool` | 找到并移除返回 true；元素不存在时不触发通知，返回 false。 |
 
 </div>
 
-### SetEquals(IEnumerable<T>) {#method-setequals-ienumerable-t}
+### TryGetValue(T, ref T) {#method-trygetvalue-t-ref-t}
 
-判断当前集合与 other 是否包含完全相同的元素。
+按键取回集合中实际存储的等值元素（用于取回引用类型元素本身）。
 
 ``` csharp
-public bool SetEquals(IEnumerable<T> other)
+public bool TryGetValue(T equalValue, out ref T actualValue)
 ```
 
 **参数**
@@ -514,7 +337,8 @@ public bool SetEquals(IEnumerable<T> other)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 比较集合。 |
+| `equalValue` | `T` | 用于比较的元素。 |
+| `actualValue` | `ref T` | 集合中实际存储的等值元素。 |
 
 </div>
 
@@ -524,13 +348,49 @@ public bool SetEquals(IEnumerable<T> other)
 
 | 类型 | 说明 |
 | :--- | :--- |
-| `bool` | 元素相同返回 true，否则返回 false。 |
+| `bool` | 集合中存在等值元素返回 true，否则返回 false。 |
+
+</div>
+
+### AddRange(IEnumerable<T>) {#method-addrange-ienumerable-t}
+
+批量添加元素序列，逐项触发 Add 通知（仅实际新增的元素）。
+
+``` csharp
+public void AddRange(IEnumerable<T> itemsToAdd)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `itemsToAdd` | `IEnumerable<T>` | 要添加的元素序列。 |
+
+</div>
+
+### AddRange(T[]) {#method-addrange-t}
+
+批量添加元素数组，逐项触发 Add 通知（仅实际新增的元素）。
+
+``` csharp
+public void AddRange(T[] itemsToAdd)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `itemsToAdd` | `T[]` | 要添加的元素数组。 |
 
 </div>
 
 ### Clear() {#method-clear}
 
-清空集合。集合非空时触发 Cleared 事件；已为空时不触发。
+清空集合。集合非空时以 Reset 通知；已为空时不通知。
 
 ``` csharp
 public void Clear()
@@ -538,7 +398,7 @@ public void Clear()
 
 ### ClearListeners() {#method-clearlisteners}
 
-清空所有事件监听。
+清空所有变更监听。
 
 **备注**
 
@@ -567,16 +427,10 @@ public void CopyTo(T[] array, int arrayIndex)
 
 </div>
 
-### ExceptWith(IEnumerable<T>) {#method-exceptwith-ienumerable-t}
-
-差集运算：逐项复用 Remove，仅对实际存在的元素触发 Removed 事件。
-
-**备注**
-
-传入集合自身时短路为 Clear（语义与 BCL HashSet{T} 一致）—— 若无此短路，枚举期间的自移除会抛 InvalidOperationException。
+### RemoveListener(Action<CollectionChangedEventArgs<T>>) {#method-removelistener-action-collectionchangedeventargs-t}
 
 ``` csharp
-public void ExceptWith(IEnumerable<T> other)
+public void RemoveListener(Action<CollectionChangedEventArgs<T>> callback)
 ```
 
 **参数**
@@ -585,20 +439,16 @@ public void ExceptWith(IEnumerable<T> other)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 要移除的元素集合。 |
+| `callback` | `Action<CollectionChangedEventArgs<T>>` | — |
 
 </div>
 
-### IntersectWith(IEnumerable<T>) {#method-intersectwith-ienumerable-t}
+### RemoveRange(IEnumerable<T>) {#method-removerange-ienumerable-t}
 
-交集运算：移除不在 other 中的元素，逐项触发 Removed 事件。
-
-**备注**
-
-先物化 other 与自身快照再逐项移除，避免枚举期间修改自身。 传入集合自身时为无变化操作，不触发事件。
+批量移除元素序列，逐项触发 Remove 通知（仅实际被移除的元素）。
 
 ``` csharp
-public void IntersectWith(IEnumerable<T> other)
+public void RemoveRange(IEnumerable<T> itemsToRemove)
 ```
 
 **参数**
@@ -607,14 +457,16 @@ public void IntersectWith(IEnumerable<T> other)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 保留元素的比较集合。 |
+| `itemsToRemove` | `IEnumerable<T>` | 要移除的元素序列。 |
 
 </div>
 
-### RemoveAddedListener(Action<T>) {#method-removeaddedlistener-action-t}
+### RemoveRange(T[]) {#method-removerange-t}
+
+批量移除元素数组，逐项触发 Remove 通知（仅实际被移除的元素）。
 
 ``` csharp
-public void RemoveAddedListener(Action<T> callback)
+public void RemoveRange(T[] itemsToRemove)
 ```
 
 **参数**
@@ -623,83 +475,7 @@ public void RemoveAddedListener(Action<T> callback)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action<T>` | — |
-
-</div>
-
-### RemoveClearedListener(Action) {#method-removeclearedlistener-action}
-
-``` csharp
-public void RemoveClearedListener(Action callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action` | — |
-
-</div>
-
-### RemoveRemovedListener(Action<T>) {#method-removeremovedlistener-action-t}
-
-``` csharp
-public void RemoveRemovedListener(Action<T> callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action<T>` | — |
-
-</div>
-
-### SymmetricExceptWith(IEnumerable<T>) {#method-symmetricexceptwith-ienumerable-t}
-
-对称差集运算：移除双方共有的元素，添加仅 other 拥有的元素。
-
-**备注**
-
-先触发全部 Removed、再触发全部 Added。物化 other 后边扫描边消费， 一次遍历同时识别交集（待移除）与差集（待添加）。 传入集合自身时短路为 Clear（语义与 BCL HashSet{T} 一致）。
-
-``` csharp
-public void SymmetricExceptWith(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 另一集合。 |
-
-</div>
-
-### UnionWith(IEnumerable<T>) {#method-unionwith-ienumerable-t}
-
-并集运算：逐项复用 Add，仅对实际新增的元素触发 Added 事件。
-
-**备注**
-
-逐项 Add 对已存在元素天然跳过，参数含重复项或传入集合自身时均为无变化操作。
-
-``` csharp
-public void UnionWith(IEnumerable<T> other)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `other` | `IEnumerable<T>` | 另一集合。 |
+| `itemsToRemove` | `T[]` | 要移除的元素数组。 |
 
 </div>
 

@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.MonoViewController<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `MonoViewController<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -23,13 +23,13 @@ description: "Runestone.AesirArchitecture.MonoViewController<T> 的 API 文档"
 
 ``` csharp
 public abstract class MonoViewController<T> : UnityEngine.MonoBehaviour, 
+Runestone.AesirArchitecture.ICanExecuteCommand, 
+Runestone.AesirArchitecture.ICanExecuteQuery, 
+Runestone.AesirArchitecture.IController, 
 Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-Runestone.AesirArchitecture.ICanExecuteCommand, 
-Runestone.AesirArchitecture.ICanExecuteQuery, 
-Runestone.AesirArchitecture.IController where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
+Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 View + Controller 双角色基类。通过泛型上下文获取模块访问能力，无 Odin 依赖。

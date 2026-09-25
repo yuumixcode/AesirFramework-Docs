@@ -13,18 +13,18 @@ description: "Runestone.AesirArchitecture.AbstractModel 的 API 文档"
 
 **继承链:** `System.Object` → `Runestone.AesirArchitecture.AbstractSubmodule` → `AbstractModel`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanInitialize`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.IModel`，`System.IDisposable`
+**实现接口:** `Runestone.AesirArchitecture.IModel`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanInitialize`，`Runestone.AesirArchitecture.ICanGetModel`，`System.IDisposable`
 
 ## 声明
 
 ``` csharp
 [Serializable]
 public abstract class AbstractModel : Runestone.AesirArchitecture.AbstractSubmodule, 
+Runestone.AesirArchitecture.IModel, 
 Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.ICanSetContext, 
 Runestone.AesirArchitecture.ICanInitialize, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.IModel, 
 System.IDisposable
 ```
 

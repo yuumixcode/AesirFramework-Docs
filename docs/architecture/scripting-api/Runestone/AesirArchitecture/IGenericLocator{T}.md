@@ -35,34 +35,12 @@ public interface IGenericLocator<T> where T : class
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`GetAllEntries()`](#method-getallentries) | 获取所有已注册键值对（仅供异常路径的近失识别使用）。 |
 | [`GetAll()`](#method-getall) | 按注册顺序获取所有已注册的实例。 |
-| [`GetByType(Type)`](#method-getbytype-type) | 按 Type 获取已注册的实例，不存在则返回 null。 用于依赖项校验等需要运行时 Type 查询的场景。 |
 | [`Get()`](#method-get) | 获取已注册的实例，不存在则返回 null。 |
-| [`IsRegistered()`](#method-isregistered) | 判断指定类型是否已注册。 |
 | [`TryGet(ref TItem)`](#method-tryget-ref-titem) | 尝试获取已注册的实例。返回是否成功找到对应类型的注册。 |
-| [`Clear()`](#method-clear) | 清空所有已注册的实例。 |
 | [`Register(Type, T)`](#method-register-type-t) | 注册实例，以 Type 作为键。重复注册将覆盖已有实例。 |
 | [`Register(TItem)`](#method-register-titem) | 注册实例，以 typeof(TItem) 作为键。重复注册将覆盖已有实例。 |
 | [`Unregister()`](#method-unregister) | 注销指定类型的注册。 |
-
-</div>
-
-### GetAllEntries() {#method-getallentries}
-
-获取所有已注册键值对（仅供异常路径的近失识别使用）。
-
-``` csharp
-public abstract IEnumerable<KeyValuePair<Type, T>> GetAllEntries()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `IEnumerable<KeyValuePair<Type, T>>` | 已注册键与实例的 KeyValuePair{TKey,TValue} 集合。 |
 
 </div>
 
@@ -84,35 +62,6 @@ public abstract IEnumerable<T> GetAll()
 
 </div>
 
-### GetByType(Type) {#method-getbytype-type}
-
-按 Type 获取已注册的实例，不存在则返回 null。
-用于依赖项校验等需要运行时 Type 查询的场景。
-
-``` csharp
-public abstract T GetByType(Type type)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `type` | `Type` | 要查询的 Type，作为注册键。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `T` | 已注册的实例；若未注册则返回 null。 |
-
-</div>
-
 ### Get() {#method-get}
 
 获取已注册的实例，不存在则返回 null。
@@ -128,24 +77,6 @@ public abstract TItem Get<TItem>()
 | 类型 | 说明 |
 | :--- | :--- |
 | `TItem` | 已注册的实例；若未注册则返回 null。 |
-
-</div>
-
-### IsRegistered() {#method-isregistered}
-
-判断指定类型是否已注册。
-
-``` csharp
-public abstract bool IsRegistered<TItem>()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 已注册则返回 true；否则返回 false。 |
 
 </div>
 
@@ -176,14 +107,6 @@ public abstract bool TryGet<TItem>(out ref TItem instance)
 | `bool` | 成功找到则返回 true；未注册则返回 false。 |
 
 </div>
-
-### Clear() {#method-clear}
-
-清空所有已注册的实例。
-
-``` csharp
-public abstract void Clear()
-```
 
 ### Register(Type, T) {#method-register-type-t}
 

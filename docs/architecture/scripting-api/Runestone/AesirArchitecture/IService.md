@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IService 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanInitialize`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`System.IDisposable`
+**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanInitialize`，`Runestone.AesirArchitecture.ICanGetModel`，`System.IDisposable`，`Runestone.AesirArchitecture.ICanGetService`
 
 ## 声明
 
@@ -20,8 +20,8 @@ public interface IService : Runestone.AesirArchitecture.IContextHolder,
 Runestone.AesirArchitecture.ICanSetContext, 
 Runestone.AesirArchitecture.ICanInitialize, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-System.IDisposable
+System.IDisposable, 
+Runestone.AesirArchitecture.ICanGetService
 ```
 
 服务层接口。万能协调层，封装跨模块业务逻辑，协调模块间交互与通信。

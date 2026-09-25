@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.AbstractService 的 API 文档"
 
 **继承链:** `System.Object` → `Runestone.AesirArchitecture.AbstractSubmodule` → `AbstractService`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.IService`，`Runestone.AesirArchitecture.ICanInitialize`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`System.IDisposable`
+**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.IService`，`Runestone.AesirArchitecture.ICanInitialize`，`Runestone.AesirArchitecture.ICanGetModel`，`System.IDisposable`，`Runestone.AesirArchitecture.ICanGetService`
 
 ## 声明
 
@@ -25,8 +25,8 @@ Runestone.AesirArchitecture.ICanSetContext,
 Runestone.AesirArchitecture.IService, 
 Runestone.AesirArchitecture.ICanInitialize, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-System.IDisposable
+System.IDisposable, 
+Runestone.AesirArchitecture.ICanGetService
 ```
 
 Service 基类。继承 AbstractSubmodule 获得生命周期管理，实现 IService 标记服务层角色。

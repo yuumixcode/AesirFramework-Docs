@@ -30,7 +30,7 @@ Aesir Architecture 接入 MonoBehaviour 生命周期的持久化物体对象。
 
 本物体是框架 Mono 组件（MonoLifecycleProxy、RemoveListenerOnSceneUnloadedTrigger 等）的 DDOL 宿主， 通过 [DefaultExecutionOrder(-999)] 确保其 Awake 在场景中其他 MonoBehaviour 之前执行， 令宿主尽早完成去重与 DDOL 决策。
 注意：本物体不初始化任何架构数据——架构上下文（AbstractContext{T}）是纯 C# 懒加载单例， 首次访问 AbstractContext<T>.Instance 时自动创建并完成注册与初始化，不依赖本物体存在； 预放置本物体仅在使用上述宿主挂载型组件时才有必要。
-是否加入 DontDestroyOnLoad 场景由序列化字段 dontDestroyOnLoad 统一控制， 场景预放置与运行时创建两种来源共用同一份决策： 默认（勾选）：实例在 Awake 时加入 DontDestroyOnLoad 场景，跨场景持久存在。 取消勾选：实例保留在所在场景、随场景卸载销毁——必须自行处理多场景叠加（Additive）加载下的 生命周期管理。Inspector 会显示警告信息框，运行时亦输出提醒日志。
+是否加入 DontDestroyOnLoad 场景由序列化字段 dontDestroyOnLoad 统一控制， 场景预放置与运行时创建两种来源共用同一份决策（预放置为子物体时本字段不参与判断，DDOL 跟随宿主）： 默认（勾选）：根物体实例在 Awake 时加入 DontDestroyOnLoad 场景，跨场景持久存在。 取消勾选：实例保留在所在场景、随场景卸载销毁——必须自行处理多场景叠加（Additive）加载下的 生命周期管理。Inspector 会显示警告信息框，运行时亦输出提醒日志。
 
 ## 构造方法
 

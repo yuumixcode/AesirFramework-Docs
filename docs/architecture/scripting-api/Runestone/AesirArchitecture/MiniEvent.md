@@ -61,7 +61,6 @@ public MiniEvent()
 | 名称 | 描述 |
 | :--- | :--- |
 | [`AddListener(Action)`](#method-addlistener-action) | 添加监听者，并返回可自动移除的监听句柄 |
-| [`GetListeners()`](#method-getlisteners) | 获取当前所有已注册的委托列表 |
 | [`Dispose()`](#method-dispose) | 清空所有委托引用，释放内存 |
 | [`Invoke()`](#method-invoke) | 调用事件，通知所有监听者 |
 | [`RemoveListener(Action)`](#method-removelistener-action) | 移除监听者 |
@@ -108,24 +107,6 @@ public AutoRemoveListenerHandle AddListener(Action listener)
 | 类型 | 说明 |
 | :--- | :--- |
 | `AutoRemoveListenerHandle` | 用于后续自动移除该监听的句柄 |
-
-</div>
-
-### GetListeners() {#method-getlisteners}
-
-获取当前所有已注册的委托列表
-
-``` csharp
-public Delegate[] GetListeners()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `Delegate[]` | 委托数组；无监听者时返回空数组 |
 
 </div>
 

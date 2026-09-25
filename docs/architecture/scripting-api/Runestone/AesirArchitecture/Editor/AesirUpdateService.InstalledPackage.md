@@ -16,6 +16,7 @@ description: "Runestone.AesirArchitecture.Editor.AesirUpdateService.InstalledPac
 ## 声明
 
 ``` csharp
+[Serializable]
 public sealed class AesirUpdateService.InstalledPackage
 ```
 

@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IObservableDictionary<TKey, TValue> �
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>`，`Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>`，`System.Collections.Generic.IDictionary<TKey, TValue>`，`System.Collections.Generic.IEnumerable<KeyValuePair<TKey, TValue>>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>`，`System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>`
+**实现接口:** `System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>`，`System.Collections.Generic.IDictionary<TKey, TValue>`，`Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>`，`System.Collections.Generic.IEnumerable<KeyValuePair<TKey, TValue>>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>`，`Runestone.AesirArchitecture.IObservableCollection<KeyValuePair<TKey, TValue>>`，`System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>`
 
 **类型参数**
 
@@ -23,11 +23,12 @@ description: "Runestone.AesirArchitecture.IObservableDictionary<TKey, TValue> �
 ``` csharp
 [DefaultMember]
 public interface IObservableDictionary<TKey, TValue> : System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>, 
-Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>, 
 System.Collections.Generic.IDictionary<TKey, TValue>, 
+Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>, 
 System.Collections.Generic.IEnumerable<KeyValuePair<TKey, TValue>>, 
 System.Collections.IEnumerable, 
 System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>, 
+Runestone.AesirArchitecture.IObservableCollection<KeyValuePair<TKey, TValue>>, 
 System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>  
 ```
 

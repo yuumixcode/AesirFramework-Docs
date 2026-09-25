@@ -48,50 +48,10 @@ public bool Initialized { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`GetAllModels()`](#method-getallmodels) | 获取所有已注册的 Model 列表 |
-| [`GetAllServices()`](#method-getallservices) | 获取所有已注册的 Service 列表 |
 | [`GetModel()`](#method-getmodel) | 获取已注册的 Model |
 | [`GetService()`](#method-getservice) | 获取已注册的 Service |
 | [`RegisterModel(T)`](#method-registermodel-t) | 注册 Model |
 | [`RegisterService(T)`](#method-registerservice-t) | 注册 Service |
-| [`UnregisterModel()`](#method-unregistermodel) | 注销 Model |
-| [`UnregisterService()`](#method-unregisterservice) | 注销 Service |
-
-</div>
-
-### GetAllModels() {#method-getallmodels}
-
-获取所有已注册的 Model 列表
-
-``` csharp
-public abstract IEnumerable<IModel> GetAllModels()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `IEnumerable<IModel>` | 所有已注册 Model 实例的集合；若无注册则返回空集合 |
-
-</div>
-
-### GetAllServices() {#method-getallservices}
-
-获取所有已注册的 Service 列表
-
-``` csharp
-public abstract IEnumerable<IService> GetAllServices()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `IEnumerable<IService>` | 所有已注册 Service 实例的集合；若无注册则返回空集合 |
 
 </div>
 
@@ -166,30 +126,6 @@ public abstract void RegisterService<T>(T service)
 | `service` | `T` | 要注册的 Service 实例 |
 
 </div>
-
-### UnregisterModel() {#method-unregistermodel}
-
-注销 Model
-
-**备注**
-
-被摘除的实例会被 Dispose，其上的订阅不会迁移；未注册时静默无操作（幂等）。
-
-``` csharp
-public abstract void UnregisterModel<T>()
-```
-
-### UnregisterService() {#method-unregisterservice}
-
-注销 Service
-
-**备注**
-
-被摘除的实例会被 Dispose，其上的订阅不会迁移；未注册时静默无操作（幂等）。
-
-``` csharp
-public abstract void UnregisterService<T>()
-```
 
 ## Additional Notes
 

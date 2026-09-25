@@ -33,7 +33,6 @@ PlayerLoop 操作的静态工具类，提供子系统的插入、查询与描述
 | [`ContainsSystem()`](#method-containssystem) | 检测 PlayerLoop 中是否包含指定类型的子系统 |
 | [`InsertSystemAfter(PlayerLoopSystem)`](#method-insertsystemafter-playerloopsystem) | 在 PlayerLoop 中指定子系统后插入自定义系统 |
 | [`InsertSystemBefore(PlayerLoopSystem)`](#method-insertsystembefore-playerloopsystem) | 在 PlayerLoop 中指定子系统前插入自定义系统 |
-| [`GetCurrentPlayerLoopDescription()`](#method-getcurrentplayerloopdescription) | 将当前 PlayerLoop 所有子系统按执行顺序输出为字符串。 Aesir Architecture 注入的子系统会以 [Aesir Architecture] 前缀标注。 |
 
 </div>
 
@@ -123,25 +122,6 @@ public static bool InsertSystemBefore<TTarget>(PlayerLoopSystem system)
 | 类型 | 说明 |
 | :--- | :--- |
 | `bool` | 是否成功找到目标并插入 |
-
-</div>
-
-### GetCurrentPlayerLoopDescription() {#method-getcurrentplayerloopdescription}
-
-将当前 PlayerLoop 所有子系统按执行顺序输出为字符串。
-Aesir Architecture 注入的子系统会以 [Aesir Architecture] 前缀标注。
-
-``` csharp
-public static string GetCurrentPlayerLoopDescription()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `string` | 格式化的 PlayerLoop 描述字符串 |
 
 </div>
 

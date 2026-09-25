@@ -55,13 +55,9 @@ public GenericLocator<T>()
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`GetAllEntries()`](#method-getallentries) | 获取所有已注册键值对（仅供异常路径的近失识别使用） |
 | [`GetAll()`](#method-getall) | 按注册顺序获取所有已注册的实例集合 |
-| [`GetByType(Type)`](#method-getbytype-type) | 按 Type 获取实例（非泛型版本） |
 | [`Get()`](#method-get) | 获取指定类型的实例。如果不存在，返回 null。 |
-| [`IsRegistered()`](#method-isregistered) | 检查是否已注册指定类型的实例 |
 | [`TryGet(ref TItem)`](#method-tryget-ref-titem) | 尝试获取指定类型的实例 |
-| [`Clear()`](#method-clear) | 清空所有已注册的实例 |
 | [`Dispose()`](#method-dispose) | 释放资源，清空所有注册。 |
 | [`Register(Type, T)`](#method-register-type-t) | 按显式指定的类型注册一个实例。如果类型已存在，则覆盖原有注册（不改变其插入顺序位置）。 |
 | [`Register(TItem)`](#method-register-titem) | 注册一个实例。如果类型已存在，则覆盖原有注册（不改变其插入顺序位置）。 |
@@ -84,28 +80,6 @@ public GenericLocator<T>()
 
 </div>
 
-### GetAllEntries() {#method-getallentries}
-
-获取所有已注册键值对（仅供异常路径的近失识别使用）
-
-**备注**
-
-正常查询请使用 Get{TItem} / TryGet{TItem}。 此成员仅供 AbstractContext{T} 在"未注册"异常路径中遍历已注册条目， 识别"已注册实例可赋值给查询类型"的近失情况并给出提示；正常路径不产生开销。
-
-``` csharp
-public IEnumerable<KeyValuePair<Type, T>> GetAllEntries()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `IEnumerable<KeyValuePair<Type, T>>` | — |
-
-</div>
-
 ### GetAll() {#method-getall}
 
 按注册顺序获取所有已注册的实例集合
@@ -125,34 +99,6 @@ public IEnumerable<T> GetAll()
 
 </div>
 
-### GetByType(Type) {#method-getbytype-type}
-
-按 Type 获取实例（非泛型版本）
-
-``` csharp
-public T GetByType(Type type)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `type` | `Type` | 要查询的 Type，作为注册键。 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `T` | 已注册的实例；若未注册则返回 null。 |
-
-</div>
-
 ### Get() {#method-get}
 
 获取指定类型的实例。如果不存在，返回 null。
@@ -168,24 +114,6 @@ public TItem Get<TItem>()
 | 类型 | 说明 |
 | :--- | :--- |
 | `TItem` | 已注册的实例；若未注册则返回 null。 |
-
-</div>
-
-### IsRegistered() {#method-isregistered}
-
-检查是否已注册指定类型的实例
-
-``` csharp
-public bool IsRegistered<TItem>()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `bool` | 已注册则返回 true；否则返回 false。 |
 
 </div>
 
@@ -216,14 +144,6 @@ public bool TryGet<TItem>(out ref TItem instance)
 | `bool` | 成功找到则返回 true；未注册则返回 false。 |
 
 </div>
-
-### Clear() {#method-clear}
-
-清空所有已注册的实例
-
-``` csharp
-public void Clear()
-```
 
 ### Dispose() {#method-dispose}
 

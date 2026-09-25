@@ -19,8 +19,10 @@ description: "Runestone.AesirArchitecture.Editor.AesirUpdateWindow 的 API 文�
 public class AesirUpdateWindow : UnityEditor.EditorWindow
 ```
 
-Aesir 包更新窗口 — 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并一键更新本地安装的 Aesir 包。
-版本检测面向大陆用户做多源兜底（jsDelivr 多域名 → GitHub API → 302 探测，见 FetchLatestReleaseSnapshotAsync）；unitypackage 一律从 GitHub Release 直链下载。流程：备份 Assets/Runestone → 按清单差集清理残留 → 静默导入 → 逐包登记安装清单。
+Aesir 包更新窗口（IMGUI 兜底版）— 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并一键更新本地安装的 Aesir 包。
+安装了 Odin Inspector 时，菜单入口经 OdinWindowOpener 路由到 Odin 版窗口 （AesirUpdateWindowOdin，界面与交互更丰富）；未安装时本窗口为菜单落点。 全部编排逻辑（检测 / 更新日志 / 更新执行 / 忙碌门禁）在共享控制器 AesirUpdateController 中与 Odin 版窗口共用，本类只做状态序列化与 IMGUI 展示。
+
+流程：检测远程版本 → 拉取并展示「本地 → 远程」更新日志 → 确认框二次确认 → 备份 Assets/Runestone → 按清单差集清理残留 → 静默导入 → 逐包登记安装清单。 远程版本 / 检测结果 / 更新日志均为序列化字段，更新导入触发域重载后窗口内容不丢失； 过期包列表为缓存值，OnGUI 期间零 LINQ、零磁盘 IO。
 
 ## 构造方法
 
@@ -39,6 +41,18 @@ public AesirUpdateWindow()
 ```
 
 ## 属性
+
+**声明的属性**
+
+<div class="api-summary-table" markdown="1">
+
+| 名称 | 描述 |
+| :--- | :--- |
+| [`OdinWindowOpener`](#property-odinwindowopener) | Odin 版窗口的打开委托（由 Odin 程序集经 [InitializeOnLoadMethod] 注册； 未安装 Odin Inspector 时为 null，菜单打开本 IMGUI 兜底窗口）。 |
+
+</div>
+
+**继承的属性**
 
 <div class="api-summary-table" markdown="1">
 
@@ -68,7 +82,27 @@ public AesirUpdateWindow()
 
 </div>
 
+### OdinWindowOpener {#property-odinwindowopener}
+
+Odin 版窗口的打开委托（由 Odin 程序集经 [InitializeOnLoadMethod] 注册； 未安装 Odin Inspector 时为 null，菜单打开本 IMGUI 兜底窗口）。
+
+``` csharp
+public static Action OdinWindowOpener { get; private set; }
+```
+
 ## 方法
+
+**声明的方法**
+
+<div class="api-summary-table" markdown="1">
+
+| 名称 | 描述 |
+| :--- | :--- |
+| [`RegisterOdinWindowOpener(Action)`](#method-registerodinwindowopener-action) | 注册 Odin 版窗口的打开方式（域重载清空静态委托后由 Odin 程序集重新注册）。 |
+
+</div>
+
+**继承的方法**
 
 <div class="api-summary-table" markdown="1">
 
@@ -105,6 +139,24 @@ public AesirUpdateWindow()
 | `Finalize()` | — | `object` |
 | `OnBackingScaleFactorChanged()` | — | `EditorWindow` |
 | `SetDirty()` | — | `ScriptableObject` |
+
+</div>
+
+### RegisterOdinWindowOpener(Action) {#method-registerodinwindowopener-action}
+
+注册 Odin 版窗口的打开方式（域重载清空静态委托后由 Odin 程序集重新注册）。
+
+``` csharp
+public static void RegisterOdinWindowOpener(Action opener)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `opener` | `Action` | — |
 
 </div>
 

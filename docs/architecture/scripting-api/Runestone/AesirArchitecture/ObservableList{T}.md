@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.ObservableList<T> 的 API 文档"
 
 **继承链:** `System.Object` → `ObservableList<T>`
 
-**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`Runestone.AesirArchitecture.IObservableList<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`Runestone.AesirArchitecture.IObservableList<T>`，`System.Collections.Generic.IEnumerable<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -25,12 +25,13 @@ description: "Runestone.AesirArchitecture.ObservableList<T> 的 API 文档"
 [DefaultMember]
 [Serializable]
 public sealed class ObservableList<T> : System.Collections.Generic.IReadOnlyList<T>, 
-Runestone.AesirArchitecture.IReadOnlyObservableList<T>, 
+Runestone.AesirArchitecture.IObservableList<T>, 
 System.Collections.Generic.IEnumerable<T>, 
+Runestone.AesirArchitecture.IReadOnlyObservableList<T>, 
 System.Collections.IEnumerable, 
 System.Collections.Generic.IList<T>, 
-Runestone.AesirArchitecture.IObservableList<T>, 
 System.Collections.Generic.ICollection<T>, 
+Runestone.AesirArchitecture.IObservableCollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 
@@ -39,14 +40,12 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读�
 
 **备注**
 
-内部组合 List{T} 存储元素，使用 MiniEvent 管理监听者——Invoke 路径零分配（直接多播调用）。 注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配，勿在每帧订阅场景使用。
+内部组合 List{T} 存储元素，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配 （直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
 [SerializeField] 标记 items 字段使其可在 Inspector 中编辑初始元素； 反序列化填充不触发任何事件（与 ObservableValue{T} 行为一致）。
 
-写操作完成后才触发事件，监听者回调中读取到的集合已是变更后的状态。 无变更的操作不触发事件：Remove 不存在的元素、Clear 空列表、索引器赋相同值。
+变更通知为单一事件（AddListener）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 无变更的操作不通知（Remove 不存在的元素、Clear 空列表、索引器赋相同值）； 批量操作（AddRange / InsertRange / RemoveRange）逐项通知； Sort() / Reverse() / Clear 以 Reset 通知（无附加字段，监听方按"重建视图"处理）。
 
 遍历性能：foreach 具体类型走结构体枚举器，零分配；通过 IReadOnlyObservableList{T} / IEnumerable{T} 接口遍历会装箱一次枚举器（与 BCL List{T} 行为一致）。
-
-需要 Move、Sort、SynchronizedView、R3 集成等高级能力时，建议使用完整方案 Cysharp.ObservableCollections。
 
 ## 构造方法
 
@@ -55,8 +54,8 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读�
 | 名称 | 描述 |
 | :--- | :--- |
 | [`ObservableList()`](#constructor-observablelist) | 默认构造，创建空列表。 |
-| [`ObservableList(IEnumerable<T>)`](#constructor-observablelist-ienumerable-t) | 指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。 |
-| [`ObservableList(int)`](#constructor-observablelist-int) | 指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。 |
+| [`ObservableList(IEnumerable<T>)`](#constructor-observablelist-ienumerable-t) | 指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。 |
+| [`ObservableList(int)`](#constructor-observablelist-int) | 指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。 |
 
 </div>
 
@@ -70,7 +69,7 @@ public ObservableList<T>()
 
 ### ObservableList(IEnumerable<T>) {#constructor-observablelist-ienumerable-t}
 
-指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。
+指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。
 
 ``` csharp
 public ObservableList<T>(IEnumerable<T> initialItems)
@@ -88,7 +87,7 @@ public ObservableList<T>(IEnumerable<T> initialItems)
 
 ### ObservableList(int) {#constructor-observablelist-int}
 
-指定初始元素构造。初始元素不触发 Added 事件（语义同反序列化填充）。
+指定初始元素构造。初始元素不触发变更通知（语义同反序列化填充）。
 
 ``` csharp
 public ObservableList<T>(int capacity)
@@ -110,7 +109,7 @@ public ObservableList<T>(int capacity)
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Item`](#property-item) | 读写指定索引的元素。赋值与旧值不同时触发 Replaced 事件，相同则跳过。 |
+| [`Item`](#property-item) | 读写指定索引的元素。值变化时触发 Replace 通知，相同则不通知。 |
 | [`IsReadOnly`](#property-isreadonly) | 固定返回 false，该集合可写。 |
 | [`Count`](#property-count) | 元素数量。 |
 
@@ -118,11 +117,11 @@ public ObservableList<T>(int capacity)
 
 ### Item {#property-item}
 
-读写指定索引的元素。赋值与旧值不同时触发 Replaced 事件，相同则跳过。
+读写指定索引的元素。值变化时触发 Replace 通知，相同则不通知。
 
 **备注**
 
-使用 EqualityComparer{T}.Default 判断值是否变化，仅在变化时触发事件。
+使用 EqualityComparer{T}.Default 判断值是否变化，仅在变化时触发通知。
 
 ``` csharp
 public T Item { get; set; }
@@ -152,25 +151,28 @@ public int Count { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AddAddedListener(Action<CollectionAddEventArgs<T>>)`](#method-addaddedlistener-action-collectionaddeventargs-t) | — |
-| [`AddClearedListener(Action)`](#method-addclearedlistener-action) | — |
-| [`AddRemovedListener(Action<CollectionRemoveEventArgs<T>>)`](#method-addremovedlistener-action-collectionremoveeventargs-t) | — |
-| [`AddReplacedListener(Action<CollectionReplaceEventArgs<T>>)`](#method-addreplacedlistener-action-collectionreplaceeventargs-t) | — |
+| [`AddListener(Action<CollectionChangedEventArgs<T>>)`](#method-addlistener-action-collectionchangedeventargs-t) | — |
 | [`GetEnumerator()`](#method-getenumerator) | 返回遍历元素的结构体枚举器，foreach 具体类型时零分配。 |
 | [`Contains(T)`](#method-contains-t) | 判断是否包含指定元素。 |
-| [`Remove(T)`](#method-remove-t) | 移除第一个匹配元素，成功时触发 Removed 事件。 |
+| [`Remove(T)`](#method-remove-t) | 移除第一个匹配元素，成功时触发 Remove 通知。 |
 | [`IndexOf(T)`](#method-indexof-t) | 返回指定元素的索引；不存在时返回 -1。 |
-| [`Add(T)`](#method-add-t) | 在末尾添加元素，触发 Added 事件（索引为 Count - 1）。 |
-| [`AddRange(IEnumerable<T>)`](#method-addrange-ienumerable-t) | 批量添加元素。逐项添加并逐项触发 Added 事件。 |
-| [`Clear()`](#method-clear) | 清空列表。列表非空时触发 Cleared 事件；已为空时不触发。 |
-| [`ClearListeners()`](#method-clearlisteners) | 清空所有事件监听。 |
+| [`Add(T)`](#method-add-t) | 在末尾添加元素，触发 Add 通知（索引为 Count - 1）。 |
+| [`AddRange(IEnumerable<T>)`](#method-addrange-ienumerable-t) | 批量添加元素。逐项添加并逐项触发 Add 通知。 |
+| [`AddRange(T[])`](#method-addrange-t) | 批量添加数组元素，逐项触发 Add 通知。 |
+| [`Clear()`](#method-clear) | 清空列表。列表非空时以 Reset 通知；已为空时不通知。 |
+| [`ClearListeners()`](#method-clearlisteners) | 清空所有变更监听。 |
 | [`CopyTo(T[], int)`](#method-copyto-t-int) | 从指定数组索引开始复制元素到目标数组。 |
-| [`Insert(int, T)`](#method-insert-int-t) | 在指定索引插入元素，触发 Added 事件（索引为插入位置）。 |
-| [`RemoveAddedListener(Action<CollectionAddEventArgs<T>>)`](#method-removeaddedlistener-action-collectionaddeventargs-t) | — |
-| [`RemoveAt(int)`](#method-removeat-int) | 移除指定索引的元素，触发 Removed 事件（参数含移除前索引与被移除元素）。 |
-| [`RemoveClearedListener(Action)`](#method-removeclearedlistener-action) | — |
-| [`RemoveRemovedListener(Action<CollectionRemoveEventArgs<T>>)`](#method-removeremovedlistener-action-collectionremoveeventargs-t) | — |
-| [`RemoveReplacedListener(Action<CollectionReplaceEventArgs<T>>)`](#method-removereplacedlistener-action-collectionreplaceeventargs-t) | — |
+| [`ForEach(Action<T>)`](#method-foreach-action-t) | 对每个元素执行指定操作。 |
+| [`Insert(int, T)`](#method-insert-int-t) | 在指定索引插入元素，触发 Add 通知（索引为插入位置）。 |
+| [`InsertRange(int, IEnumerable<T>)`](#method-insertrange-int-ienumerable-t) | 在指定索引插入元素序列，逐项触发 Add 通知。 |
+| [`InsertRange(int, T[])`](#method-insertrange-int-t) | 在指定索引插入数组元素，逐项触发 Add 通知。 |
+| [`Move(int, int)`](#method-move-int-int) | 把元素从 oldIndex 移动到 newIndex，触发单次 Move 通知。 |
+| [`RemoveAt(int)`](#method-removeat-int) | 移除指定索引的元素，触发 Remove 通知（参数含移除前索引与被移除元素）。 |
+| [`RemoveListener(Action<CollectionChangedEventArgs<T>>)`](#method-removelistener-action-collectionchangedeventargs-t) | — |
+| [`RemoveRange(int, int)`](#method-removerange-int-int) | 从指定索引移除指定数量的元素，逐项触发 Remove 通知（按原始顺序，索引为移除前位置）。 |
+| [`Reverse()`](#method-reverse) | 反转全表，以 Reset 通知（少于 2 个元素时反转无变化，不通知）。 |
+| [`Sort()`](#method-sort) | 对全表排序，以 Reset 通知（少于 2 个元素时排序无变化，不通知）。 |
+| [`Sort(IComparer<T>)`](#method-sort-icomparer-t) | 使用指定比较器对全表排序，以 Reset 通知（少于 2 个元素时排序无变化，不通知）。 |
 
 </div>
 
@@ -189,10 +191,10 @@ public int Count { get; }
 
 </div>
 
-### AddAddedListener(Action<CollectionAddEventArgs<T>>) {#method-addaddedlistener-action-collectionaddeventargs-t}
+### AddListener(Action<CollectionChangedEventArgs<T>>) {#method-addlistener-action-collectionchangedeventargs-t}
 
 ``` csharp
-public AutoRemoveListenerHandle AddAddedListener(Action<CollectionAddEventArgs<T>> callback)
+public AutoRemoveListenerHandle AddListener(Action<CollectionChangedEventArgs<T>> callback)
 ```
 
 **参数**
@@ -201,85 +203,7 @@ public AutoRemoveListenerHandle AddAddedListener(Action<CollectionAddEventArgs<T
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action<CollectionAddEventArgs<T>>` | — |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `AutoRemoveListenerHandle` | — |
-
-</div>
-
-### AddClearedListener(Action) {#method-addclearedlistener-action}
-
-``` csharp
-public AutoRemoveListenerHandle AddClearedListener(Action callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action` | — |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `AutoRemoveListenerHandle` | — |
-
-</div>
-
-### AddRemovedListener(Action<CollectionRemoveEventArgs<T>>) {#method-addremovedlistener-action-collectionremoveeventargs-t}
-
-``` csharp
-public AutoRemoveListenerHandle AddRemovedListener(Action<CollectionRemoveEventArgs<T>> callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action<CollectionRemoveEventArgs<T>>` | — |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `AutoRemoveListenerHandle` | — |
-
-</div>
-
-### AddReplacedListener(Action<CollectionReplaceEventArgs<T>>) {#method-addreplacedlistener-action-collectionreplaceeventargs-t}
-
-``` csharp
-public AutoRemoveListenerHandle AddReplacedListener(Action<CollectionReplaceEventArgs<T>> callback)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `callback` | `Action<CollectionReplaceEventArgs<T>>` | — |
+| `callback` | `Action<CollectionChangedEventArgs<T>>` | — |
 
 </div>
 
@@ -341,7 +265,7 @@ public bool Contains(T item)
 
 ### Remove(T) {#method-remove-t}
 
-移除第一个匹配元素，成功时触发 Removed 事件。
+移除第一个匹配元素，成功时触发 Remove 通知。
 
 ``` csharp
 public bool Remove(T item)
@@ -363,7 +287,7 @@ public bool Remove(T item)
 
 | 类型 | 说明 |
 | :--- | :--- |
-| `bool` | 找到并移除返回 true；元素不存在时不触发事件，返回 false。 |
+| `bool` | 找到并移除返回 true；元素不存在时不触发通知，返回 false。 |
 
 </div>
 
@@ -397,7 +321,7 @@ public int IndexOf(T item)
 
 ### Add(T) {#method-add-t}
 
-在末尾添加元素，触发 Added 事件（索引为 Count - 1）。
+在末尾添加元素，触发 Add 通知（索引为 Count - 1）。
 
 ``` csharp
 public void Add(T item)
@@ -415,7 +339,7 @@ public void Add(T item)
 
 ### AddRange(IEnumerable<T>) {#method-addrange-ienumerable-t}
 
-批量添加元素。逐项添加并逐项触发 Added 事件。
+批量添加元素。逐项添加并逐项触发 Add 通知。
 
 ``` csharp
 public void AddRange(IEnumerable<T> itemsToAdd)
@@ -431,9 +355,27 @@ public void AddRange(IEnumerable<T> itemsToAdd)
 
 </div>
 
+### AddRange(T[]) {#method-addrange-t}
+
+批量添加数组元素，逐项触发 Add 通知。
+
+``` csharp
+public void AddRange(T[] itemsToAdd)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `itemsToAdd` | `T[]` | 要添加的元素数组。 |
+
+</div>
+
 ### Clear() {#method-clear}
 
-清空列表。列表非空时触发 Cleared 事件；已为空时不触发。
+清空列表。列表非空时以 Reset 通知；已为空时不通知。
 
 ``` csharp
 public void Clear()
@@ -441,7 +383,7 @@ public void Clear()
 
 ### ClearListeners() {#method-clearlisteners}
 
-清空所有事件监听。
+清空所有变更监听。
 
 **备注**
 
@@ -470,9 +412,27 @@ public void CopyTo(T[] array, int arrayIndex)
 
 </div>
 
+### ForEach(Action<T>) {#method-foreach-action-t}
+
+对每个元素执行指定操作。
+
+``` csharp
+public void ForEach(Action<T> action)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `action` | `Action<T>` | 对每个元素执行的操作。 |
+
+</div>
+
 ### Insert(int, T) {#method-insert-int-t}
 
-在指定索引插入元素，触发 Added 事件（索引为插入位置）。
+在指定索引插入元素，触发 Add 通知（索引为插入位置）。
 
 ``` csharp
 public void Insert(int index, T item)
@@ -489,10 +449,12 @@ public void Insert(int index, T item)
 
 </div>
 
-### RemoveAddedListener(Action<CollectionAddEventArgs<T>>) {#method-removeaddedlistener-action-collectionaddeventargs-t}
+### InsertRange(int, IEnumerable<T>) {#method-insertrange-int-ienumerable-t}
+
+在指定索引插入元素序列，逐项触发 Add 通知。
 
 ``` csharp
-public void RemoveAddedListener(Action<CollectionAddEventArgs<T>> callback)
+public void InsertRange(int index, IEnumerable<T> itemsToInsert)
 ```
 
 **参数**
@@ -501,13 +463,52 @@ public void RemoveAddedListener(Action<CollectionAddEventArgs<T>> callback)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action<CollectionAddEventArgs<T>>` | — |
+| `index` | `int` | 插入位置索引。 |
+| `itemsToInsert` | `IEnumerable<T>` | 要插入的元素序列。 |
+
+</div>
+
+### InsertRange(int, T[]) {#method-insertrange-int-t}
+
+在指定索引插入数组元素，逐项触发 Add 通知。
+
+``` csharp
+public void InsertRange(int index, T[] itemsToInsert)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `index` | `int` | 插入位置索引。 |
+| `itemsToInsert` | `T[]` | 要插入的元素数组。 |
+
+</div>
+
+### Move(int, int) {#method-move-int-int}
+
+把元素从 oldIndex 移动到 newIndex，触发单次 Move 通知。
+
+``` csharp
+public void Move(int oldIndex, int newIndex)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `oldIndex` | `int` | 元素当前索引。 |
+| `newIndex` | `int` | 目标索引。 |
 
 </div>
 
 ### RemoveAt(int) {#method-removeat-int}
 
-移除指定索引的元素，触发 Removed 事件（参数含移除前索引与被移除元素）。
+移除指定索引的元素，触发 Remove 通知（参数含移除前索引与被移除元素）。
 
 ``` csharp
 public void RemoveAt(int index)
@@ -523,10 +524,10 @@ public void RemoveAt(int index)
 
 </div>
 
-### RemoveClearedListener(Action) {#method-removeclearedlistener-action}
+### RemoveListener(Action<CollectionChangedEventArgs<T>>) {#method-removelistener-action-collectionchangedeventargs-t}
 
 ``` csharp
-public void RemoveClearedListener(Action callback)
+public void RemoveListener(Action<CollectionChangedEventArgs<T>> callback)
 ```
 
 **参数**
@@ -535,14 +536,16 @@ public void RemoveClearedListener(Action callback)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action` | — |
+| `callback` | `Action<CollectionChangedEventArgs<T>>` | — |
 
 </div>
 
-### RemoveRemovedListener(Action<CollectionRemoveEventArgs<T>>) {#method-removeremovedlistener-action-collectionremoveeventargs-t}
+### RemoveRange(int, int) {#method-removerange-int-int}
+
+从指定索引移除指定数量的元素，逐项触发 Remove 通知（按原始顺序，索引为移除前位置）。
 
 ``` csharp
-public void RemoveRemovedListener(Action<CollectionRemoveEventArgs<T>> callback)
+public void RemoveRange(int index, int count)
 ```
 
 **参数**
@@ -551,14 +554,33 @@ public void RemoveRemovedListener(Action<CollectionRemoveEventArgs<T>> callback)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action<CollectionRemoveEventArgs<T>>` | — |
+| `index` | `int` | 起始索引。 |
+| `count` | `int` | 移除数量。 |
 
 </div>
 
-### RemoveReplacedListener(Action<CollectionReplaceEventArgs<T>>) {#method-removereplacedlistener-action-collectionreplaceeventargs-t}
+### Reverse() {#method-reverse}
+
+反转全表，以 Reset 通知（少于 2 个元素时反转无变化，不通知）。
 
 ``` csharp
-public void RemoveReplacedListener(Action<CollectionReplaceEventArgs<T>> callback)
+public void Reverse()
+```
+
+### Sort() {#method-sort}
+
+对全表排序，以 Reset 通知（少于 2 个元素时排序无变化，不通知）。
+
+``` csharp
+public void Sort()
+```
+
+### Sort(IComparer<T>) {#method-sort-icomparer-t}
+
+使用指定比较器对全表排序，以 Reset 通知（少于 2 个元素时排序无变化，不通知）。
+
+``` csharp
+public void Sort(IComparer<T> comparer)
 ```
 
 **参数**
@@ -567,7 +589,7 @@ public void RemoveReplacedListener(Action<CollectionReplaceEventArgs<T>> callbac
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `callback` | `Action<CollectionReplaceEventArgs<T>>` | — |
+| `comparer` | `IComparer<T>` | 元素比较器。 |
 
 </div>
 

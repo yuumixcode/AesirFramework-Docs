@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IObservableHashSet<T> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.ISet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -21,10 +21,10 @@ description: "Runestone.AesirArchitecture.IObservableHashSet<T> 的 API 文档"
 
 ``` csharp
 public interface IObservableHashSet<T> : Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>, 
-System.Collections.Generic.ISet<T>, 
 System.Collections.Generic.IEnumerable<T>, 
 System.Collections.IEnumerable, 
 System.Collections.Generic.ICollection<T>, 
+Runestone.AesirArchitecture.IObservableCollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 
@@ -33,7 +33,8 @@ Model 层通过此接口读写集合；View 层使用 IReadOnlyObservableHashSet
 
 **备注**
 
-集合代数操作（UnionWith / ExceptWith / IntersectWith / SymmetricExceptWith）逐项触发 Added / Removed 事件。 所有写操作完成后才触发对应事件，监听者回调中读取到的集合已是变更后的状态。 无变更的操作不触发事件：Add 重复元素、Remove 不存在的元素、Clear 空集合。
+所有写操作完成后才触发对应通知，监听者回调中读取到的集合已是变更后的状态。 无变更的操作不触发通知：Add 重复元素、Remove 不存在的元素、Clear 空集合。
+有意不继承 ISet{T}——集合代数（并/交/差/子集判定）对独立游戏属低频能力， 需要时直接使用内部 HashSet{T} 或上游 Cysharp.ObservableCollections； 保持 ICollection{T} 写侧契约（Add / Remove / Clear / Contains）不变。
 
 ## 属性
 

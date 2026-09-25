@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.AbstractQuery<TResult> 的 API 文档"
 
 **继承链:** `System.Object` → `AbstractQuery<TResult>`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IQuery<TResult>`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteQuery`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IQuery<TResult>`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -23,12 +23,12 @@ description: "Runestone.AesirArchitecture.AbstractQuery<TResult> 的 API 文档"
 
 ``` csharp
 [Serializable]
-public abstract class AbstractQuery<TResult> : Runestone.AesirArchitecture.IContextHolder, 
+public abstract class AbstractQuery<TResult> : Runestone.AesirArchitecture.ICanExecuteQuery, 
+Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.IQuery<TResult>, 
 Runestone.AesirArchitecture.ICanSetContext, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-Runestone.AesirArchitecture.ICanExecuteQuery 
+Runestone.AesirArchitecture.ICanGetService 
 ```
 
 查询基类。持有上下文引用，通过 OnExecute 执行查询逻辑并返回结果。

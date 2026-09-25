@@ -13,18 +13,18 @@ description: "Runestone.AesirArchitecture.AbstractCommand 的 API 文档"
 
 **继承链:** `System.Object` → `AbstractCommand`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICommand`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICommand`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 ## 声明
 
 ``` csharp
 [Serializable]
-public abstract class AbstractCommand : Runestone.AesirArchitecture.IContextHolder, 
+public abstract class AbstractCommand : Runestone.AesirArchitecture.ICanExecuteCommand, 
+Runestone.AesirArchitecture.ICommand, 
+Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.ICanSetContext, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-Runestone.AesirArchitecture.ICanExecuteCommand, 
-Runestone.AesirArchitecture.ICommand
+Runestone.AesirArchitecture.ICanGetService
 ```
 
 命令基类。持有上下文引用，通过 OnExecute 执行命令逻辑。

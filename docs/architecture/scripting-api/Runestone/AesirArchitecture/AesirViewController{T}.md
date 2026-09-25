@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.AesirViewController<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `Sirenix.OdinInspector.SerializedMonoBehaviour` → `Runestone.AesirArchitecture.AesirMonoBehaviour` → `AesirViewController<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Sirenix.Serialization.ISupportsPrefabSerialization`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -23,15 +23,15 @@ description: "Runestone.AesirArchitecture.AesirViewController<T> 的 API 文档"
 
 ``` csharp
 public abstract class AesirViewController<T> : Runestone.AesirArchitecture.AesirMonoBehaviour, 
-Runestone.AesirArchitecture.IContextHolder, 
+Runestone.AesirArchitecture.ICanExecuteCommand, 
+Runestone.AesirArchitecture.ICanExecuteQuery, 
+Runestone.AesirArchitecture.IController, 
 Sirenix.Serialization.ISupportsPrefabSerialization, 
+UnityEngine.ISerializationCallbackReceiver, 
+Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-Runestone.AesirArchitecture.ICanExecuteCommand, 
-UnityEngine.ISerializationCallbackReceiver, 
-Runestone.AesirArchitecture.ICanExecuteQuery, 
-Runestone.AesirArchitecture.IController where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
+Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 View + Controller 双角色基类。通过泛型上下文获取模块访问能力，自动支持 Odin Inspector 序列化。

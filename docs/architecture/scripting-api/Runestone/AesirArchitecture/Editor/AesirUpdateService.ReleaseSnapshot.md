@@ -16,10 +16,12 @@ description: "Runestone.AesirArchitecture.Editor.AesirUpdateService.ReleaseSnaps
 ## 声明
 
 ``` csharp
+[Serializable]
 public sealed class AesirUpdateService.ReleaseSnapshot
 ```
 
 一次成功检测的结果快照：来源 + tag +（可能缺失的）清单。 unitypackage 下载地址按命名约定从 tag 构造，不依赖 API 的资产列表。
+标记 SerializableAttribute — 编辑器窗口字段持有快照时可跨域重载保留。
 
 ## 构造方法
 

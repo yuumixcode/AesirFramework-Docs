@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IObservableList<T> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`System.Collections.Generic.IEnumerable<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -22,11 +22,12 @@ description: "Runestone.AesirArchitecture.IObservableList<T> 的 API 文档"
 ``` csharp
 [DefaultMember]
 public interface IObservableList<T> : System.Collections.Generic.IReadOnlyList<T>, 
-Runestone.AesirArchitecture.IReadOnlyObservableList<T>, 
 System.Collections.Generic.IEnumerable<T>, 
+Runestone.AesirArchitecture.IReadOnlyObservableList<T>, 
 System.Collections.IEnumerable, 
 System.Collections.Generic.IList<T>, 
 System.Collections.Generic.ICollection<T>, 
+Runestone.AesirArchitecture.IObservableCollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 
@@ -68,17 +69,17 @@ public int Count { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AddRange(IEnumerable<T>)`](#method-addrange-ienumerable-t) | 批量添加元素。逐项添加并逐项触发 Added 事件。 |
+| [`AddRange(IEnumerable<T>)`](#method-addrange-ienumerable-t) | 批量添加元素。逐项添加并逐项触发 Add 通知。 |
 
 </div>
 
 ### AddRange(IEnumerable<T>) {#method-addrange-ienumerable-t}
 
-批量添加元素。逐项添加并逐项触发 Added 事件。
+批量添加元素。逐项添加并逐项触发 Add 通知。
 
 **备注**
 
-每添加一项触发一次 Added；如需"整体刷新一次通知"的语义，可先 Clear 再逐项 Add。
+每添加一项触发一次 Add 通知；如需"整体刷新一次通知"的语义，可先 Clear 再逐项 Add。
 
 ``` csharp
 public abstract void AddRange(IEnumerable<T> items)

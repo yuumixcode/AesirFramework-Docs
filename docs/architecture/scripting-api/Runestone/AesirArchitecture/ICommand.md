@@ -11,16 +11,16 @@ description: "Runestone.AesirArchitecture.ICommand 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanSetContext`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 ## 声明
 
 ``` csharp
-public interface ICommand : Runestone.AesirArchitecture.IContextHolder, 
+public interface ICommand : Runestone.AesirArchitecture.ICanExecuteCommand, 
+Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.ICanSetContext, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService, 
-Runestone.AesirArchitecture.ICanExecuteCommand
+Runestone.AesirArchitecture.ICanGetService
 ```
 
 同步命令接口。通过 Command 修改 Model 状态，只写无返回值。

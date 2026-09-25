@@ -34,14 +34,12 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey,
 
 **备注**
 
-内部组合 Dictionary{TKey,TValue} 存储键值，使用 MiniEvent 管理监听者——Invoke 路径零分配（直接多播调用）。
+内部组合 Dictionary{TKey,TValue} 存储键值，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配（直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
 [SerializeField] 标记 dictionary 字段——Unity 原生不序列化 Dictionary{TKey, TValue}， 安装 Odin Inspector 后该字段可被 Odin 序列化，便于在 Inspector 中编辑初始键值。
 
-写操作完成后才触发事件，监听者回调中读取到的集合已是变更后的状态。 索引器为已存在的键赋相同值时跳过；为不存在的键赋值时触发 Added 而非 Updated。
+变更通知为单一事件（AddListener），载荷为 CollectionChangedEventArgs{T} （T = KeyValuePair{TKey,TValue}）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 索引器为不存在的键赋值触发 Add、为已有键赋新值触发 Replace（旧值见载荷 OldItem）、赋相同值不通知； Remove 不存在的键、Clear 空字典不通知。字典无索引概念，载荷索引固定 -1。
 
 遍历性能：foreach 具体类型走结构体枚举器，零分配；通过 IReadOnlyObservableDictionary{TKey, TValue} / IEnumerable{T} 接口遍历会装箱一次枚举器（与 BCL Dictionary{TKey, TValue} 行为一致）。
-
-需要同步视图、R3 集成等高级能力时，建议使用完整方案 Cysharp.ObservableCollections。
 
 ## 属性
 

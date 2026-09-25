@@ -41,9 +41,7 @@ public static class AesirArchitecturePlayerLoop
 | 名称 | 描述 |
 | :--- | :--- |
 | [`Register(AesirArchitectureLifecyclePhase, Action, int)`](#method-register-aesirarchitecturelifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。 |
-| [`GetHookCount(AesirArchitectureLifecyclePhase)`](#method-gethookcount-aesirarchitecturelifecyclephase) | 获取指定阶段的已注册回调数量 |
 | [`EnsureInjected()`](#method-ensureinjected) | 确保两个注入点存在于当前 PlayerLoop。已存在时为空操作，缺失时重新注入。 |
-| [`Reset()`](#method-reset) | 清空所有回调 |
 | [`Unregister(AesirArchitectureLifecyclePhase, Action)`](#method-unregister-aesirarchitecturelifecyclephase-action) | 注销回调。 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。 |
 
 </div>
@@ -94,34 +92,6 @@ public static AutoRemoveListenerHandle Register(AesirArchitectureLifecyclePhase 
 
 </div>
 
-### GetHookCount(AesirArchitectureLifecyclePhase) {#method-gethookcount-aesirarchitecturelifecyclephase}
-
-获取指定阶段的已注册回调数量
-
-``` csharp
-public static int GetHookCount(AesirArchitectureLifecyclePhase phase)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `phase` | `AesirArchitectureLifecyclePhase` | — |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `int` | — |
-
-</div>
-
 ### EnsureInjected() {#method-ensureinjected}
 
 确保两个注入点存在于当前 PlayerLoop。已存在时为空操作，缺失时重新注入。
@@ -132,18 +102,6 @@ PlayerLoop 注入的自愈入口，幂等可重复调用。第三方 SDK 若使�
 
 ``` csharp
 public static void EnsureInjected()
-```
-
-### Reset() {#method-reset}
-
-清空所有回调
-
-**备注**
-
-此方法在 Initialize 中调用，确保域重载后清空旧的回调数据和待处理命令， 防止 Disable Domain Reload 模式下残留的静态状态导致回调重复执行或引用已销毁的对象。
-
-``` csharp
-public static void Reset()
 ```
 
 ### Unregister(AesirArchitectureLifecyclePhase, Action) {#method-unregister-aesirarchitecturelifecyclephase-action}

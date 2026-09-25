@@ -84,16 +84,12 @@ public static T Instance { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`GetAllModels()`](#method-getallmodels) | 获取所有已注册的 Model 列表 |
-| [`GetAllServices()`](#method-getallservices) | 获取所有已注册的 Service 列表 |
 | [`GetModel()`](#method-getmodel) | 获取已注册的 Model。 |
 | [`GetService()`](#method-getservice) | 获取已注册的 Service。 |
 | [`Dispose()`](#method-dispose) | 释放资源。逆序销毁 Service 和 Model，清空容器。 |
 | [`Initialize()`](#method-initialize) | 统一初始化。调用 Configure 注册模块后，按注册顺序依次初始化 Model 和 Service。 开发者需保证注册顺序满足依赖关系——被依赖的模块先注册。运行时通过 GetModel / GetService 获取未注册模块会抛出异常。 |
 | [`RegisterModel(TModel)`](#method-registermodel-tmodel) | 注册 Model 并绑定上下文。 若该类型已注册，视为动态替换：输出一条 Warning 日志，旧实例会被 Dispose 后再覆盖。 |
 | [`RegisterService(TService)`](#method-registerservice-tservice) | 注册 Service 并绑定上下文。 若上下文已完成统一初始化，则立即初始化该 Service。若该类型已注册，视为动态替换：输出一条 Warning 日志，旧实例会被 Dispose 后再覆盖。 |
-| [`UnregisterModel()`](#method-unregistermodel) | 注销 Model：按类型键摘除注册并释放被摘除的实例。 |
-| [`UnregisterService()`](#method-unregisterservice) | 注销 Service：按类型键摘除注册并释放被摘除的实例。 |
 | [`Configure()`](#method-configure) | 配置上下文模块，子类在此注册 Model 和 Service。 |
 | [`OnDispose()`](#method-ondispose) | 子类可选覆写，在释放前执行自定义清理 |
 
@@ -111,42 +107,6 @@ public static T Instance { get; }
 | `ToString()` | — | `object` |
 | `MemberwiseClone()` | — | `object` |
 | `Finalize()` | — | `object` |
-
-</div>
-
-### GetAllModels() {#method-getallmodels}
-
-获取所有已注册的 Model 列表
-
-``` csharp
-public IEnumerable<IModel> GetAllModels()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `IEnumerable<IModel>` | 所有已注册 Model 实例的集合；若无注册则返回空集合 |
-
-</div>
-
-### GetAllServices() {#method-getallservices}
-
-获取所有已注册的 Service 列表
-
-``` csharp
-public IEnumerable<IService> GetAllServices()
-```
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `IEnumerable<IService>` | 所有已注册 Service 实例的集合；若无注册则返回空集合 |
 
 </div>
 
@@ -266,30 +226,6 @@ public void RegisterService<TService>(TService service)
 | `service` | `TService` | 要注册的 Service 实例，注册后会绑定到当前上下文 |
 
 </div>
-
-### UnregisterModel() {#method-unregistermodel}
-
-注销 Model：按类型键摘除注册并释放被摘除的实例。
-
-**备注**
-
-与动态替换同属测试/调试用途：被摘除实例经 Dispose 释放， 其上的事件订阅（MiniEvent / ObservableValue 等）不会迁移——已订阅方需自行重新订阅。 未注册时静默无操作（幂等）；注销后再次注册按新插入语义追加到注册顺序末尾。
-
-``` csharp
-public void UnregisterModel<TModel>()
-```
-
-### UnregisterService() {#method-unregisterservice}
-
-注销 Service：按类型键摘除注册并释放被摘除的实例。
-
-**备注**
-
-与动态替换同属测试/调试用途：被摘除实例经 Dispose 释放， 其上的事件订阅（MiniEvent / ObservableValue 等）不会迁移——已订阅方需自行重新订阅。 未注册时静默无操作（幂等）；注销后再次注册按新插入语义追加到注册顺序末尾。
-
-``` csharp
-public void UnregisterService<TService>()
-```
 
 ### Configure() {#method-configure}
 
