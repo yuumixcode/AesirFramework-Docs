@@ -11,11 +11,30 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.25.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.25.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.25.1** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.25.1** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.25.1] - 2026-09-25
+
+---
+
+### Aesir Modules
+
+**Fixed**
+
+- **场景测试套件把测试场景常驻 EditorBuildSettings(并被打进玩家构建)** — 原先经 `[InitializeOnLoadMethod]` 在编辑模式域加载期把两个测试场景登记为 enabled 条目且从不摘除,条目随 `ProjectSettings/EditorBuildSettings.asset` 落盘、进玩家构建;现改为 `IPrebuildSetup` 在进入 Play 前的编辑模式阶段登记、`IPostBuildCleanup` 退出 Play 后按名摘除,条目仅存在于本次运行期间,另有域加载兜底清扫回收被强杀遗留的条目。新增 EditMode 守护用例锁定「测试场景不得常驻 BuildSettings」
+- **SceneModule 测试无法随包进入实际工程** — 测试原先硬依赖宿主工程存在 `Assets/Scenes/SampleScene.unity`(消费工程可能已删除它),缺失时 `FromScenePath` 直接抛异常;现由 SetUp 在缺失时从包内最小场景夹具临时复制、TearDown 按「谁创建谁删除」还原(含空目录)。测试资产路径不再写死 Assets 相对路径,改为按文件名经 AssetDatabase 定位(Assets 安装 / 嵌入式包 / UPM Git 安装自适应)
+
+---
+
+### Aesir Architecture
+
+- 与 Aesir Modules 同步发布 0.25.1(版本号对齐,本包无功能变更)
+
+---
 
 ## [0.25.0] - 2026-09-25
 
