@@ -12,7 +12,7 @@
 Unity Package Manager → 左上角 `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.25.1
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.26.0
 ```
 
 版本分支由 CI 自动按包目录 subtree split 生成,仓库只保留最新版本分支。
@@ -21,7 +21,7 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.25.1
 
 从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载 `AesirArchitecture-v<版本>.unitypackage`(或两包合并的 `AesirFramework-v<版本>.unitypackage`)导入。
 
-以此方式安装的包位于 `Assets/Runestone/` 下(代码可改),**更新无需手动重新下载**:菜单 `Tools → Aesir → Check for Updates` 打开包内更新器,一键完成"检测新版本 → 自动备份 → 差集清理残留 → 静默导入"。版本检测面向大陆做了多源兜底(jsDelivr CDN → GitHub API → 重定向探测);经 CDN 检测,最新发布最长约 12 小时后才被检测到。
+以此方式安装的包位于 `Assets/Runestone/` 下(代码可改),**更新无需手动重新下载**:菜单 `Tools → Aesir → Check for Updates` 打开包内更新器,一键完成"检测新版本 → 自动备份 → 差集清理残留 → 静默导入"。版本检测按「直连 GitHub → 镜像站 → CDN 中转」三层兜底,能直连 GitHub 即为 100% 最新;窗口会显示本次的连接状态、获取线路与各层尝试详情,仅在落到 CDN 中转时提示可能有数小时延迟。
 
 !!! warning "更新器管辖范围"
 

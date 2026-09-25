@@ -11,11 +11,39 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.25.1** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.25.1** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.26.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.26.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.26.0] - 2026-09-25
+
+---
+
+### Aesir Architecture
+
+**Added**
+
+- **更新器检测线路可见化** — 检测结果新增线路模型(直连 GitHub / 镜像站 / CDN 中转):窗口显示「GitHub 直连是否可用(可用即版本信息 100% 实时)」与「最终获取线路」,新增「检测详情(各层尝试)」折叠区(含每层耗时与失败原因),结果来自 CDN 中转时额外给出延迟提示
+
+**Changed**
+
+- **更新器版本检测改为「直连 GitHub → 镜像站 → CDN 中转」三层兜底(修复新版本检测延迟)** — 此前 jsDelivr CDN 排在首位,其分支缓存最长约 12 小时,刚发布的版本在窗口里仍会显示为旧版本。现直连层依次尝试 Releases API、`releases/latest` 的 302 探测、仓库内 `update-info.json` 的直连 raw(单源超时 5 秒即落下一层),直连不可用才落镜像站(ghproxy.net / gh-proxy.com,代理 raw 内容、版本实时),最后才是 CDN 中转;只有 tag 的结果会按同 tag 校验补齐文件清单,拒绝陈旧清单避免错删文件
+
+**Fixed**
+
+- **更新/检测缺少超时,进度条可能长时间卡住** — 连接检测与 unitypackage 下载补齐硬性墙钟上限:单源检测 5 秒、整轮检测 30 秒(超时后不再发起新请求并留痕)、下载「总时长 120 秒 + 连续 30 秒无进展」双判据;任一超时都会中止请求并抛明确异常,上层必定收起进度条
+- **两个包连续更新时流程可能中途断裂(进度条停留 + 按钮提前可点)** — 导入 unitypackage 带来的脚本变更会触发域重载,异步流程随旧域消失导致第二个包等不到、进度条停在上一包的导入文案上,而忙碌标志被重置又让按钮可点。现整段更新流程锁住程序集重载、只在全部收尾后解锁一次;导入期间先收起本工具进度条避免与 Unity 自带导入条互相覆盖;另加域重载兜底收尾
+- **Odin 版更新器窗口正文被渲染成「禁用灰」** — Odin 对不可编辑属性会推入禁用绘制作用域,导致说明框、列表标签、行文本与状态行全部呈禁用态;现按 Odin 官方做法标注 `[EnableGUI]` 强制按可用状态绘制(不可编辑语义不变),实测文字亮度 128 → 196
+
+---
+
+### Aesir Modules
+
+- 与 Aesir Architecture 同步发布 0.26.0(版本号对齐,本包无功能变更)
+
+---
 
 ## [0.25.1] - 2026-09-25
 
