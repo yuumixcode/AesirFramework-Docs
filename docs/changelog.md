@@ -11,11 +11,29 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.24.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.24.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.25.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.25.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.25.0] - 2026-09-25
+
+---
+
+### Aesir Modules
+
+**Fixed**
+
+- **Script Doc Generator 增量重生成产出双 Front Matter** — Zensical 生成器自产 YAML 头后,增量合并逻辑会把旧文件的 Front Matter 再拼一份到新内容前,对已存在文档重生成必然产出双重头部;合并逻辑收敛为 `MergeFrontMatterWhenMissing`:新内容自带 Front Matter 时以新生成的为准,不自带(如中文 API 生成器)仍保留旧文件头部。新增 EditMode 回归测试 4 用例
+
+---
+
+### Aesir Architecture
+
+- 与 Aesir Modules 同步发布 0.25.0(版本号对齐,本包无功能变更)
+
+---
 
 ## [0.24.0] - 2026-09-25
 
