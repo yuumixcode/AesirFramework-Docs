@@ -124,7 +124,7 @@ nav = [
           { "AesirUpdateWindow" = "architecture/scripting-api/Runestone/AesirArchitecture/Editor/AesirUpdateWindow.md" },
           { "EnsureAesirArchitectureDefine" = "architecture/scripting-api/Runestone/AesirArchitecture/Editor/EnsureAesirArchitectureDefine.md" },
           { "QuickCreateSOMenuItem" = "architecture/scripting-api/Runestone/AesirArchitecture/Editor/QuickCreateSOMenuItem.md" },
-          { "ScriptingSymbolUtility" = "architecture/scripting-api/Runestone/AesirArchitecture/Editor/ScriptingSymbolUtility.md" },
+          { "ScriptingSymbolEditorUtility" = "architecture/scripting-api/Runestone/AesirArchitecture/Editor/ScriptingSymbolEditorUtility.md" },
       ]},
       { "Runestone.AesirArchitecture.Editor.OdinInspector" = [
           { "AesirArchitectureAttributeProcessor" = "architecture/scripting-api/Runestone/AesirArchitecture/Editor/OdinInspector/AesirArchitectureAttributeProcessor.md" },

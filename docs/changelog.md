@@ -11,11 +11,54 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.23.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.23.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.24.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.24.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.24.0] - 2026-09-25
+
+---
+
+### Aesir Architecture
+
+**Added**
+
+- **Aesir Getting Started 窗口** — 菜单 `Tools → Aesir → Getting Started`(priority -1000 居顶 + 独立分割线):概览页展示包卡片(含未安装包占位引导),包页按教学分组列出示例;整卡点击定位示例文件夹,带场景的示例经「打开场景」按钮直达(先保存当前场景一次再切换),结果经右下角 Toast 提示。数据层以各包 package.json samples 清单为唯一真源;IMGUI 兜底 + Odin 动效窗口经 `OdinWindowOpener` 委托路由
+- **示例构建剔除钩子** — 构建时自动把 Build Settings 场景列表中的 Aesir 示例场景从本次构建剔除并输出 `[Aesir Build]` 日志(持久数据不动);「示例不进玩家构建」自此覆盖脚本与场景两条路径
+- **安装位置锚点机制** — 包根 `AesirPathLookup.asset` 锚点(参照 Odin Inspector 同款资产),`AesirAssetPaths` 三级解析实际安装根——Runestone 可整体移动到项目任意文件夹,构建剔除 / 包更新器 / Getting Started 三个消费端全部跟随
+- **示例脚本构建剔除守护测试** — 运行时示例程序集内每个 .cs 必须整文件 `#if UNITY_EDITOR` 包裹,漏包裹在 EditMode 测试失败
+
+**Changed**
+
+- 更新器 Odin 窗口标题区改手绘(移除灰暗 `[Title]`);Tools/Aesir 菜单按包分组(包专属项归入 `Architecture/`、`Modules/` 子菜单);Check for Updates 移至菜单最底部(1100 + 分割线);`QuickCreateSOMenuItem` 移入 `Editor/MenuItems/`;`AesirArchitecturePlayerLoop` / `AesirScheduler` 文件归位 `Runtime/Common/`
+
+**Renamed(破坏性变更)**
+
+- `ScriptingSymbolUtility` → `ScriptingSymbolEditorUtility`(Utilities 目录命名规范,外部脚本直接引用需同步更名)
+
+---
+
+### Aesir Modules
+
+**Added**
+
+- **UI 模块 Canvas 根窗口形态** — 与 Panel 并列的第二种 UI 形态:窗口预制体根节点自带 Canvas,挂 UIRoot 下(不经四层 Canvas),`sortingOrder` 默认 500 恒在面板四层之上;静态 API `UIModule.Open<T>()` / `Close<T>()` / `GetWindow<T>()` 等;预制体结构约定 `Mask`(蒙版) + `Content`(内容容器)
+- **窗口蒙版遮罩机制** — `maskMode` 单遮(仅最高层可见窗口蒙版生效)/ 叠遮(各窗口独立),运行时可切换;蒙版点击经 `OnMaskClicked()` 虚方法默认按 `closeOnMaskClick` 关闭
+- **Binder 窗口感知** — 基类下拉含 `AesirBaseWindow` 家族,根节点带 Canvas 时默认脚本名后缀 `Window`
+- **示例 UI Basic Usage**(`Samples/UI/01_BasicUsage`,已登记 samples);窗口与蒙版 EditMode 测试 22 用例
+- **缺依赖一键补装(`AesirDependencyInstaller`)** — unitypackage 形态下 Aesir Architecture 缺失时,菜单 `Tools → Aesir → Modules → Install Dependencies` 确认后经 UPM 自动补装;配套 package.json 依赖由不可解析的 semver 改为 Git URL 版本分支(UPM 安装时自动递归拉取);新增零引用 `Runestone.AesirModules.Editor.Bootstrap` 程序集
+
+**Changed**
+
+- Script Doc Generator / Scene Editor Settings 菜单归入 `Tools/Aesir/Modules/`;Odin / Addressables 细分程序集锚点由 `Common/` 迁至 `Integration/`(程序集名与引用零变化);示例 `KeyPressedEvent` 的 using 指令移入 `#if UNITY_EDITOR` 内
+
+**Planned(下期候选)**
+
+- SmartShowHide 伪隐藏(全屏窗口弹出时自动伪隐藏被遮挡面板、关闭后恢复)
+
+---
 
 ## [0.23.0] - 2026-09-23
 

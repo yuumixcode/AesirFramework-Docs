@@ -1,9 +1,9 @@
 ---
-title: ScriptingSymbolUtility
-description: "Runestone.AesirArchitecture.Editor.ScriptingSymbolUtility 的 API 文档"
+title: ScriptingSymbolEditorUtility
+description: "Runestone.AesirArchitecture.Editor.ScriptingSymbolEditorUtility 的 API 文档"
 ---
 
-# `ScriptingSymbolUtility`
+# `ScriptingSymbolEditorUtility`
 
 !!! note ""
 
@@ -11,12 +11,12 @@ description: "Runestone.AesirArchitecture.Editor.ScriptingSymbolUtility 的 API 
     - **命名空间:** `Runestone.AesirArchitecture.Editor`
     - **程序集:** `Runestone.AesirArchitecture.Editor`
 
-**继承链:** `System.Object` → `ScriptingSymbolUtility`
+**继承链:** `System.Object` → `ScriptingSymbolEditorUtility`
 
 ## 声明
 
 ``` csharp
-public static class ScriptingSymbolUtility
+public static class ScriptingSymbolEditorUtility
 ```
 
 脚本宏定义工具，用于管理 PlayerSettings 中的 Scripting Define Symbols。

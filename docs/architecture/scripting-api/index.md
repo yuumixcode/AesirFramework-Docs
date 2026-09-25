@@ -145,7 +145,7 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`AesirUpdateWindow`](<Runestone/AesirArchitecture/Editor/AesirUpdateWindow.md>) | Aesir 包更新窗口 — 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并一键更新本地安装的 Aesir 包。 版本检测面向大陆用… |
 | [`EnsureAesirArchitectureDefine`](<Runestone/AesirArchitecture/Editor/EnsureAesirArchitectureDefine.md>) | 自动确保 AESIR_ARCHITECTURE 脚本宏定义符号存在。 通过 InitializeOnLoadAttribute 在编辑器加载时自动执行， 供 Aesir 系列其… |
 | [`QuickCreateSOMenuItem`](<Runestone/AesirArchitecture/Editor/QuickCreateSOMenuItem.md>) | 右键快捷生成 ScriptableObject 资源文件。 项目同时安装 Aesir Inspector（独立包，写入 AESIR_INSPECTOR 宏）时本类整体不参与编译… |
-| [`ScriptingSymbolUtility`](<Runestone/AesirArchitecture/Editor/ScriptingSymbolUtility.md>) | 脚本宏定义工具，用于管理 PlayerSettings 中的 Scripting Define Symbols。 遍历所有构建目标（排除 Unknown 和 Dedicated… |
+| [`ScriptingSymbolEditorUtility`](<Runestone/AesirArchitecture/Editor/ScriptingSymbolEditorUtility.md>) | 脚本宏定义工具，用于管理 PlayerSettings 中的 Scripting Define Symbols。 遍历所有构建目标（排除 Unknown 和 Dedicated… |
 
 </div>
 

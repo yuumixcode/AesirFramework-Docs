@@ -6,6 +6,8 @@
 - 程序集为**运行时程序集 + 整文件 `#if UNITY_EDITOR`**:编辑器内可编译、可挂载、可 Play;玩家构建整体剔除,示例类型 0 入包
 - 命名空间 `Runestone.AesirArchitecture.Samples.<示例名>`
 
+> **0.24.0 起**:菜单 `Tools → Aesir → Getting Started` 打开示例导航窗口——集中浏览两包全部示例,点击卡片定位示例文件夹,带场景的示例经「打开场景」按钮直达,无需手动翻找目录。
+
 ## 计数器六档(MVC / MVP 各三课)
 
 同一个"计数器界面"用六种写法实现,逐课同构对照 —— 这是学习框架的主线教程。每档只有一个核心增量:
@@ -56,7 +58,7 @@
 
 - 得分 HUD(`ObservableValue` 驱动)、三型敌机、子弹命中计分(A=10 / B=20 / C=30)、坠毁重开流程
 - 组合运用 `MiniEvent` + `ObservableValue` + `MonoLifecycleProxy`
-- 素材自包含;菜单 `Tools → Aesir → PlaneWar → Fix Scene References` 一键修复场景引用
+- 素材自包含;菜单 `Tools → Aesir → Architecture → Samples → PlaneWar → Fix Scene References` 一键修复场景引用
 
 ## RuntimeInitializeLoadType(仓库内示例)
 

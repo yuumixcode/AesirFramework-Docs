@@ -45,7 +45,7 @@ Scene last = SceneModule.Instance.LastLoadedScene;
 ### 启动场景(Bootstrap)分工
 
 - **运行时**:`SceneModule` 只持有 `bootstrapScene` 引用(`BootstrapSceneAssetWrapper`)供用户代码读取,不做自动流转
-- **编辑器**:BuildSettings 序号 0 与进 Play 强制打开 Bootstrap 场景由 `BootstrapSceneHelper` 负责(`Tools → Aesir → Scene Editor Settings` 中开启,**默认关闭**)
+- **编辑器**:BuildSettings 序号 0 与进 Play 强制打开 Bootstrap 场景由 `BootstrapSceneHelper` 负责(`Tools → Aesir → Modules → Scene Editor Settings` 中开启,**默认关闭**)
 
 ## SceneAssetWrapper —— 可序列化场景引用
 
@@ -76,7 +76,7 @@ Scene last = SceneModule.Instance.LastLoadedScene;
 
 | 工具 | 入口 | 说明 |
 |------|------|------|
-| `Scene Editor Settings` | 菜单 `Tools → Aesir → Scene Editor Settings` | 场景编辑器设置窗口(内嵌 SceneEditorSettings 与 bootstrap 辅助开关) |
+| `Scene Editor Settings` | 菜单 `Tools → Aesir → Modules → Scene Editor Settings` | 场景编辑器设置窗口(内嵌 SceneEditorSettings 与 bootstrap 辅助开关) |
 | `SceneEditorSettings` | ScriptableSingleton | 编辑器阶段持久化设置 |
 | `BootstrapSceneHelper` | 设置窗口开启(默认关闭) | 搜集 Bootstrapper 场景注册进 Build Settings 首位;进 Play 强制打开启动场景 |
 

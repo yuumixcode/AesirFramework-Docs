@@ -11,13 +11,13 @@
 Unity Package Manager → `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.23.0
+https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.24.0
 ```
 
-只安装 Aesir Modules 时,请同时添加 Aesir Architecture 的 Git URL(UPM 对 Git URL 安装的包不会自动解析包内 dependencies 声明为 Registry 引用):
+本包对 Aesir Architecture 的依赖声明为 Git URL 版本分支(0.24.0 起),UPM 安装本包时会自动递归拉取对应版本的 Aesir Architecture——通常只需添加上面这一条 URL。若自动拉取未生效,可手动补加:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.23.0
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.24.0
 ```
 
 或编辑 `Packages/manifest.json`:
@@ -25,13 +25,13 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.23.0
 ```json
 {
   "dependencies": {
-    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.23.0",
-    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.23.0"
+    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.24.0",
+    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.24.0"
   }
 }
 ```
 
-**unitypackage 方式**:从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载 `AesirModules-v<版本>.unitypackage`(注意不含依赖,需自行导入 Architecture;或直接用两包合并的 `AesirFramework-v<版本>.unitypackage`)。导入后经 `Tools → Aesir → Check for Updates` 一键更新。
+**unitypackage 方式**:从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载 `AesirModules-v<版本>.unitypackage`(注意不含依赖;或直接用两包合并的 `AesirFramework-v<版本>.unitypackage`)。只导入本包而缺 Aesir Architecture 时,菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,确认后经 UPM 自动补装对应版本(装至 `Packages/` 下;依赖包在场时该菜单自动隐藏)。导入后经 `Tools → Aesir → Check for Updates` 一键更新。
 
 ## 第一个面板
 
@@ -94,6 +94,7 @@ Package Manager → Aesir Modules → **Samples**:
 | `Events/02_Filters` | 订阅者过滤器对照示例:`WithTag`+`InsideCollider2D` 双重过滤与 `OnlySelf` 家族命令 |
 | `Events/03_SOAsset` | SO 资产化:事件资产配置载荷,`UnityEventOnAesirEvent` 零代码桥接 UnityEvent 回调 |
 | `Audio/01_BasicUsage` | 音频模块基础用法:SFX 播放、BGM 淡入淡出切歌、三通道音量与静音持久化 |
+| `UI/01_BasicUsage` | UI 模块基础用法:面板与 Canvas 根窗口协作、蒙版单遮/叠遮切换对照、点击蒙版关闭、全屏加载窗口 |
 
 ## 下一步
 

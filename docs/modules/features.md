@@ -107,10 +107,10 @@ AudioModule.SfxVolume = 0.5f;                        // 设置即生效、即持
 - **激活场景切换** — `SetActiveScene` 决定多场景叠加工作流的光照设置来源与 Instantiate 默认落点
 - **场景事件广播** — `SceneLoadedEvent` / `SceneUnloadedEvent`(MiniEvent,句柄自动清理)
 - **`SceneAssetWrapper`** — 可序列化场景引用:GUID 锚点自愈、状态机校验、`TryGet` 安全读取家族、专用异常族;安装 Addressables 时自动扩展地址查询能力(Inspector 面板效果需 Odin)
-- **编辑器配套** — `Tools → Aesir → Scene Editor Settings` 设置窗口;`BootstrapSceneHelper` 搜集注册 Bootstrapper 场景(默认关闭,运行时只持引用不做自动流转)
+- **编辑器配套** — `Tools → Aesir → Modules → Scene Editor Settings` 设置窗口;`BootstrapSceneHelper` 搜集注册 Bootstrapper 场景(默认关闭,运行时只持引用不做自动流转)
 
 ## 脚本文档生成模块(需 Odin)
 
-- **Script Doc Generator** — 反射分析 C# 类型生成结构化 API 文档:全离线、增量生成(保留 `## Additional Notes` 之后的手写内容)、支持命名空间子目录与四种来源粒度(单类型 / 多类型 / 单程序集 / 多程序集),Markdown 输出可直接用于 AI 知识库。入口 `Tools → Aesir → Script Doc Generator`
+- **Script Doc Generator** — 反射分析 C# 类型生成结构化 API 文档:全离线、增量生成(保留 `## Additional Notes` 之后的手写内容)、支持命名空间子目录与四种来源粒度(单类型 / 多类型 / 单程序集 / 多程序集),Markdown 输出可直接用于 AI 知识库。入口 `Tools → Aesir → Modules → Script Doc Generator`
 - **Summary 工具** — 在 XML `<summary>` 注释与 `[Summary]` 特性之间同步(**特性为权威内容源**):Sync 双向对齐 / Replace 收敛为特性 / Remove 移除(带确认),批量单次刷新。入口 Project 右键 `Assets → Script Doc Generator → Process Summary`
 - **自定义特性** — `[Summary]`(运行时可经 `GetSummary()` 读取)、`[ReferenceLinkURL]`(为类型附加文档链接)
