@@ -28,6 +28,7 @@
 
 - **Changed**
 
+    - Scene 模块设置双窗口与无 Odin 编译修复——`SceneEditorSettings` 数据层 `#if ODIN_INSPECTOR` 包裹展示特性;Odin 版窗口迁入守卫程序集;新增原生 IMGUI 兜底窗口(OdinWindowOpener 路由,更新器双窗口同款);菜单更名 `Scene Module Settings`;无 Odin 环境 UPM E2E 0 编译错误(修复前 108 个 CS0246)。
     - `Install Dependencies` 补装菜单适用范围扩展——UPM 单独安装本包(缺 Aesir Architecture、核心程序集编译失败)同样触发一键补装;安装教程改为两包分别添加。
 
 ### Aesir Architecture

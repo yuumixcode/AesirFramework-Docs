@@ -53,7 +53,7 @@ Scene last = SceneModule.LastLoadedScene;
 ### UniTask 适配(可选)
 
 安装 UniTask(`com.cysharp.unitask`)时自动生效:内部加载 / 卸载流程由协程驱动替换为 UniTask 驱动,公开 API 与回调语义完全一致;宏 `AESIR_MODULES_UNITASK` 由 versionDefines(UPM 包)或编辑器宏维护器 `AesirUniTaskDefineKeeper`(unitypackage / DLL 安装)自动维护。适配程序集 `Runestone.AesirModules.UniTask` 额外提供可 await 的 `SceneModuleUniTask` 静态 API(`LoadSceneSingleAsync` / `LoadSceneAdditiveAsync` / `UnloadSceneAsync` / `ReloadSceneAsync` / `UnloadAllAddedScenesAsync`):失败抛 `InvalidOperationException`(原因见 Console),`CancellationToken` 取消仅中止等待,宿主销毁时以取消收场不悬挂;宏关闭时适配程序集整体不编译。
-- **编辑器**:BuildSettings 序号 0 与进 Play 强制打开 Bootstrap 场景由 `BootstrapSceneHelper` 负责(`Tools → Aesir → Modules → Scene Editor Settings` 中开启,**默认关闭**)
+- **编辑器**:BuildSettings 序号 0 与进 Play 强制打开 Bootstrap 场景由 `BootstrapSceneHelper` 负责(`Tools → Aesir → Modules → Scene Module Settings` 中开启,**默认关闭**)
 
 ## SceneAssetWrapper —— 可序列化场景引用
 
@@ -84,7 +84,7 @@ Scene last = SceneModule.LastLoadedScene;
 
 | 工具 | 入口 | 说明 |
 |------|------|------|
-| `Scene Editor Settings` | 菜单 `Tools → Aesir → Modules → Scene Editor Settings` | 场景编辑器设置窗口(内嵌 SceneEditorSettings 与 bootstrap 辅助开关) |
+| `Scene Module Settings` | 菜单 `Tools → Aesir → Modules → Scene Module Settings` | Scene 模块设置窗口(双窗口模式:装 Odin 打开 Odin 版 InlineEditor 展示,未装打开原生 IMGUI 兜底——两个开关 + 两个只读路径 + 手动搜集按钮,与包内更新器双窗口同款) |
 | `SceneEditorSettings` | ScriptableSingleton | 编辑器阶段持久化设置 |
 | `BootstrapSceneHelper` | 设置窗口开启(默认关闭) | 搜集 Bootstrapper 场景注册进 Build Settings 首位;进 Play 强制打开启动场景 |
 
