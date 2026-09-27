@@ -3,7 +3,7 @@
 Aesir Architecture 内置面向 **unitypackage 安装方式**的包内更新器:无需重新下载导入,编辑器内一键完成版本检测与更新。
 
 !!! warning "管辖范围"
-    更新器只管辖 `Assets/Runestone/` 下的代码导入副本(unitypackage 安装)。**Git URL(UPM)安装的副本不在管辖内**,请用 Package Manager 更新——纯 UPM 安装形态下该菜单经 validate 整体隐藏,不显示误导入口;**开发仓库(存在 `.git`)切勿点更新** —— Release 内容会覆盖本地源码(窗口已内置警告)。
+    更新器只管辖 `Assets/Runestone/` 下的代码导入副本(unitypackage 安装)。**Git URL(UPM)安装的副本不在管辖内**——纯 UPM 安装形态下该菜单经 validate 整体隐藏,不显示误导入口;Package Manager 也不会对 Git URL 包显示更新提示,升级 = 移除旧包后重新添加新版本分支的 Git URL。**开发仓库(存在 `.git`)切勿点更新** —— Release 内容会覆盖本地源码(窗口已内置警告)。
 
 ## 使用
 

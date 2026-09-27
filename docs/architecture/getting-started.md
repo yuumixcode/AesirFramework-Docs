@@ -15,7 +15,7 @@ Unity Package Manager → 左上角 `+` → `Add package from git URL...`:
 https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.28.0
 ```
 
-版本分支由 CI 自动按包目录 subtree split 生成,仓库只保留最新版本分支。
+版本分支由 CI 自动按包目录 subtree split 生成,仓库只保留最新版本分支。**升级到新版本**:Package Manager 不会对 Git URL 安装的包显示更新提示——移除旧包后按新版本分支的 Git URL 重新添加,或直接把 `manifest.json` 中的 `#AesirArchitecture-v<版本>` 分支名改为新版本。
 
 ### 方式 2:unitypackage 导入 + 包内更新器(大陆 / 离线友好)
 
@@ -25,7 +25,7 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.28.0
 
 !!! warning "更新器管辖范围"
 
-    经 Git URL(UPM)安装的副本**不在更新器管辖内**,请直接用 Package Manager 更新——纯 UPM 安装形态下该菜单经 validate 整体隐藏。开发仓库(存在 `.git`)切勿点更新。
+    经 Git URL(UPM)安装的副本**不在更新器管辖内**——纯 UPM 安装形态下该菜单经 validate 整体隐藏;Package Manager 也不会对 Git URL 包显示更新提示,升级 = 移除旧包后重新添加新版本分支的 Git URL。开发仓库(存在 `.git`)切勿点更新。
 
 ### 方式 3:跟踪 main 最新(开发预览)
 

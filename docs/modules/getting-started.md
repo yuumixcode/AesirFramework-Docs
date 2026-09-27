@@ -31,6 +31,8 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.28.0
 }
 ```
 
+**升级到新版本**:Package Manager 不会对 Git URL 安装的包显示更新提示——移除旧包后按新版本分支的 Git URL 重新添加,或直接把 `manifest.json` 中的 `#AesirArchitecture-v<版本>` / `#AesirModules-v<版本>` 分支名改为新版本。
+
 **unitypackage 方式**:从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载 `AesirModules-v<版本>.unitypackage`(注意不含依赖;或直接用两包合并的 `AesirFramework-v<版本>.unitypackage`)。只导入本包而缺 Aesir Architecture 时,菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,确认后经 UPM 自动补装对应版本(装至 `Packages/` 下;依赖包在场时该菜单自动隐藏)。导入后经 `Tools → Aesir → Check for Updates` 一键更新。
 
 ## 第一个面板
