@@ -11,13 +11,13 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.28.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.28.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.29.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.29.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
 
-## [Unreleased]
+## [0.29.0] - 2026-09-27
 
 ### Aesir Architecture
 
@@ -25,9 +25,17 @@
 
     - Getting Started 窗口支持 UPM / 嵌入式安装的示例一键导入——未导入示例卡片:整卡点击 Toast 引导导入,右侧按钮由「去导入」(跳转 Package Manager)升级为「导入 Sample」:确认框含示例介绍与导入后位置(可取消),确认后经 Package Manager Sample API(`UnityEditor.PackageManager.UI.Sample`)直接导入到 `Assets/Samples/`,成功自动重扫刷新清单;已导入幂等跳过,清单匹配不到红色 Toast 兜底;IMGUI 兜底与 Odin 版同步。
 
+    - `package.json` 新增 UPM 元数据链接字段(`documentationUrl` 指向文档站 Architecture 分区、`changelogUrl` 指向更新日志页):UPM 安装后 Package Manager 包详情页出现 View documentation / View changelog 链接;README 安装指引补充具体升级操作(Package Manager 不对 Git URL 包显示更新提示,升级 = 移除后重新添加新版本分支的 Git URL 或修改 manifest.json 分支名)。
+
 - **Removed**
 
     - PlaneWar 场景引用修复菜单(`Tools → Aesir → Architecture → Samples → PlaneWar → Fix Scene References`)——开发期一次性修复工具,示例场景/预制体引用已随资产固化,随 `Runestone.AesirArchitecture.Samples.PlaneWarMono.Editor` 程序集一并移除;`RuntimeInitializeLoadType` 菜单显式 priority 995 接管 Architecture 组排序锚点,`Tools/Aesir` 菜单布局不变。
+
+### Aesir Modules
+
+- **Added**
+
+    - `package.json` 新增 UPM 元数据链接字段(`documentationUrl` 指向文档站 Modules 分区、`changelogUrl` 指向更新日志页):UPM 安装后 Package Manager 包详情页出现 View documentation / View changelog 链接。
 
 ## [0.28.0] - 2026-09-27
 

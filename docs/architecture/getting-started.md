@@ -12,7 +12,7 @@
 Unity Package Manager → 左上角 `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.28.0
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
 ```
 
 版本分支由 CI 自动按包目录 subtree split 生成,仓库只保留最新版本分支。**升级到新版本**:Package Manager 不会对 Git URL 安装的包显示更新提示——移除旧包后按新版本分支的 Git URL 重新添加,或直接把 `manifest.json` 中的 `#AesirArchitecture-v<版本>` 分支名改为新版本。
