@@ -40,7 +40,7 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`MonoLifecycleProxyExtensions`](<Runestone/AesirArchitecture/MonoLifecycleProxyExtensions.md>) | Mono 生命周期事件扩展方法集合。 |
 | [`MonoView<T>`](<Runestone/AesirArchitecture/MonoView{T}.md>) | View 基类。通过泛型上下文获取模块访问能力，仅具备只读权限。 |
 | [`MonoViewController<T>`](<Runestone/AesirArchitecture/MonoViewController{T}.md>) | View + Controller 双角色基类。通过泛型上下文获取模块访问能力，无 Odin 依赖。 |
-| [`ObservableDictionary<TKey, TValue>`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
+| [`ObservableDictionary{TKey, TValue}`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
 | [`ObservableHashSet<T>`](<Runestone/AesirArchitecture/ObservableHashSet{T}.md>) | 可观察集合实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只读订阅。 |
 | [`ObservableList<T>`](<Runestone/AesirArchitecture/ObservableList{T}.md>) | 可观察列表实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读订阅。 |
 | [`ObservableQueue<T>`](<Runestone/AesirArchitecture/ObservableQueue{T}.md>) | 可观察队列实现。 |
@@ -70,7 +70,7 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`CollectionChangedEventArgs<T>`](<Runestone/AesirArchitecture/CollectionChangedEventArgs{T}.md>) | 集合变更事件参数。每次变更携带单个变更项；批量操作（AddRange / RemoveRange 等）由集合逐项触发事件。 |
 | [`MonoLifecycleProxy.ListenerEntry`](<Runestone/AesirArchitecture/MonoLifecycleProxy.ListenerEntry.md>) | 监听条目，记录单个回调及其排序信息 |
 | [`MonoLifecycleProxy.PendingChange`](<Runestone/AesirArchitecture/MonoLifecycleProxy.PendingChange.md>) | 挂起变更条目，记录调用期间累积的一次监听增删操作 |
-| [`ObservableDictionary<TKey, TValue>.Enumerator<TKey, TValue>`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.Enumerator{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
+| [`ObservableDictionary{TKey, TValue}.Enumerator{TKey, TValue}`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.Enumerator{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
 | [`ObservableHashSet<T>.Enumerator<T>`](<Runestone/AesirArchitecture/ObservableHashSet{T}.Enumerator{T}.md>) | 可观察集合实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只读订阅。 |
 | [`ObservableList<T>.Enumerator<T>`](<Runestone/AesirArchitecture/ObservableList{T}.Enumerator{T}.md>) | 可观察列表实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读订阅。 |
 | [`ObservableQueue<T>.Enumerator<T>`](<Runestone/AesirArchitecture/ObservableQueue{T}.Enumerator{T}.md>) | 可观察队列实现。 |
@@ -105,14 +105,14 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`IGenericLocator<T>`](<Runestone/AesirArchitecture/IGenericLocator{T}.md>) | 泛型定位器接口。提供按类型注册、查询与获取对象实例的契约。 |
 | [`IModel`](<Runestone/AesirArchitecture/IModel.md>) | 数据层接口。持有状态（通常使用 ObservableValue{T}）。 能力：GetModel, Initialize, Dispose |
 | [`IObservableCollection<T>`](<Runestone/AesirArchitecture/IObservableCollection{T}.md>) | 可观察集合契约：单一变更事件的订阅与退订。 |
-| [`IObservableDictionary<TKey, TValue>`](<Runestone/AesirArchitecture/IObservableDictionary{TKey, TValue}.md>) | 完整可观察字典接口。 Model 层通过此接口读写集合；View 层使用 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
+| [`IObservableDictionary{TKey, TValue}`](<Runestone/AesirArchitecture/IObservableDictionary{TKey, TValue}.md>) | 完整可观察字典接口。 Model 层通过此接口读写集合；View 层使用 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
 | [`IObservableHashSet<T>`](<Runestone/AesirArchitecture/IObservableHashSet{T}.md>) | 完整可观察集合接口。 Model 层通过此接口读写集合；View 层使用 IReadOnlyObservableHashSet{T} 只读订阅。 |
 | [`IObservableList<T>`](<Runestone/AesirArchitecture/IObservableList{T}.md>) | 完整可观察列表接口。 Model 层通过此接口读写集合；View 层使用 IReadOnlyObservableList{T} 只读订阅。 |
 | [`IObservableValue<T>`](<Runestone/AesirArchitecture/IObservableValue{T}.md>) | 完整可观察属性接口。 Presenter 层通过此接口读写数据。 |
 | [`IPresenter`](<Runestone/AesirArchitecture/IPresenter.md>) | 泛型 MVP 中介接口。绑定指定上下文类型，实现者自动获得 Context 绑定。 |
 | [`IPresenter<T>`](<Runestone/AesirArchitecture/IPresenter{T}.md>) | 泛型 MVP 中介接口。绑定指定上下文类型，实现者自动获得 Context 绑定。 |
 | [`IQuery<TResult>`](<Runestone/AesirArchitecture/IQuery{TResult}.md>) | 查询接口。通过 Query 执行读操作并返回结果，无副作用。 与 ICommand 的区别：Command 负责写操作（无返回值），Query 负责读操作（返回 TResult）。 |
-| [`IReadOnlyObservableDictionary<TKey, TValue>`](<Runestone/AesirArchitecture/IReadOnlyObservableDictionary{TKey, TValue}.md>) | 只读可观察字典接口。 View 层通过此接口读取键值并订阅变更，不能修改集合。 |
+| [`IReadOnlyObservableDictionary{TKey, TValue}`](<Runestone/AesirArchitecture/IReadOnlyObservableDictionary{TKey, TValue}.md>) | 只读可观察字典接口。 View 层通过此接口读取键值并订阅变更，不能修改集合。 |
 | [`IReadOnlyObservableHashSet<T>`](<Runestone/AesirArchitecture/IReadOnlyObservableHashSet{T}.md>) | 只读可观察集合接口。 View 层通过此接口读取元素并订阅变更，不能修改集合。 |
 | [`IReadOnlyObservableList<T>`](<Runestone/AesirArchitecture/IReadOnlyObservableList{T}.md>) | 只读可观察列表接口。 View 层通过此接口枚举元素并订阅变更，不能修改集合。 |
 | [`IReadOnlyObservableValue<T>`](<Runestone/AesirArchitecture/IReadOnlyObservableValue{T}.md>) | 只读可观察属性接口。 View 层通过此接口添加监听，不能修改值。 |
@@ -134,7 +134,7 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 
 ## Runestone.AesirArchitecture.Editor
 
-命名空间 `Runestone.AesirArchitecture.Editor` · 程序集 `Runestone.AesirArchitecture.Editor`、`Runestone.AesirArchitecture.Editor.OdinInspector` · 共 38 个类型。
+命名空间 `Runestone.AesirArchitecture.Editor` · 程序集 `Runestone.AesirArchitecture.Editor`、`Runestone.AesirArchitecture.Editor.OdinInspector` · 共 43 个类型。
 
 ### 类
 
@@ -162,23 +162,36 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`AesirUpdateController.UpdateState`](<Runestone/AesirArchitecture/Editor/AesirUpdateController.UpdateState.md>) | 更新器状态。窗口以 [SerializeField] 持有以跨域重载保留远程检测结果与更新日志； AesirUpdateController 是唯一写入者，窗口层只读。 |
 | [`AesirUpdateService`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.md>) | Aesir 包自动更新服务 — 供 AesirUpdateWindow 调用的无状态工具集。 适用场景：用户通过复制 / unitypackage 导入方式将包装在 Insta… |
 | [`AesirUpdateService.ChangelogSection`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.ChangelogSection.md>) | CHANGELOG 中的一个版本段落（Keep a Changelog 格式的 ## [x.y.z] - 日期 小节）。 |
+| [`AesirUpdateService.DetectionAttempt`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.DetectionAttempt.md>) | 单次检测尝试的记录（界面「检测详情」与故障定位用）。 |
 | [`AesirUpdateService.FilesManifest`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.FilesManifest.md>) | files-manifest 结构的本地安装清单（.aesir/installed-manifest.json）。 与 UpdateInfo 共用 PackageEntry。 |
 | [`AesirUpdateService.FilesManifest.PackageEntry`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.FilesManifest.PackageEntry.md>) | 单个包的安装清单。 |
 | [`AesirUpdateService.InstalledPackage`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.InstalledPackage.md>) | 扫描到的本地已安装包。 |
+| [`AesirUpdateService.ReleaseCheckResult`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.ReleaseCheckResult.md>) | 一次版本检测的完整结果：快照 + 线路信息 + 各层尝试记录。 标记 SerializableAttribute — 窗口状态字段持有后可跨域重载保留。 |
 | [`AesirUpdateService.ReleaseSnapshot`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.ReleaseSnapshot.md>) | 一次成功检测的结果快照：来源 + tag +（可能缺失的）清单。 unitypackage 下载地址按命名约定从 tag 构造，不依赖 API 的资产列表。 标记 Serial… |
 | [`AesirUpdateService.UpdateInfo`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.UpdateInfo.md>) | update-info.json 结构：版本信息 + 各包文件清单（仓库内文件，jsDelivr / GitHub 均可拉取）。 数组而非 Dictionary — JsonU… |
-| [`AesirUpdateWindow`](<Runestone/AesirArchitecture/Editor/AesirUpdateWindow.md>) | Aesir 包更新窗口（IMGUI 兜底版）— 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并一键更新本地安装的 Aesir 包。… |
-| [`AesirUpdateWindowOdin`](<Runestone/AesirArchitecture/Editor/AesirUpdateWindowOdin.md>) | Aesir 包更新窗口（Odin Inspector 版）— 检测远程最新版本、展示「本地 → 远程」更新日志、 确认后一键更新 InstallRootRelativePath… |
+| [`AesirUpdateService.UpdateResult`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.UpdateResult.md>) | 一次更新流程的执行结果：成功 / 用户取消均以正常返回收尾（取消时 Cancelled 为 true， 已导入的包保持有效）；下载失败等异常仍向上抛出（由窗口层弹错误框 + 手… |
+| [`AesirUpdateWindow`](<Runestone/AesirArchitecture/Editor/AesirUpdateWindow.md>) | Aesir 包更新窗口（IMGUI 兜底版）— 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并更新本地安装的 Aesir 包。两种… |
+| [`AesirUpdateWindowOdin`](<Runestone/AesirArchitecture/Editor/AesirUpdateWindowOdin.md>) | Aesir 包更新窗口（Odin Inspector 版）— 检测远程最新版本、展示「本地 → 远程」更新日志、 确认后更新 InstallRootRelativePath 下… |
 | [`AesirUpdateWindowOdin.PackageRow`](<Runestone/AesirArchitecture/Editor/AesirUpdateWindowOdin.PackageRow.md>) | 单个本地安装包的行视图模型。显示文本 / 颜色 / 可更新标记在 RebuildRows 时一次性算好，绘制期只读。 |
 | [`EnsureAesirArchitectureDefine`](<Runestone/AesirArchitecture/Editor/EnsureAesirArchitectureDefine.md>) | 自动确保 AESIR_ARCHITECTURE 脚本宏定义符号存在。 通过 InitializeOnLoadAttribute 在编辑器加载时自动执行， 供 Aesir 系列其… |
 | [`ObservableCollectionDrawerHelper`](<Runestone/AesirArchitecture/Editor/ObservableCollectionDrawerHelper.md>) | 可观察集合的 Odin 内联调试面板 —— 在 Inspector 中直接显示集合运行状态与元素预览， 其下仍保留默认绘制（元素可正常编辑）。 |
 | [`ObservableCollectionInspectorUtility`](<Runestone/AesirArchitecture/Editor/ObservableCollectionInspectorUtility.md>) | 可观察集合调试面板的反射工具 —— 在编辑器侧读取集合的运行时状态。 |
-| [`ObservableDictionaryDrawer<TKey, TValue>`](<Runestone/AesirArchitecture/Editor/ObservableDictionaryDrawer{TKey, TValue}.md>) | — |
+| [`ObservableDictionaryDrawer{TKey, TValue}`](<Runestone/AesirArchitecture/Editor/ObservableDictionaryDrawer{TKey, TValue}.md>) | ## 构造方法 |
 | [`ObservableHashSetDrawer<T>`](<Runestone/AesirArchitecture/Editor/ObservableHashSetDrawer{T}.md>) | 可观察集合（HashSet）的内联调试面板。 |
 | [`ObservableListDrawer<T>`](<Runestone/AesirArchitecture/Editor/ObservableListDrawer{T}.md>) | 可观察列表的内联调试面板。 |
 | [`ObservableQueueDrawer<T>`](<Runestone/AesirArchitecture/Editor/ObservableQueueDrawer{T}.md>) | 可观察队列的内联调试面板。 |
 | [`QuickCreateSOMenuItem`](<Runestone/AesirArchitecture/Editor/QuickCreateSOMenuItem.md>) | 右键快捷生成 ScriptableObject 资源文件。 项目同时安装 Aesir Inspector（独立包，写入 AESIR_INSPECTOR 宏）时本类整体不参与编译… |
 | [`ScriptingSymbolEditorUtility`](<Runestone/AesirArchitecture/Editor/ScriptingSymbolEditorUtility.md>) | 脚本宏定义工具，用于管理 PlayerSettings 中的 Scripting Define Symbols。 遍历所有构建目标（排除 Unknown 和 Dedicated… |
+
+</div>
+
+### 结构体
+
+<div class="api-summary-table" markdown="1">
+
+| 名称 | 描述 |
+| :--- | :--- |
+| [`AesirUpdateService.TimeoutBudget`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.TimeoutBudget.md>) | 墙钟超时预算。用于给"整轮检测""单次请求""下载"设硬上限—— UnityWebRequest.timeout 只覆盖"完全无数据"的情形，服务端慢速滴水时不会触发， 会把进… |
 
 </div>
 
@@ -189,6 +202,7 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | 名称 | 描述 |
 | :--- | :--- |
 | [`AesirGetStartedService.AesirInstallType`](<Runestone/AesirArchitecture/Editor/AesirGetStartedService.AesirInstallType.md>) | 包安装形态（决定示例根目录的解析方式）。 |
+| [`AesirUpdateService.ReleaseRouteKind`](<Runestone/AesirArchitecture/Editor/AesirUpdateService.ReleaseRouteKind.md>) | 检测线路类别——决定界面上的实时性提示（越靠前越实时）。 |
 
 </div>
 

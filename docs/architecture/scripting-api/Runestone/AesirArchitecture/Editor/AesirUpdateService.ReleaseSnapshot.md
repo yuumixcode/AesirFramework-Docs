@@ -45,11 +45,20 @@ public AesirUpdateService.ReleaseSnapshot()
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`Kind`](#field-kind) | 来源所属线路类别（直连 GitHub / 镜像站 / CDN 中转）。 |
 | [`Info`](#field-info) | 版本与清单信息；302 重定向路径只有 tag，此字段为 null（更新时跳过残留清理）。 |
-| [`Source`](#field-source) | 来源描述（如 "jsDelivr (cdn.jsdelivr.net)" / "GitHub API" / "GitHub 重定向"）。 |
+| [`Source`](#field-source) | 来源描述（如 "GitHub API" / "镜像 ghproxy.net" / "jsDelivr (cdn.jsdelivr.net)"）。 |
 | [`Tag`](#field-tag) | Release 标签名（如 v0.15.0）。 |
 
 </div>
+
+### Kind {#field-kind}
+
+来源所属线路类别（直连 GitHub / 镜像站 / CDN 中转）。
+
+``` csharp
+public AesirUpdateService.ReleaseRouteKind Kind;
+```
 
 ### Info {#field-info}
 
@@ -61,7 +70,7 @@ public AesirUpdateService.UpdateInfo Info;
 
 ### Source {#field-source}
 
-来源描述（如 "jsDelivr (cdn.jsdelivr.net)" / "GitHub API" / "GitHub 重定向"）。
+来源描述（如 "GitHub API" / "镜像 ghproxy.net" / "jsDelivr (cdn.jsdelivr.net)"）。
 
 ``` csharp
 public string Source;

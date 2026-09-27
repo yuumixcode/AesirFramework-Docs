@@ -23,7 +23,7 @@ hide:
 
 <div class="aesir-hero__meta">
 <span>Unity / 团结引擎 2022.3+</span>
-<span>Architecture + Modules 0.26.0</span>
+<span>Architecture + Modules 0.27.0</span>
 <span>MIT License</span>
 </div>
 
@@ -36,7 +36,7 @@ hide:
 === "Aesir Architecture"
 
     ```text
-    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.26.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.0
     ```
 
 === "Aesir Modules"
@@ -44,15 +44,15 @@ hide:
     Modules 依赖 Architecture。安装 Modules 时请同时添加两个固定版本分支：
 
     ```text
-    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.26.0
-    https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.26.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.27.0
     ```
 
 === "unitypackage"
 
     从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载对应版本的 `.unitypackage`。如果需要完整组合包，可选择 `AesirFramework-v<版本>.unitypackage`。
 
-    `unitypackage` 安装到 `Assets/Runestone/` 后，可以使用 `Tools → Aesir → Check for Updates` 检测、备份并更新；Git URL 安装请直接通过 Package Manager 管理。
+    `unitypackage` 安装到 `Assets/Runestone/` 后，可以使用 `Tools → Aesir → Check for Updates` 检测并更新；Git URL 安装请直接通过 Package Manager 管理。
 
 ## 兼容性
 

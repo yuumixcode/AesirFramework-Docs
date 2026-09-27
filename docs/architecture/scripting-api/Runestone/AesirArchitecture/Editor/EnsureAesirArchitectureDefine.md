@@ -25,7 +25,8 @@ internal static class EnsureAesirArchitectureDefine
 
 **备注**
 
-[InitializeOnLoad] 特性使 Unity 在编辑器加载时自动调用此类的静态构造函数， 静态构造函数通过 EnsureScriptingDefineSymbol 方法 确保所有构建目标中都存在 AESIR_ARCHITECTURE 宏定义， 从而使依赖本架构的其他包可以通过条件编译指令在编译期检测架构是否可用。
+[InitializeOnLoad] 特性使 Unity 在编辑器加载时自动调用此类的静态构造函数， 经 EnsureScriptingDefineSymbol 方法 确保所有构建目标中都存在 AESIR_ARCHITECTURE 宏定义， 从而使依赖本架构的其他包可以通过条件编译指令在编译期检测架构是否可用。
+写入宏会触发脚本重编译，而静态构造函数运行在程序集注册 / 域重载期间—— 此时直接发起重编译属于重入，可能使 Unity 走到程序集注册的致命分支。 故实际写入推迟到 delayCall（编辑器空闲首帧）执行； EnsureScriptingDefineSymbol 本身按构建目标逐一比对、 仅在符号确实缺失时才写入（已存在则零写入、不触发重编译），此行为不因推迟而改变。
 
 ## 方法
 

@@ -84,9 +84,11 @@ public AesirUpdateController.UpdateState State { get; }
 | 名称 | 描述 |
 | :--- | :--- |
 | [`OutdatedPackages()`](#method-outdatedpackages) | 取全部待更新包（委托 ComputeOutdatedPackages，按包 id 排序保证依赖顺序）。 |
+| [`UpdateTargets()`](#method-updatetargets) | 取「全部更新」的执行目标：全部待更新包 + 缺失的已知包（补装）， 委托 ComputeUpdateTargets——「全部更新」按钮的可见性也以此判断。 |
 | [`CheckForUpdates()`](#method-checkforupdates) | 检查远程最新版本并拉取更新日志（忙碌中重复调用直接返回）。 |
 | [`Initialize()`](#method-initialize) | 初始化：磁盘 .git 检测 + 首次重扫。窗口 OnEnable 调用（域重载后重跑两项 NonSerialized 检测）。 |
-| [`RequestUpdate(List<AesirUpdateService.InstalledPackage>)`](#method-requestupdate-list-aesirupdateservice-installedpackage) | 更新入口（「全部更新」按钮）：先弹确认框防误操作，确认后执行 备份 → 逐包下载导入 → 登记清单。取消或忙碌中直接返回。 两包同 Release 发布且 Modules 依赖 Architecture——任何调用都会被扩展为全部待更新包， 从入口杜绝单包更新造成的版本撕裂。 |
+| [`RequestUpdateAll()`](#method-requestupdateall) | 「全部更新」入口（工具栏按钮）：目标 = 全部待更新包 + 缺失的已知包（补装， ComputeUpdateTargets）——「全部更新」的语义是让整个框架 到达远程版本（旧的更新、缺的安装）。确认框含补装说明（缺失的包会标为「新安装」并单独提示， 用户可选择取消后仅单独更新已安装的包）。取消或忙碌中直接返回。 |
+| [`RequestUpdateSingle(AesirUpdateService.InstalledPackage)`](#method-requestupdatesingle-aesirupdateservice-installedpackage) | 「单包更新」入口（包列表行内按钮）：仅更新指定包，供只需要其中一个包的用户使用。 另一已知包在场且落后于远程版本时，确认框前置配套版本警告（两包按同版本配套发布， 仅更新其一可能造成版本撕裂——提示但不阻止，决定权在用户）。 |
 | [`Rescan()`](#method-rescan) | 重新扫描本地安装（远程信息保留，更新导入触发域重载后继续展示）。 扫描根经锚点资产定位，Runestone 移动到项目任意文件夹后照常找到。 |
 
 </div>
@@ -124,6 +126,24 @@ public List<AesirUpdateService.InstalledPackage> OutdatedPackages()
 
 </div>
 
+### UpdateTargets() {#method-updatetargets}
+
+取「全部更新」的执行目标：全部待更新包 + 缺失的已知包（补装）， 委托 ComputeUpdateTargets——「全部更新」按钮的可见性也以此判断。
+
+``` csharp
+public List<AesirUpdateService.InstalledPackage> UpdateTargets()
+```
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `List<AesirUpdateService.InstalledPackage>` | — |
+
+</div>
+
 ### CheckForUpdates() {#method-checkforupdates}
 
 检查远程最新版本并拉取更新日志（忙碌中重复调用直接返回）。
@@ -141,12 +161,20 @@ public async void CheckForUpdates()
 public void Initialize()
 ```
 
-### RequestUpdate(List<AesirUpdateService.InstalledPackage>) {#method-requestupdate-list-aesirupdateservice-installedpackage}
+### RequestUpdateAll() {#method-requestupdateall}
 
-更新入口（「全部更新」按钮）：先弹确认框防误操作，确认后执行 备份 → 逐包下载导入 → 登记清单。取消或忙碌中直接返回。 两包同 Release 发布且 Modules 依赖 Architecture——任何调用都会被扩展为全部待更新包， 从入口杜绝单包更新造成的版本撕裂。
+「全部更新」入口（工具栏按钮）：目标 = 全部待更新包 + 缺失的已知包（补装， ComputeUpdateTargets）——「全部更新」的语义是让整个框架 到达远程版本（旧的更新、缺的安装）。确认框含补装说明（缺失的包会标为「新安装」并单独提示， 用户可选择取消后仅单独更新已安装的包）。取消或忙碌中直接返回。
 
 ``` csharp
-public void RequestUpdate(List<AesirUpdateService.InstalledPackage> targets)
+public void RequestUpdateAll()
+```
+
+### RequestUpdateSingle(AesirUpdateService.InstalledPackage) {#method-requestupdatesingle-aesirupdateservice-installedpackage}
+
+「单包更新」入口（包列表行内按钮）：仅更新指定包，供只需要其中一个包的用户使用。 另一已知包在场且落后于远程版本时，确认框前置配套版本警告（两包按同版本配套发布， 仅更新其一可能造成版本撕裂——提示但不阻止，决定权在用户）。
+
+``` csharp
+public void RequestUpdateSingle(AesirUpdateService.InstalledPackage package)
 ```
 
 **参数**
@@ -155,7 +183,7 @@ public void RequestUpdate(List<AesirUpdateService.InstalledPackage> targets)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `targets` | `List<AesirUpdateService.InstalledPackage>` | — |
+| `package` | `AesirUpdateService.InstalledPackage` | — |
 
 </div>
 

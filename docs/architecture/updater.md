@@ -1,6 +1,6 @@
 # 包内更新器
 
-Aesir Architecture 内置面向 **unitypackage 安装方式**的包内更新器:无需重新下载导入,编辑器内一键完成版本检测、备份与更新。
+Aesir Architecture 内置面向 **unitypackage 安装方式**的包内更新器:无需重新下载导入,编辑器内一键完成版本检测与更新。
 
 !!! warning "管辖范围"
     更新器只管辖 `Assets/Runestone/` 下的代码导入副本(unitypackage 安装)。**Git URL(UPM)安装的副本不在管辖内**,请用 Package Manager 更新;**开发仓库(存在 `.git`)切勿点更新** —— Release 内容会覆盖本地源码(窗口已内置警告)。
@@ -13,19 +13,25 @@ Aesir Architecture 内置面向 **unitypackage 安装方式**的包内更新器:
 2. 检测最新 Release 版本
 3. 点击更新,自动完成全流程(无需手动干预)
 
+## 更新入口:单包更新与全部更新
+
+- **行内「更新」按钮** —— 包列表每行一个,仅更新该包;只使用其中一个包的项目按需更新。另一已知包在场且落后于远程版本时,确认框前置「配套版本警告」(两包按同版本配套发布,仅更新其一可能导致 API 不匹配),提示但不阻止
+- **「全部更新」按钮** —— 语义为"补全 + 更新":目标 = 过期包 + 缺失的已知包补装。只装了其中一个包的项目点「全部更新」会把缺失的包一并装上,确认框逐包标注「更新 / 新安装」并前置缺包说明
+
 ## 更新流程
 
 ```
-检测新版本 → 下载 unitypackage → 自动备份 → 差集清理残留 → 静默导入 → 登记安装清单
+检测新版本 → 下载 unitypackage → 静默导入 → 差集清理残留 → 登记安装清单
 ```
 
 | 步骤 | 行为 |
 |------|------|
 | 下载 | 从 GitHub Release 拉取 `<包目录名>-v<版本>.unitypackage` |
-| 备份 | 更新前自动备份 `Assets/Runestone` 到项目根 `.aesir-backup/`(时间戳前缀命名,保留最近 3 份) |
-| 残留清理 | 按「上次安装清单 − 新版清单」精确差集删除(仅限本包目录内;无历史清单则跳过,不误伤用户新增文件) |
 | 导入 | `AssetDatabase.ImportPackage` 静默导入 |
+| 残留清理 | 导入成功后按「上次安装清单 − 新版清单」精确差集删除(仅限本包目录内;无历史清单则跳过,不误伤用户新增文件;导入失败时旧文件原封不动) |
 | 清单登记 | 逐包合并登记 `.aesir/installed-manifest.json`;更新中途域重载时,已导入包的状态保证正确落盘 |
+
+回滚方式:上一版本 unitypackage 永久保留在 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases),下载对应版本重新导入即可完整还原;本地修改会被 Release 内容覆盖,确认框中已明示。
 
 ## 版本检测:直连优先的三层兜底(大陆友好)
 
@@ -62,11 +68,15 @@ Aesir Architecture 内置面向 **unitypackage 安装方式**的包内更新器:
 
 两包同号发版、Modules 依赖 Architecture,所以更新总是按依赖顺序逐包执行。导入 unitypackage 会带来脚本变更,流程期间会锁定程序集重载,避免中途域重载打断第二个包的更新(表现为进度条停留、按钮提前可点);导入瞬间会先收起本工具进度条,让位给 Unity 自带的导入进度条。
 
-unitypackage 下载始终走 GitHub Release 直链(jsDelivr 不代理 Release 资产)。
+### 下载:逐线路兜底与可取消
+
+unitypackage 下载与版本检测一样逐线路兜底:GitHub Release 直链 → 镜像站代理(ghproxy.net / gh-proxy.com 前缀 + 完整 Release 地址),单线路失败自动落下一线路,全部失败时异常附「打开 Releases 页面手动下载、双击导入」的自助指引(jsDelivr 不代理 Release 资产,故 CDN 不参与下载)。
+
+下载阶段的进度条可随时点「取消」中止:取消后温和收尾,如实区分「已完成导入的包(保持有效)」与「未更新的包」;更新期间请保持 Unity 窗口处于前台(编辑器失焦时下载与导入可能停滞)。
 
 ## 设计参考
 
-实现参考 QFramework PackageKit(版本记录随包走 + 先删后导),增强点为**自动备份**与**精确差集清理**。
+实现参考 QFramework PackageKit(版本记录随包走),增强点为**精确差集清理**(清理时机为导入成功之后,非 PackageKit 的先删后导)。
 
 ## 继续阅读
 

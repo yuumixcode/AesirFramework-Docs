@@ -51,7 +51,7 @@ public ScriptDocGeneratorPanelSO()
 | [`TemporaryTypes`](#property-temporarytypes) | — |
 | [`TypeSourceProperty`](#property-typesourceproperty) | — |
 | [`TargetType`](#property-targettype) | — |
-| [`Instance`](#property-instance) | — |
+| [`Instance`](#property-instance) | 面板单例访问。解析结果按域缓存：缺失资产的解析会执行 CreateAsset 与 AssetDatabase.Refresh， 每次都重新解析会把这类重操作带进绘制回调等高频路径。 |
 | [`DefaultDocFolderPath`](#property-defaultdocfolderpath) | — |
 
 </div>
@@ -86,6 +86,8 @@ public Type TargetType { get; set; }
 ```
 
 ### Instance {#property-instance}
+
+面板单例访问。解析结果按域缓存：缺失资产的解析会执行 CreateAsset 与 AssetDatabase.Refresh， 每次都重新解析会把这类重操作带进绘制回调等高频路径。
 
 ``` csharp
 public static ScriptDocGeneratorPanelSO Instance { get; }

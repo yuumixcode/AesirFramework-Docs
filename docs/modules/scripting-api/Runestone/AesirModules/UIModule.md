@@ -56,7 +56,7 @@ public UIModule()
 | 名称 | 描述 |
 | :--- | :--- |
 | [`UICamera`](#property-uicamera) | UI 专用相机。正交、depth=1、cullingMask=含 UI 层 (5) 和 TransparentFX 层 (1)。 |
-| [`MaskMode`](#property-maskmode) | 窗口蒙版调度模式。运行时可切换，切换后立即重算全部窗口蒙版。 |
+| [`MaskMode`](#property-maskmode) | 窗口蒙版调度模式。初值来自 UIModuleConfigSO（在 Project 窗口编辑配置资产即可调整， 不要求预放置本组件）；运行时可切换，切换后立即重算全部窗口蒙版。 |
 | [`Instance`](#property-instance) | 全局单例入口。 优先在已加载场景中查找预放置的实例；未找到时在 AesirModules（DDOL）下创建子物体。 |
 
 </div>
@@ -103,7 +103,7 @@ public Camera UICamera { get; }
 
 ### MaskMode {#property-maskmode}
 
-窗口蒙版调度模式。运行时可切换，切换后立即重算全部窗口蒙版。
+窗口蒙版调度模式。初值来自 UIModuleConfigSO（在 Project 窗口编辑配置资产即可调整， 不要求预放置本组件）；运行时可切换，切换后立即重算全部窗口蒙版。
 
 ``` csharp
 public UIMaskMode MaskMode { get; set; }

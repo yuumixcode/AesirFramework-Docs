@@ -44,16 +44,27 @@ public AesirUpdateController.UpdateState()
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`RemoteRouteKind`](#field-remoteroutekind) | 检测来源所属线路类别（直连 GitHub / 镜像站 / CDN 中转）。 |
 | [`Snapshot`](#field-snapshot) | 远程 Release 快照（检测成功后有值）。 |
 | [`Packages`](#field-packages) | 本地扫描到的安装包（Rescan 时重建）。 |
 | [`Busy`](#field-busy) | 忙碌标志（域重载后重置，见类注释）。 |
+| [`GitHubDirectAvailable`](#field-githubdirectavailable) | 本次检测中直连 GitHub 是否可用（可用即结果 100% 实时）。 |
 | [`IsGitRepository`](#field-isgitrepository) | 项目根是否存在 .git 目录（每次 Initialize 重跑）。 |
 | [`ChangelogText`](#field-changelogtext) | 「本地 → 远程」更新日志摘要。 |
-| [`RemoteSource`](#field-remotesource) | 远程版本的检测来源。 |
+| [`DetectionDetail`](#field-detectiondetail) | 本次检测各层尝试的可读记录（界面「检测详情」与故障定位用）。 |
+| [`RemoteSource`](#field-remotesource) | 远程版本的检测来源（源展示名，如 "GitHub API" / "jsDelivr (cdn.jsdelivr.net)"）。 |
 | [`RemoteVersion`](#field-remoteversion) | 远程最新版本号。 |
 | [`Status`](#field-status) | 状态栏文本。 |
 
 </div>
+
+### RemoteRouteKind {#field-remoteroutekind}
+
+检测来源所属线路类别（直连 GitHub / 镜像站 / CDN 中转）。
+
+``` csharp
+public AesirUpdateService.ReleaseRouteKind RemoteRouteKind;
+```
 
 ### Snapshot {#field-snapshot}
 
@@ -80,6 +91,14 @@ public List<AesirUpdateService.InstalledPackage> Packages;
 public bool Busy;
 ```
 
+### GitHubDirectAvailable {#field-githubdirectavailable}
+
+本次检测中直连 GitHub 是否可用（可用即结果 100% 实时）。
+
+``` csharp
+public bool GitHubDirectAvailable;
+```
+
 ### IsGitRepository {#field-isgitrepository}
 
 项目根是否存在 .git 目录（每次 Initialize 重跑）。
@@ -97,9 +116,17 @@ public bool IsGitRepository;
 public string ChangelogText;
 ```
 
+### DetectionDetail {#field-detectiondetail}
+
+本次检测各层尝试的可读记录（界面「检测详情」与故障定位用）。
+
+``` csharp
+public string DetectionDetail;
+```
+
 ### RemoteSource {#field-remotesource}
 
-远程版本的检测来源。
+远程版本的检测来源（源展示名，如 "GitHub API" / "jsDelivr (cdn.jsdelivr.net)"）。
 
 ``` csharp
 public string RemoteSource;

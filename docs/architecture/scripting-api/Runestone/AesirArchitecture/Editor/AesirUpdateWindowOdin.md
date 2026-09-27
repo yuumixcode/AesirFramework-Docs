@@ -23,10 +23,10 @@ UnityEngine.ISerializationCallbackReceiver,
 UnityEditor.IHasCustomMenu
 ```
 
-Aesir 包更新窗口（Odin Inspector 版）— 检测远程最新版本、展示「本地 → 远程」更新日志、 确认后一键更新 InstallRootRelativePath 下的本地安装包。
+Aesir 包更新窗口（Odin Inspector 版）— 检测远程最新版本、展示「本地 → 远程」更新日志、 确认后更新 InstallRootRelativePath 下的本地安装包。 两种入口：包列表行内「更新」按钮仅更新单个包（配套版本风险由确认框提示）； 「全部更新」让整个框架到达远程版本（旧的更新、缺失的已知包补装，确认框明示）。
 全部编排逻辑（检测 / 更新日志 / 更新执行 / 忙碌门禁）在共享控制器 AesirUpdateController 中与 IMGUI 兜底窗口共用，本类只做状态序列化、标题区手绘、 行视图模型与 Odin 特性绘制。编辑器加载时经 RegisterOpener 把打开方式注册进 菜单入口 AesirUpdateWindow；未安装 Odin Inspector 时本程序集整体不参与编译， 菜单自动回退到 IMGUI 兜底窗口。
 
-状态设计：远程版本 / 检测结果 / 更新日志均为序列化字段，更新导入触发域重载后窗口内容不丢失； 行视图模型（PackageRow）在状态变化时一次性重建并重算显示文本与颜色， OnGUI 期间零 LINQ、零字符串拼接、零磁盘 IO。
+状态设计：远程版本 / 检测结果 / 更新日志均为序列化字段，更新导入触发域重载后窗口内容不丢失； 行视图模型（PackageRow）在状态变化时一次性重建并重算显示文本与颜色， OnGUI 期间零 LINQ、零字符串拼接、零磁盘 IO（行内按钮的 Owner 引用为非序列化，域重载后随重建回填）。
 
 ## 构造方法
 
@@ -131,6 +131,7 @@ public bool Busy { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`RequestUpdateSingle(AesirUpdateService.InstalledPackage)`](#method-requestupdatesingle-aesirupdateservice-installedpackage) | 行内单包更新按钮的转发（PackageRow 经 Owner 调用；忙碌门禁在控制器内兜底）。 |
 | [`OpenWindow()`](#method-openwindow) | 打开窗口（菜单路由到此）。 |
 
 </div>
@@ -195,6 +196,24 @@ public bool Busy { get; }
 | `UpdateEditors()` | — | `OdinEditorWindow` |
 | `SetDirty()` | — | `ScriptableObject` |
 | `OnGUI()` | — | `OdinEditorWindow` |
+
+</div>
+
+### RequestUpdateSingle(AesirUpdateService.InstalledPackage) {#method-requestupdatesingle-aesirupdateservice-installedpackage}
+
+行内单包更新按钮的转发（PackageRow 经 Owner 调用；忙碌门禁在控制器内兜底）。
+
+``` csharp
+public void RequestUpdateSingle(AesirUpdateService.InstalledPackage package)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `package` | `AesirUpdateService.InstalledPackage` | — |
 
 </div>
 

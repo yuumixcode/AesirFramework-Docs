@@ -62,7 +62,7 @@ public DefaultScriptingAPISettingsSO()
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Instance`](#property-instance) | — |
+| [`Instance`](#property-instance) | 默认生成设置单例访问。解析结果按域缓存：缺失资产的解析会执行 CreateAsset 与 AssetDatabase.Refresh，每次都重新解析会把这类重操作带进高频路径。 |
 
 </div>
 
@@ -78,6 +78,8 @@ public DefaultScriptingAPISettingsSO()
 </div>
 
 ### Instance {#property-instance}
+
+默认生成设置单例访问。解析结果按域缓存：缺失资产的解析会执行 CreateAsset 与 AssetDatabase.Refresh，每次都重新解析会把这类重操作带进高频路径。
 
 ``` csharp
 public static DefaultScriptingAPISettingsSO Instance { get; }

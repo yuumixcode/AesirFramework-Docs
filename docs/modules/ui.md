@@ -98,14 +98,14 @@ XxxWindow(根: Canvas + CanvasScaler + GraphicRaycaster + 窗口脚本; 类名 =
 
 ### 蒙版机制(单遮 / 叠遮)
 
-蒙版不是独立物体, 而是窗口预制体内的 `Mask` 子物体: 位于自身 Canvas 内、`Content` 之下、其余一切 UI 之上 —— 天然挡住本窗口以下的面板与其他窗口的射线与视觉。`UIModule` 按序列化配置 `maskMode` 统一调度, 每次窗口 Open / Close / 销毁后重算:
+蒙版不是独立物体, 而是窗口预制体内的 `Mask` 子物体: 位于自身 Canvas 内、`Content` 之下、其余一切 UI 之上 —— 天然挡住本窗口以下的面板与其他窗口的射线与视觉。`UIModule` 按全局配置资产 `UIModuleConfigSO` 的 `maskMode` 统一调度, 每次窗口 Open / Close / 销毁后重算。配置资产由编辑器自动创建于 `Assets/Resources/UIModuleConfig/`, 在 Project 窗口直接编辑即可, 无需预放置 `[UIModule]`:
 
 | 模式 | 语义 |
 |------|------|
 | 单遮(默认) | 全局仅最高层可见窗口的蒙版生效(sortingOrder 最大者, 同值取后开者), 多窗口叠加透明度不叠加 |
 | 叠遮 | 各窗口蒙版独立跟随自身打开状态, 透明度逐层叠加 |
 
-蒙版点击经 `Mask` 子物体的 Button 在 `OnInit` 自动接线, 回调虚方法 `OnMaskClicked()` —— 默认按 `closeOnMaskClick`(默认关)决定是否关闭本窗口, 子类可覆写自定义行为; 运行时经 `UIModule.Instance.MaskMode` 切换, 切换立即重算。无 `Mask` 子物体的窗口(如全屏不透明加载页)不参与遮挡。
+蒙版点击经 `Mask` 子物体的 Button 在 `OnInit` 自动接线, 回调虚方法 `OnMaskClicked()` —— 默认按 `closeOnMaskClick`(默认关)决定是否关闭本窗口, 子类可覆写自定义行为; 运行时经 `UIModule.MaskMode` 切换(初值取自 `UIModuleConfigSO`, 运行时切换只覆盖内存值并立即重算)。无 `Mask` 子物体的窗口(如全屏不透明加载页)不参与遮挡。
 
 运行示例见包内 `Samples/UI/01_BasicUsage`(面板与窗口协作、蒙版单遮 / 叠遮运行时切换对照、点击蒙版关闭、全屏加载窗口 payload 自动关闭)。
 

@@ -62,7 +62,7 @@ public ZensicalScriptingAPISettingsSO()
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Instance`](#property-instance) | Zensical 文档生成设置单例 |
+| [`Instance`](#property-instance) | Zensical 文档生成设置单例。解析结果按域缓存：缺失资产的解析会执行 CreateAsset 与 AssetDatabase.Refresh，每次都重新解析会把这类重操作带进高频路径。 |
 
 </div>
 
@@ -79,7 +79,7 @@ public ZensicalScriptingAPISettingsSO()
 
 ### Instance {#property-instance}
 
-Zensical 文档生成设置单例
+Zensical 文档生成设置单例。解析结果按域缓存：缺失资产的解析会执行 CreateAsset 与 AssetDatabase.Refresh，每次都重新解析会把这类重操作带进高频路径。
 
 ``` csharp
 public static ZensicalScriptingAPISettingsSO Instance { get; }

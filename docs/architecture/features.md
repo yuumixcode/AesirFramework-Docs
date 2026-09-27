@@ -99,7 +99,7 @@ Engine 层零 MonoBehaviour 依赖,适配层按需选用:
 
 ## 包内更新器
 
-`Tools → Aesir → Check for Updates`:多源版本检测(jsDelivr CDN → GitHub API → 重定向探测,大陆友好)、更新前自动备份 `Assets/Runestone`(保留 3 份)、按"上次安装清单 − 新版清单"精确差集清理残留、不误伤用户新增文件、域重载中断安全。
+`Tools → Aesir → Check for Updates`:多源版本检测(直连 GitHub 三层 → 镜像站 → CDN 中转,大陆友好)、按"上次安装清单 − 新版清单"精确差集清理残留(导入成功之后执行)、不误伤用户新增文件、域重载中断安全。
 
 ## Odin Inspector 可选集成
 

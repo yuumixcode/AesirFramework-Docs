@@ -23,10 +23,12 @@ Sirenix.Serialization.ISupportsPrefabSerialization,
 UnityEngine.ISerializationCallbackReceiver
 ```
 
-场景加载与叠加管理模块。
+场景加载与叠加管理模块（MonoBehaviour 单例）—— 公开 API 全部为静态成员，经 Instance 单例转发。
 语义对齐 Unity 原生 LoadSceneMode：Single 卸载全部场景并重设激活场景； Additive 纯叠加、不改变激活场景，叠加场景统一记入追踪列表（UnloadScene 卸载时自动移出）。 Addressable 场景（Addressable）不归本模块加载， 请通过 Addressables API 加载。
 
 加载/卸载完成会同步广播 SceneLoadedEvent / SceneUnloadedEvent （参数为场景路径），供多个系统订阅场景生命周期。
+
+异步驱动：游戏工程包含 UniTask 时（宏 AESIR_MODULES_UNITASK 由编辑器自动维护）， 内部加载/卸载流程改由 UniTask 驱动，SceneModuleUniTask 适配程序集额外提供可 await 的 UniTask 返回 API；未包含 UniTask 时回退为协程驱动，公开 API 与回调语义完全一致。
 
 ## 构造方法
 
@@ -70,11 +72,11 @@ public static readonly IReadOnlyList<string> PresetBootstrapSceneNames;
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AddedScenePaths`](#property-addedscenepaths) | 叠加场景路径（只读）。含所有经本模块 Additive 加载、尚未卸载的场景。 |
-| [`SceneLoadedEvent`](#property-sceneloadedevent) | — |
-| [`SceneUnloadedEvent`](#property-sceneunloadedevent) | — |
-| [`LastLoadedScene`](#property-lastloadedscene) | 最后一个已经加载的场景，Scene 结构体 |
-| [`BootstrapSceneAssetWrapper`](#property-bootstrapsceneassetwrapper) | 启动场景引用（编辑器 BootstrapSceneHelper 的工作流之外，供用户代码读取路径/名称自行编排启动流程）。 |
+| [`AddedScenePaths`](#property-addedscenepaths) | 叠加场景路径（只读，静态门面）。含所有经本模块 Additive 加载、尚未卸载的场景。 |
+| [`SceneLoadedEvent`](#property-sceneloadedevent) | 场景加载完成事件（静态门面，经单例转发）。Single 与 Additive 均触发；参数为场景路径。 在 onCompleted 回调之前广播。 |
+| [`SceneUnloadedEvent`](#property-sceneunloadedevent) | 场景卸载完成事件（静态门面，经单例转发）。参数为场景路径。在 onUnloaded / onAllUnloaded 回调之前广播。 |
+| [`LastLoadedScene`](#property-lastloadedscene) | 最后一个已经加载的场景，Scene 结构体（静态门面，经单例转发）。 |
+| [`BootstrapSceneAssetWrapper`](#property-bootstrapsceneassetwrapper) | 启动场景引用（静态门面，经单例转发）。编辑器 BootstrapSceneHelper 的工作流之外， 供用户代码读取路径/名称自行编排启动流程。预放置实例的序列化字段非 null 时优先返回； 未赋值时回退 SceneModuleConfigSO 的全局启动场景（无需预放置即可在 Project 窗口配置）， 两者均未配置时返回 null。 |
 | [`Instance`](#property-instance) | 全局单例入口。 优先在已加载场景中查找预放置的实例；未找到时在 AesirModules（DDOL）下创建子物体。 |
 
 </div>
@@ -113,38 +115,42 @@ public static readonly IReadOnlyList<string> PresetBootstrapSceneNames;
 
 ### AddedScenePaths {#property-addedscenepaths}
 
-叠加场景路径（只读）。含所有经本模块 Additive 加载、尚未卸载的场景。
+叠加场景路径（只读，静态门面）。含所有经本模块 Additive 加载、尚未卸载的场景。
 
 ``` csharp
-public IReadOnlyList<string> AddedScenePaths { get; }
+public static IReadOnlyList<string> AddedScenePaths { get; }
 ```
 
 ### SceneLoadedEvent {#property-sceneloadedevent}
 
+场景加载完成事件（静态门面，经单例转发）。Single 与 Additive 均触发；参数为场景路径。 在 onCompleted 回调之前广播。
+
 ``` csharp
-public MiniEvent<string> SceneLoadedEvent { get; }
+public static MiniEvent<string> SceneLoadedEvent { get; }
 ```
 
 ### SceneUnloadedEvent {#property-sceneunloadedevent}
 
+场景卸载完成事件（静态门面，经单例转发）。参数为场景路径。在 onUnloaded / onAllUnloaded 回调之前广播。
+
 ``` csharp
-public MiniEvent<string> SceneUnloadedEvent { get; }
+public static MiniEvent<string> SceneUnloadedEvent { get; }
 ```
 
 ### LastLoadedScene {#property-lastloadedscene}
 
-最后一个已经加载的场景，Scene 结构体
+最后一个已经加载的场景，Scene 结构体（静态门面，经单例转发）。
 
 ``` csharp
-public Scene LastLoadedScene { get; private set; }
+public static Scene LastLoadedScene { get; }
 ```
 
 ### BootstrapSceneAssetWrapper {#property-bootstrapsceneassetwrapper}
 
-启动场景引用（编辑器 BootstrapSceneHelper 的工作流之外，供用户代码读取路径/名称自行编排启动流程）。
+启动场景引用（静态门面，经单例转发）。编辑器 BootstrapSceneHelper 的工作流之外， 供用户代码读取路径/名称自行编排启动流程。预放置实例的序列化字段非 null 时优先返回； 未赋值时回退 SceneModuleConfigSO 的全局启动场景（无需预放置即可在 Project 窗口配置）， 两者均未配置时返回 null。
 
 ``` csharp
-public SceneAssetWrapper BootstrapSceneAssetWrapper { get; }
+public static SceneAssetWrapper BootstrapSceneAssetWrapper { get; }
 ```
 
 ### Instance {#property-instance}
@@ -163,16 +169,16 @@ public static SceneModule Instance { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`SetActiveScene(SceneAssetWrapper)`](#method-setactivescene-sceneassetwrapper) | 把已加载的指定场景设为激活场景。通过 SceneAssetWrapper 指定场景。 |
-| [`SetActiveScene(string)`](#method-setactivescene-string) | 把已加载的指定场景设为激活场景（多场景叠加工作流的高频操作，决定光照设置来源与 Instantiate 默认落点）。对齐 Unity 原生 SetActiveScene 语义，返回是否成功； 场景未加载或引用无效时输出错误并返回 false。 |
-| [`LoadSceneAdditive(SceneAssetWrapper, Action, Action, Action<float>)`](#method-loadsceneadditive-sceneassetwrapper-action-action-action-float) | 加载场景。Additive 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。 |
-| [`LoadSceneAdditive(string, Action, Action, Action<float>)`](#method-loadsceneadditive-string-action-action-action-float) | 加载场景。Additive 模式：纯叠加、不改变激活场景（对齐 Unity 原生语义），并记入叠加追踪。 可传入完成/失败回调与逐帧进度回调（0-1，已按 0.9 激活上限归一化）。 约定：请勿对同一路径重复叠加加载——Unity 会加载两个场景实例，而追踪列表按路径粒度只记录一次， UnloadScene(string, Action, Action) 按路径卸载时只卸载其中一个实例，剩余实例将脱离追踪。 |
-| [`LoadSceneSingle(SceneAssetWrapper, Action, Action, Action<float>)`](#method-loadscenesingle-sceneassetwrapper-action-action-action-float) | 加载场景。Single 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。 |
-| [`LoadSceneSingle(string, Action, Action, Action<float>)`](#method-loadscenesingle-string-action-action-action-float) | 加载场景。Single 模式：卸载全部场景、重设激活场景、加载成功后清空叠加追踪（失败时保留）。 可传入完成/失败回调与逐帧进度回调（0-1，已按 0.9 激活上限归一化）。 |
-| [`ReloadScene(Action, Action)`](#method-reloadscene-action-action) | 重新加载当前激活场景。异步 Single 模式，加载成功后清空叠加场景追踪。 编辑器中激活场景尚未保存（无有效路径）时走失败回调。 |
-| [`UnloadAllAddedScenes(Action)`](#method-unloadalladdedscenes-action) | 卸载所有经本模块叠加加载的场景。单个场景卸载失败（场景已被外部卸载）时跳过并告警，不影响其余场景。 可传入全部卸载完成回调。 |
-| [`UnloadScene(SceneAssetWrapper, Action, Action)`](#method-unloadscene-sceneassetwrapper-action-action) | 卸载场景。通过 SceneAssetWrapper 指定场景。 |
-| [`UnloadScene(string, Action, Action)`](#method-unloadscene-string-action-action) | 卸载场景。若该场景在叠加追踪列表中则自动移出。可传入卸载完成/失败回调。 |
+| [`SetActiveScene(SceneAssetWrapper)`](#method-setactivescene-sceneassetwrapper) | 把已加载的指定场景设为激活场景（静态门面）。通过 SceneAssetWrapper 指定场景。 |
+| [`SetActiveScene(string)`](#method-setactivescene-string) | 把已加载的指定场景设为激活场景（静态门面，纯静态操作，不会创建模块实例）。 多场景叠加工作流的高频操作，决定光照设置来源与 Instantiate 默认落点。 对齐 Unity 原生 SetActiveScene 语义，返回是否成功；场景未加载或引用无效时输出错误并返回 false。 |
+| [`LoadSceneAdditive(SceneAssetWrapper, Action, Action, Action<float>)`](#method-loadsceneadditive-sceneassetwrapper-action-action-action-float) | 加载场景（静态门面）。Additive 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。 |
+| [`LoadSceneAdditive(string, Action, Action, Action<float>)`](#method-loadsceneadditive-string-action-action-action-float) | 加载场景（静态门面）。Additive 模式：纯叠加、不改变激活场景（对齐 Unity 原生语义），并记入叠加追踪。 可传入完成/失败回调与逐帧进度回调（0-1，已按激活上限归一化——上限配置于 SceneModuleConfigSO，默认 0.9）。 约定：请勿对同一路径重复叠加加载——Unity 会加载两个场景实例，而追踪列表按路径粒度只记录一次， UnloadScene(string, Action, Action) 按路径卸载时只卸载其中一个实例，剩余实例将脱离追踪。 |
+| [`LoadSceneSingle(SceneAssetWrapper, Action, Action, Action<float>)`](#method-loadscenesingle-sceneassetwrapper-action-action-action-float) | 加载场景（静态门面）。Single 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。 |
+| [`LoadSceneSingle(string, Action, Action, Action<float>)`](#method-loadscenesingle-string-action-action-action-float) | 加载场景（静态门面）。Single 模式：卸载全部场景、重设激活场景、加载成功后清空叠加追踪（失败时保留）。 可传入完成/失败回调与逐帧进度回调（0-1，已按激活上限归一化——上限配置于 SceneModuleConfigSO，默认 0.9）。 |
+| [`ReloadScene(Action, Action)`](#method-reloadscene-action-action) | 重新加载当前激活场景（静态门面）。异步 Single 模式，加载成功后清空叠加场景追踪。 编辑器中激活场景尚未保存（无有效路径）时走失败回调。 |
+| [`UnloadAllAddedScenes(Action)`](#method-unloadalladdedscenes-action) | 卸载所有经本模块叠加加载的场景（静态门面）。单个场景卸载失败（场景已被外部卸载）时跳过并告警，不影响其余场景。 可传入全部卸载完成回调。 |
+| [`UnloadScene(SceneAssetWrapper, Action, Action)`](#method-unloadscene-sceneassetwrapper-action-action) | 卸载场景（静态门面）。通过 SceneAssetWrapper 指定场景。 |
+| [`UnloadScene(string, Action, Action)`](#method-unloadscene-string-action-action) | 卸载场景（静态门面）。若该场景在叠加追踪列表中则自动移出。可传入卸载完成/失败回调。 |
 
 </div>
 
@@ -252,10 +258,10 @@ public static SceneModule Instance { get; }
 
 ### SetActiveScene(SceneAssetWrapper) {#method-setactivescene-sceneassetwrapper}
 
-把已加载的指定场景设为激活场景。通过 SceneAssetWrapper 指定场景。
+把已加载的指定场景设为激活场景（静态门面）。通过 SceneAssetWrapper 指定场景。
 
 ``` csharp
-public bool SetActiveScene(SceneAssetWrapper sceneRef)
+public static bool SetActiveScene(SceneAssetWrapper sceneRef)
 ```
 
 **参数**
@@ -280,10 +286,10 @@ public bool SetActiveScene(SceneAssetWrapper sceneRef)
 
 ### SetActiveScene(string) {#method-setactivescene-string}
 
-把已加载的指定场景设为激活场景（多场景叠加工作流的高频操作，决定光照设置来源与 Instantiate 默认落点）。对齐 Unity 原生 SetActiveScene 语义，返回是否成功； 场景未加载或引用无效时输出错误并返回 false。
+把已加载的指定场景设为激活场景（静态门面，纯静态操作，不会创建模块实例）。 多场景叠加工作流的高频操作，决定光照设置来源与 Instantiate 默认落点。 对齐 Unity 原生 SetActiveScene 语义，返回是否成功；场景未加载或引用无效时输出错误并返回 false。
 
 ``` csharp
-public bool SetActiveScene(string scenePath)
+public static bool SetActiveScene(string scenePath)
 ```
 
 **参数**
@@ -308,10 +314,10 @@ public bool SetActiveScene(string scenePath)
 
 ### LoadSceneAdditive(SceneAssetWrapper, Action, Action, Action<float>) {#method-loadsceneadditive-sceneassetwrapper-action-action-action-float}
 
-加载场景。Additive 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。
+加载场景（静态门面）。Additive 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。
 
 ``` csharp
-public void LoadSceneAdditive(SceneAssetWrapper sceneRef, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
+public static void LoadSceneAdditive(SceneAssetWrapper sceneRef, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
 ```
 
 **参数**
@@ -329,11 +335,11 @@ public void LoadSceneAdditive(SceneAssetWrapper sceneRef, Action onCompleted = n
 
 ### LoadSceneAdditive(string, Action, Action, Action<float>) {#method-loadsceneadditive-string-action-action-action-float}
 
-加载场景。Additive 模式：纯叠加、不改变激活场景（对齐 Unity 原生语义），并记入叠加追踪。 可传入完成/失败回调与逐帧进度回调（0-1，已按 0.9 激活上限归一化）。
+加载场景（静态门面）。Additive 模式：纯叠加、不改变激活场景（对齐 Unity 原生语义），并记入叠加追踪。 可传入完成/失败回调与逐帧进度回调（0-1，已按激活上限归一化——上限配置于 SceneModuleConfigSO，默认 0.9）。
 约定：请勿对同一路径重复叠加加载——Unity 会加载两个场景实例，而追踪列表按路径粒度只记录一次， UnloadScene(string, Action, Action) 按路径卸载时只卸载其中一个实例，剩余实例将脱离追踪。
 
 ``` csharp
-public void LoadSceneAdditive(string scenePath, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
+public static void LoadSceneAdditive(string scenePath, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
 ```
 
 **参数**
@@ -351,10 +357,10 @@ public void LoadSceneAdditive(string scenePath, Action onCompleted = null, Actio
 
 ### LoadSceneSingle(SceneAssetWrapper, Action, Action, Action<float>) {#method-loadscenesingle-sceneassetwrapper-action-action-action-float}
 
-加载场景。Single 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。
+加载场景（静态门面）。Single 模式。通过 SceneAssetWrapper 指定场景。 引用无效（空/不在 BuildSettings）或为 Addressable 场景时走失败回调。
 
 ``` csharp
-public void LoadSceneSingle(SceneAssetWrapper sceneRef, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
+public static void LoadSceneSingle(SceneAssetWrapper sceneRef, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
 ```
 
 **参数**
@@ -372,10 +378,10 @@ public void LoadSceneSingle(SceneAssetWrapper sceneRef, Action onCompleted = nul
 
 ### LoadSceneSingle(string, Action, Action, Action<float>) {#method-loadscenesingle-string-action-action-action-float}
 
-加载场景。Single 模式：卸载全部场景、重设激活场景、加载成功后清空叠加追踪（失败时保留）。 可传入完成/失败回调与逐帧进度回调（0-1，已按 0.9 激活上限归一化）。
+加载场景（静态门面）。Single 模式：卸载全部场景、重设激活场景、加载成功后清空叠加追踪（失败时保留）。 可传入完成/失败回调与逐帧进度回调（0-1，已按激活上限归一化——上限配置于 SceneModuleConfigSO，默认 0.9）。
 
 ``` csharp
-public void LoadSceneSingle(string scenePath, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
+public static void LoadSceneSingle(string scenePath, Action onCompleted = null, Action onFailed = null, Action<float> onProgress = null)
 ```
 
 **参数**
@@ -393,10 +399,10 @@ public void LoadSceneSingle(string scenePath, Action onCompleted = null, Action 
 
 ### ReloadScene(Action, Action) {#method-reloadscene-action-action}
 
-重新加载当前激活场景。异步 Single 模式，加载成功后清空叠加场景追踪。 编辑器中激活场景尚未保存（无有效路径）时走失败回调。
+重新加载当前激活场景（静态门面）。异步 Single 模式，加载成功后清空叠加场景追踪。 编辑器中激活场景尚未保存（无有效路径）时走失败回调。
 
 ``` csharp
-public void ReloadScene(Action onCompleted = null, Action onFailed = null)
+public static void ReloadScene(Action onCompleted = null, Action onFailed = null)
 ```
 
 **参数**
@@ -412,10 +418,10 @@ public void ReloadScene(Action onCompleted = null, Action onFailed = null)
 
 ### UnloadAllAddedScenes(Action) {#method-unloadalladdedscenes-action}
 
-卸载所有经本模块叠加加载的场景。单个场景卸载失败（场景已被外部卸载）时跳过并告警，不影响其余场景。 可传入全部卸载完成回调。
+卸载所有经本模块叠加加载的场景（静态门面）。单个场景卸载失败（场景已被外部卸载）时跳过并告警，不影响其余场景。 可传入全部卸载完成回调。
 
 ``` csharp
-public void UnloadAllAddedScenes(Action onAllUnloaded = null)
+public static void UnloadAllAddedScenes(Action onAllUnloaded = null)
 ```
 
 **参数**
@@ -430,10 +436,10 @@ public void UnloadAllAddedScenes(Action onAllUnloaded = null)
 
 ### UnloadScene(SceneAssetWrapper, Action, Action) {#method-unloadscene-sceneassetwrapper-action-action}
 
-卸载场景。通过 SceneAssetWrapper 指定场景。
+卸载场景（静态门面）。通过 SceneAssetWrapper 指定场景。
 
 ``` csharp
-public void UnloadScene(SceneAssetWrapper sceneRef, Action onUnloaded = null, Action onFailed = null)
+public static void UnloadScene(SceneAssetWrapper sceneRef, Action onUnloaded = null, Action onFailed = null)
 ```
 
 **参数**
@@ -450,10 +456,10 @@ public void UnloadScene(SceneAssetWrapper sceneRef, Action onUnloaded = null, Ac
 
 ### UnloadScene(string, Action, Action) {#method-unloadscene-string-action-action}
 
-卸载场景。若该场景在叠加追踪列表中则自动移出。可传入卸载完成/失败回调。
+卸载场景（静态门面）。若该场景在叠加追踪列表中则自动移出。可传入卸载完成/失败回调。
 
 ``` csharp
-public void UnloadScene(string scenePath, Action onUnloaded = null, Action onFailed = null)
+public static void UnloadScene(string scenePath, Action onUnloaded = null, Action onFailed = null)
 ```
 
 **参数**

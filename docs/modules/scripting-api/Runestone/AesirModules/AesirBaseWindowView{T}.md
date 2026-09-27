@@ -13,7 +13,7 @@ description: "Runestone.AesirModules.AesirBaseWindowView<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `Sirenix.OdinInspector.SerializedMonoBehaviour` → `Runestone.AesirArchitecture.AesirMonoBehaviour` → `Runestone.AesirModules.AesirBaseWindow` → `AesirBaseWindowView<T>`
 
-**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirModules.IUIWindow`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirModules.IUIWindow`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -26,8 +26,8 @@ public abstract class AesirBaseWindowView<T> : Runestone.AesirModules.AesirBaseW
 Sirenix.Serialization.ISupportsPrefabSerialization, 
 UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IContextHolder, 
-Runestone.AesirModules.IUIWindow, 
 Runestone.AesirArchitecture.IView, 
+Runestone.AesirModules.IUIWindow, 
 Runestone.AesirArchitecture.ICanGetModel, 
 Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```

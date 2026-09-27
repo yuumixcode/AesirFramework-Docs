@@ -29,7 +29,7 @@ Aesir Modules 接入 MonoBehaviour 生命周期的持久化物体对象。
 
 **备注**
 
-是否加入 DontDestroyOnLoad 场景由序列化字段 dontDestroyOnLoad 统一控制， 场景预放置与运行时创建两种来源共用同一份决策： 默认（勾选）：实例在 Awake 时加入 DontDestroyOnLoad 场景，跨场景持久存在。 取消勾选：实例保留在所在场景、随场景卸载销毁——必须自行处理多场景叠加（Additive）加载下的 生命周期管理。Inspector 会显示警告信息框，运行时亦输出提醒日志。
+是否加入 DontDestroyOnLoad 场景由序列化字段 dontDestroyOnLoad 统一控制， 场景预放置与运行时创建两种来源共用同一份决策： 默认（勾选）：实例在 Awake 时加入 DontDestroyOnLoad 场景，跨场景持久存在。 取消勾选：实例保留在所在场景、随场景卸载销毁——必须自行处理多场景叠加（Additive）加载下的 生命周期管理。Inspector 会显示警告信息框提示。
 
 ## 构造方法
 

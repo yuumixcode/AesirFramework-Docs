@@ -19,10 +19,10 @@ description: "Runestone.AesirArchitecture.Editor.AesirUpdateWindow 的 API 文�
 public class AesirUpdateWindow : UnityEditor.EditorWindow
 ```
 
-Aesir 包更新窗口（IMGUI 兜底版）— 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并一键更新本地安装的 Aesir 包。
+Aesir 包更新窗口（IMGUI 兜底版）— 面向"代码导入 Assets/Runestone（非 UPM）"的用户， 检查远程最新版本并更新本地安装的 Aesir 包。两种入口： 包列表行内「更新」按钮仅更新单个包（配套版本风险由确认框提示）； 工具栏「全部更新」让整个框架到达远程版本（旧的更新、缺失的已知包补装，确认框明示）。
 安装了 Odin Inspector 时，菜单入口经 OdinWindowOpener 路由到 Odin 版窗口 （AesirUpdateWindowOdin，界面与交互更丰富）；未安装时本窗口为菜单落点。 全部编排逻辑（检测 / 更新日志 / 更新执行 / 忙碌门禁）在共享控制器 AesirUpdateController 中与 Odin 版窗口共用，本类只做状态序列化与 IMGUI 展示。
 
-流程：检测远程版本 → 拉取并展示「本地 → 远程」更新日志 → 确认框二次确认 → 备份 Assets/Runestone → 按清单差集清理残留 → 静默导入 → 逐包登记安装清单。 远程版本 / 检测结果 / 更新日志均为序列化字段，更新导入触发域重载后窗口内容不丢失； 过期包列表为缓存值，OnGUI 期间零 LINQ、零磁盘 IO。
+流程：检测远程版本 → 拉取并展示「本地 → 远程」更新日志 → 确认框二次确认 → 静默导入（下载经「直连 → 镜像站」逐线路兜底，进度条可随时取消）→ 按清单差集清理残留 → 逐包登记安装清单。 远程版本 / 检测结果 / 更新日志均为序列化字段，更新导入触发域重载后窗口内容不丢失； 过期包列表为缓存值，OnGUI 期间零 LINQ、零磁盘 IO。
 
 ## 构造方法
 

@@ -78,7 +78,7 @@ public const string ModulesLookupAssetGuid = "465d45b44c6cf426882248dceeea94a0";
 | 名称 | 描述 |
 | :--- | :--- |
 | [`InstallRoots`](#property-installroots) | 本地安装根列表（项目相对路径，按解析顺序去重；默认根优先）。 |
-| [`PrimaryInstallRoot`](#property-primaryinstallroot) | 主安装根（列表首个；备份与提示文案用）。无任何本地安装时回退默认根。 |
+| [`PrimaryInstallRoot`](#property-primaryinstallroot) | 主安装根（列表首个；提示文案用）。无任何本地安装时回退默认根。 |
 
 </div>
 
@@ -92,7 +92,7 @@ public static IReadOnlyList<string> InstallRoots { get; }
 
 ### PrimaryInstallRoot {#property-primaryinstallroot}
 
-主安装根（列表首个；备份与提示文案用）。无任何本地安装时回退默认根。
+主安装根（列表首个；提示文案用）。无任何本地安装时回退默认根。
 
 ``` csharp
 public static string PrimaryInstallRoot { get; } = "Assets/Runestone";

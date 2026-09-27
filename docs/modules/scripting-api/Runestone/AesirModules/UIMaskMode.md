@@ -24,7 +24,7 @@ System.IComparable,
 System.IConvertible
 ```
 
-窗口蒙版调度模式，配置于 UIModule，运行时可经 MaskMode 切换。
+窗口蒙版调度模式，初始值配置于 UIModuleConfigSO（Resources 兜底资产， 编辑器自动创建），运行时可经 MaskMode 切换。
 
 ## 字段
 

@@ -9,7 +9,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 
 ## Runestone.AesirModules
 
-命名空间 `Runestone.AesirModules` · 程序集 `Runestone.AesirModules`、`Runestone.AesirModules.OdinInspector` · 共 61 个类型。
+命名空间 `Runestone.AesirModules` · 程序集 `Runestone.AesirModules`、`Runestone.AesirModules.OdinInspector` · 共 63 个类型。
 
 ### 类
 
@@ -29,7 +29,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | [`AesirEventUtility`](<Runestone/AesirModules/AesirEventUtility.md>) | 事件模块静态工具方法。 |
 | [`AesirListenerAttribute`](<Runestone/AesirModules/AesirListenerAttribute.md>) | 事件订阅者特性。标记在方法上，表示该方法监听指定类型的 AesirEventArgs。 用法示例： [AesirListener] private void OnKeyPres… |
 | [`AesirModules`](<Runestone/AesirModules/AesirModules.md>) | Aesir Modules 接入 MonoBehaviour 生命周期的持久化物体对象。 |
-| [`AesirModulesDebug`](<Runestone/AesirModules/AesirModulesDebug.md>) | — |
+| [`AesirModulesDebug`](<Runestone/AesirModules/AesirModulesDebug.md>) | ## 字段 |
 | [`AudioConfigSO`](<Runestone/AesirModules/AudioConfigSO.md>) | 音频模块配置资产。创建路径：Assets → Create → Aesir Modules → Audio → AudioConfig。 配置默认音量、音量持久化开关与 Pla… |
 | [`AudioModule`](<Runestone/AesirModules/AudioModule.md>) | 音频管理器（MonoBehaviour 单例）—— 2D 音频极简门面。 负责 SFX 轮询播放、BGM 循环与淡入淡出、三通道音量/静音控制与持久化。 公开 API 全部为静… |
 | [`BinderAssistant`](<Runestone/AesirModules/BinderAssistant.md>) | Object Binder 核心组件。挂载在根 UI 物体（面板或 Canvas 根窗口）上，统一配置所有要绑定的子组件并一键生成绑定脚本。 工作流程： 1. 在需要绑定引用的… |
@@ -41,7 +41,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | [`BinderMenuItems`](<Runestone/AesirModules/BinderMenuItems.md>) | Binder 层级右键菜单快捷入口: 为选中物体快速挂载 BinderAssistant 与 BinderTag， 免去 Add Component 菜单的层层查找。 |
 | [`BinderTag`](<Runestone/AesirModules/BinderTag.md>) | Binder 标签组件。挂载在需要自动绑定引用的子物体上，标记该物体可被 BinderAssistant 扫描并生成绑定信息。 一个物体上可绑定多个不同类型的组件，通过 Com… |
 | [`BindingInfo`](<Runestone/AesirModules/BindingInfo.md>) | 绑定信息基类。Attribute 订阅与 Script 订阅的共同部分。 |
-| [`DynamicBindingInfo<TEventArgs>`](<Runestone/AesirModules/DynamicBindingInfo{TEventArgs}.md>) | Script 订阅绑定信息。通过 Action{T} 委托直接调用，无需表达式树。 |
+| [`DynamicBindingInfo{TEventArgs}`](<Runestone/AesirModules/DynamicBindingInfo{TEventArgs}.md>) | Script 订阅绑定信息。通过 Action{T} 委托直接调用，无需表达式树。 |
 | [`EmptySceneAssetWrapperException`](<Runestone/AesirModules/EmptySceneAssetWrapperException.md>) | 访问了未分配任何场景的 SceneAssetWrapper。 |
 | [`EventModule`](<Runestone/AesirModules/EventModule.md>) | 事件模块（MonoBehaviour 单例）。 通过 [AesirListener] 特性实现 Attribute 订阅，通过 AddListener{TEventArgs}(… |
 | [`ExcludeSubclassSelectorAttribute`](<Runestone/AesirModules/ExcludeSubclassSelectorAttribute.md>) | 排除特性。标记不想出现在 SubclassSelectorAttribute 下拉中的类型 （如抽象中间层、仅供程序内部使用的事件参数）。 |
@@ -53,12 +53,14 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | [`SceneAssetWrapperAddressablesBridge`](<Runestone/AesirModules/SceneAssetWrapperAddressablesBridge.md>) | Addressables 编辑器能力的静态桥。 核心程序集不引用任何 Addressables 程序集；由可选程序集 Runestone.AesirModules.Editor… |
 | [`SceneAssetWrapperCreationException`](<Runestone/AesirModules/SceneAssetWrapperCreationException.md>) | 通过工厂或构造方法创建 SceneAssetWrapper 时入参无效。 |
 | [`SceneAssetWrapperException`](<Runestone/AesirModules/SceneAssetWrapperException.md>) | 所有 SceneAssetWrapper 相关异常的基类，便于调用方统一捕获。 |
-| [`SceneModule`](<Runestone/AesirModules/SceneModule.md>) | 场景加载与叠加管理模块。 语义对齐 Unity 原生 LoadSceneMode：Single 卸载全部场景并重设激活场景； Additive 纯叠加、不改变激活场景，叠加场景… |
+| [`SceneModule`](<Runestone/AesirModules/SceneModule.md>) | 场景加载与叠加管理模块（MonoBehaviour 单例）—— 公开 API 全部为静态成员，经 Instance 单例转发。 语义对齐 Unity 原生 LoadSceneM… |
+| [`SceneModuleConfigSO`](<Runestone/AesirModules/SceneModuleConfigSO.md>) | 场景模块全局配置（单例资产）。承载无需预放置 [SceneModule] 即可调整的模块级配置： 在 Project 窗口直接编辑本资产即可生效，不再要求预放置 SceneMo… |
 | [`SceneNotAddressableException`](<Runestone/AesirModules/SceneNotAddressableException.md>) | 对非 Addressable 场景的 SceneAssetWrapper 访问了 Address。 |
 | [`StaticBindingInfo`](<Runestone/AesirModules/StaticBindingInfo.md>) | Attribute 订阅绑定信息。 在注册时（冷路径）通过表达式树将 MethodInfo 编译为 Action（object target, object[] args）委托… |
 | [`SubclassSelectorAttribute`](<Runestone/AesirModules/SubclassSelectorAttribute.md>) | 标记 [SerializeReference] 字段在 Inspector 中使用子类下拉选择器。 点击下拉按钮弹出字段声明类型的全部可选子类（按命名空间分组）， 选择后自动创… |
 | [`UICanvasConfigSO`](<Runestone/AesirModules/UICanvasConfigSO.md>) | UI Canvas 配置资产。创建路径：Assets → Create → Aesir Modules → UI → Default UICanvasConfig。 |
 | [`UIModule`](<Runestone/AesirModules/UIModule.md>) | UI 管理器（MonoBehaviour 单例）。 负责面板生命周期管理，UI 根节点构建委托给 UIRoot。 |
+| [`UIModuleConfigSO`](<Runestone/AesirModules/UIModuleConfigSO.md>) | UI 模块全局配置（单例资产）。承载无需预放置 [UIModule] 即可调整的模块级配置： 在 Project 窗口直接编辑本资产即可生效，不再要求预放置 UIModule … |
 | [`UIRoot`](<Runestone/AesirModules/UIRoot.md>) | UI 根节点组件。 负责创建 UICamera、EventSystem、分层 Canvas 以及应用 Canvas 统一配置。 |
 | [`UnityEventOnAesirEvent`](<Runestone/AesirModules/UnityEventOnAesirEvent.md>) | UnityEvent 桥接组件。监听指定类型的 AesirEventArgs， 事件触发时调用 Inspector 中配置的 UnityEvent 回调， 供非程序员在 Ins… |
 | [`WithPriority`](<Runestone/AesirModules/WithPriority.md>) | 按优先级档位过滤。仅绑定在指定档位的订阅者收到事件， 用于"同一事件类型只通知某一档"的定向分发。 |
@@ -98,19 +100,19 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AesirModulesDebug.Tags`](<Runestone/AesirModules/AesirModulesDebug.Tags.md>) | — |
+| [`AesirModulesDebug.Tags`](<Runestone/AesirModules/AesirModulesDebug.Tags.md>) | ## 字段 |
 | [`BinderScriptMode`](<Runestone/AesirModules/BinderScriptMode.md>) | Binder 脚本生成模式。 |
 | [`SceneAssetWrapperState`](<Runestone/AesirModules/SceneAssetWrapperState.md>) | SceneAssetWrapper 的可用状态。 Unsafe：引用不安全（空引用，或场景既不在 BuildSettings 也不可 Addressable） Regular：… |
 | [`SceneAssetWrapperUnsafeReason`](<Runestone/AesirModules/SceneAssetWrapperUnsafeReason.md>) | 描述 SceneAssetWrapper 不安全的具体原因。 |
 | [`SubscriberPriority`](<Runestone/AesirModules/SubscriberPriority.md>) | 事件订阅者优先级。4 档排序：First → High → Medium → Last。 High 为 Attribute 订阅（[AesirListener]）默认值，Med… |
 | [`UILayer`](<Runestone/AesirModules/UILayer.md>) | UI 层级。Background < Normal < Popup < Top。 |
-| [`UIMaskMode`](<Runestone/AesirModules/UIMaskMode.md>) | 窗口蒙版调度模式，配置于 UIModule，运行时可经 MaskMode 切换。 |
+| [`UIMaskMode`](<Runestone/AesirModules/UIMaskMode.md>) | 窗口蒙版调度模式，初始值配置于 UIModuleConfigSO（Resources 兜底资产， 编辑器自动创建），运行时可经 MaskMode 切换。 |
 
 </div>
 
 ## Runestone.AesirModules.Editor
 
-命名空间 `Runestone.AesirModules.Editor` · 程序集 `Runestone.AesirModules.Editor` · 共 7 个类型。
+命名空间 `Runestone.AesirModules.Editor` · 程序集 `Runestone.AesirModules.Editor` · 共 10 个类型。
 
 ### 类
 
@@ -119,11 +121,14 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | 名称 | 描述 |
 | :--- | :--- |
 | [`AesirEventArgsSOEditor`](<Runestone/AesirModules/Editor/AesirEventArgsSOEditor.md>) | AesirEventArgsSO 自定义 Inspector： 运行模式（Play Mode）限定的事件触发按钮 + 事件参数配置字段。 |
+| [`AesirUniTaskDefineKeeper`](<Runestone/AesirModules/Editor/AesirUniTaskDefineKeeper.md>) | 自动维护 AESIR_MODULES_UNITASK 脚本宏定义符号——SceneModule 的 UniTask 驱动分支与 UniTask 适配程序集（Runestone.… |
 | [`AudioModuleMenuItems`](<Runestone/AesirModules/Editor/AudioModuleMenuItems.md>) | 音频模块编辑器菜单项。提供在场景中预放置 AudioModule 的快捷入口。 |
 | [`BootstrapSceneHelper`](<Runestone/AesirModules/Editor/BootstrapSceneHelper.md>) | 启动场景帮助类，自动查找项目中的启动场景，并将其设置为第一个加载的场景 |
-| [`SceneEditorSettings`](<Runestone/AesirModules/Editor/SceneEditorSettings.md>) | — |
-| [`SceneManagerWindow`](<Runestone/AesirModules/Editor/SceneManagerWindow.md>) | — |
+| [`SceneEditorSettings`](<Runestone/AesirModules/Editor/SceneEditorSettings.md>) | ## 构造方法 |
+| [`SceneManagerWindow`](<Runestone/AesirModules/Editor/SceneManagerWindow.md>) | ## 构造方法 |
+| [`SceneModuleConfigAssetInitializer`](<Runestone/AesirModules/Editor/SceneModuleConfigAssetInitializer.md>) | 确保场景模块配置资产存在：编辑模式域加载后，Resources 兜底路径缺失且项目中无同类型资产时， 自动创建 SceneModuleConfigSO 至 Assets/Res… |
 | [`SubclassSelectorDrawer`](<Runestone/AesirModules/Editor/SubclassSelectorDrawer.md>) | SubclassSelectorAttribute 的 UI Toolkit 属性绘制器。 为 [SerializeReference] 字段提供子类下拉选择： 点击按钮弹出字… |
+| [`UIModuleConfigAssetInitializer`](<Runestone/AesirModules/Editor/UIModuleConfigAssetInitializer.md>) | 确保 UI 模块配置资产存在：编辑模式域加载后，Resources 兜底路径缺失且项目中无同类型资产时， 自动创建 UIModuleConfigSO 至 Assets/Reso… |
 | [`UIModuleMenuItems`](<Runestone/AesirModules/Editor/UIModuleMenuItems.md>) | UI 模块编辑器菜单项。提供快捷创建 UIRoot 和默认 Canvas 配置资产的入口。 |
 
 </div>
@@ -173,7 +178,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AccessModifierTypeExtensions`](<Runestone/AesirModules/ScriptDocGenerator/AccessModifierTypeExtensions.md>) | — |
+| [`AccessModifierTypeExtensions`](<Runestone/AesirModules/ScriptDocGenerator/AccessModifierTypeExtensions.md>) | ## 方法 |
 | [`ConstructorData`](<Runestone/AesirModules/ScriptDocGenerator/ConstructorData.md>) | 构造方法解析数据 |
 | [`DefaultAnalysisDataFactory`](<Runestone/AesirModules/ScriptDocGenerator/DefaultAnalysisDataFactory.md>) | Aesir Modules 默认提供的解析数据工厂实现类 |
 | [`DefaultAttributeFilter`](<Runestone/AesirModules/ScriptDocGenerator/DefaultAttributeFilter.md>) | 默认特性过滤器，构造函数中传入需要排除的 Attribute 类型 |
@@ -184,7 +189,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | [`MethodData`](<Runestone/AesirModules/ScriptDocGenerator/MethodData.md>) | 方法解析数据类，用于存储 MethodInfo 的解析结果 |
 | [`ParameterData`](<Runestone/AesirModules/ScriptDocGenerator/ParameterData.md>) | 参数信息解析数据 |
 | [`PropertyData`](<Runestone/AesirModules/ScriptDocGenerator/PropertyData.md>) | 属性解析数据类，用于存储属性的解析数据 |
-| [`ReferenceLinkURLAttribute`](<Runestone/AesirModules/ScriptDocGenerator/ReferenceLinkURLAttribute.md>) | — |
+| [`ReferenceLinkURLAttribute`](<Runestone/AesirModules/ScriptDocGenerator/ReferenceLinkURLAttribute.md>) | ## 构造方法 |
 | [`ReflectionUtility`](<Runestone/AesirModules/ScriptDocGenerator/ReflectionUtility.md>) | 反射工具类，提供程序集、命名空间及成员的反射操作方法 |
 | [`SourceFileEntry`](<Runestone/AesirModules/ScriptDocGenerator/SourceFileEntry.md>) | 源代码文件路径与内容的绑定容器。 |
 | [`SummaryAttribute`](<Runestone/AesirModules/ScriptDocGenerator/SummaryAttribute.md>) | 提供类似于 XML 文档 summary 部分的描述性元数据。 |
@@ -220,7 +225,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AccessModifierType`](<Runestone/AesirModules/ScriptDocGenerator/AccessModifierType.md>) | — |
+| [`AccessModifierType`](<Runestone/AesirModules/ScriptDocGenerator/AccessModifierType.md>) | ## 字段 |
 | [`ParameterDirection`](<Runestone/AesirModules/ScriptDocGenerator/ParameterDirection.md>) | 参数方向枚举 |
 | [`TypeCategory`](<Runestone/AesirModules/ScriptDocGenerator/TypeCategory.md>) | 类型种类枚举 |
 
@@ -228,7 +233,7 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 
 ## Runestone.AesirModules.ScriptDocGenerator.Editor
 
-命名空间 `Runestone.AesirModules.ScriptDocGenerator.Editor` · 程序集 `Runestone.AesirModules.Editor.OdinInspector` · 共 32 个类型。
+命名空间 `Runestone.AesirModules.ScriptDocGenerator.Editor` · 程序集 `Runestone.AesirModules.Editor.OdinInspector` · 共 34 个类型。
 
 ### 类
 
@@ -242,24 +247,26 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | [`ParsedSourceDoc`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ParsedSourceDoc.md>) | 单个源文件（或合并后的类型级视图）的结构化 XML 文档注释解析结果。 键为全限定键（无程序集前缀，合并时按需添加）： 类型级 Namespace.TypeName；成员级 N… |
 | [`ProjectScriptIndex`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ProjectScriptIndex.md>) | 项目级类型声明索引：类型名 → 声明所在文件路径列表，附带 文件 → 命名空间集合。 惰性构建，每个域重载周期至多一次全项目扫描（历史实现按"每个找不到源文件的类型" 全项目扫… |
 | [`ScriptAssemblyFilter`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptAssemblyFilter.md>) | 脚本程序集过滤器。通过 CompilationPipeline 缓存本项目的脚本程序集名集合， 用于在查找源文件前拦截引擎模块、预编译 DLL 等不可能存在项目源码的类型， 避… |
+| [`ScriptDocGenerationResult`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGenerationResult.md>) | 一次脚本文档生成调用的结果：写入的文档文件清单、使用的设置与输出根目录， 以及未能映射到编译产物的源码类型名（文件夹模式）。 |
+| [`ScriptDocGeneratorAPI`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorAPI.md>) | 脚本文档生成器静态 API —— 面板（Tools → Aesir → Modules → Script Doc Generator）的无 UI 等价入口， 面向自动化脚本与 … |
 | [`ScriptDocGeneratorAssetMarkerSO`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorAssetMarkerSO.md>) | Script Doc Generator 模块资产初始化完成标识。首次初始化后创建标识资产， 后续打开工具时通过检查标识是否存在来判断是否已完成初始化。 |
 | [`ScriptDocGeneratorEditorUtility`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorEditorUtility.md>) | Script Doc Generator 的编辑器工具方法，仅供编辑器程序集内部使用。 |
-| [`ScriptDocGeneratorMenuItems`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorMenuItems.md>) | — |
+| [`ScriptDocGeneratorMenuItems`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorMenuItems.md>) | ## 方法 |
 | [`ScriptDocGeneratorMenuPaths`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorMenuPaths.md>) | Script Doc Generator 所有 MenuItem 菜单路径和优先级的统一管理。 Unity 中 MenuItem 的顺序由 priority 参数（一个整数）决… |
 | [`ScriptDocGeneratorPanelSO`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPanelSO.md>) | ScriptDocGenerator 可视化操作面板类 |
-| [`ScriptDocGeneratorPanelSO.ScriptDocGeneratorPanelAttributeProcessor`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPanelSO.ScriptDocGeneratorPanelAttributeProcessor.md>) | — |
-| [`ScriptDocGeneratorPaths`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPaths.md>) | — |
+| [`ScriptDocGeneratorPanelSO.ScriptDocGeneratorPanelAttributeProcessor`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPanelSO.ScriptDocGeneratorPanelAttributeProcessor.md>) | ## 构造方法 |
+| [`ScriptDocGeneratorPaths`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPaths.md>) | ## 字段 |
 | [`ScriptDocGeneratorUtility`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorUtility.md>) | 脚本文档生成器逻辑控制类，负责处理文档生成的核心逻辑 |
 | [`ScriptDocGeneratorWindow`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorWindow.md>) | 脚本文档生成器窗口，直接展示 ScriptDocGeneratorSO 单面板。 |
 | [`SourceFileAnalyzerUtility`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceFileAnalyzerUtility.md>) | 源文件查找与成员名提取工具。 查找链路：ScriptAssemblyFilter 程序集过滤 → AssetDatabase 按名搜索 + GetClass() 验证（单遍，p… |
 | [`SourceScanner`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.md>) | 单遍字符级状态机源码扫描器： 第一遍净化——字符串（普通/逐字）、字符字面量、行注释、块注释内容置空，产出净化行， 使后续正则天然免疫字符串/注释里的假类型声明、假命名空间与假… |
-| [`SourceScanner.Frame`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.Frame.md>) | — |
-| [`SourceScanner.SanitizerState`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.SanitizerState.md>) | — |
-| [`SourceScanner.SourceDocText`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.SourceDocText.md>) | — |
+| [`SourceScanner.Frame`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.Frame.md>) | ## 构造方法 |
+| [`SourceScanner.SanitizerState`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.SanitizerState.md>) | ## 构造方法 |
+| [`SourceScanner.SourceDocText`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceScanner.SourceDocText.md>) | ## 构造方法 |
 | [`SourceSummaryInitializer`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceSummaryInitializer.md>) | 在编辑器程序集（Runestone.AesirModules.ScriptDocGenerator.Editor）加载时注入 XML 文档注释解析器： summary / pa… |
 | [`SourceSummaryParser`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SourceSummaryParser.md>) | 源码 XML 文档注释解析门面。实际解析由 SourceScanner 单遍状态机完成： 字符串/逐字字符串/注释感知净化 + 命名空间栈 + 类型栈，支持全限定键（含嵌套类型… |
 | [`SummaryToolMenuItems`](<Runestone/AesirModules/ScriptDocGenerator/Editor/SummaryToolMenuItems.md>) | 右键快捷处理 Summary 特性。批量处理多选脚本时仅触发一次 AssetDatabase.Refresh。 |
-| [`TypeDataProcessor`](<Runestone/AesirModules/ScriptDocGenerator/Editor/TypeDataProcessor.md>) | — |
+| [`TypeDataProcessor`](<Runestone/AesirModules/ScriptDocGenerator/Editor/TypeDataProcessor.md>) | ## 构造方法 |
 | [`TypesCacheSO`](<Runestone/AesirModules/ScriptDocGenerator/Editor/TypesCacheSO.md>) | 存储 Type 的资源文件，提供给脚本文档生成工具复用，用户无需每次重新选择 Type |
 | [`XmlCodePart`](<Runestone/AesirModules/ScriptDocGenerator/Editor/XmlCodePart.md>) | XML 注释部分和代码块的组合。 |
 | [`XmlSummaryTool`](<Runestone/AesirModules/ScriptDocGenerator/Editor/XmlSummaryTool.md>) | C# 脚本的 XML 中的 Summary 注释的处理器。 内容对齐方向（Sync/Replace）：[Summary] 特性优先——已有可解析特性时以特性文本为准（必要时回写… |
@@ -274,8 +281,8 @@ description: "Runestone.AesirModules 系列命名空间的 Scripting API 参考"
 | 名称 | 描述 |
 | :--- | :--- |
 | [`MemberGroup`](<Runestone/AesirModules/ScriptDocGenerator/Editor/MemberGroup.md>) | 成员分组（文档生成共享）：常量 → 声明 → 继承 → 运算符。 |
-| [`ScriptDocGeneratorPanelSO.TypeSource`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPanelSO.TypeSource.md>) | — |
+| [`ScriptDocGeneratorPanelSO.TypeSource`](<Runestone/AesirModules/ScriptDocGenerator/Editor/ScriptDocGeneratorPanelSO.TypeSource.md>) | ## 字段 |
 | [`XmlCodePart.SummaryAttribution`](<Runestone/AesirModules/ScriptDocGenerator/Editor/XmlCodePart.SummaryAttribution.md>) | [Summary] 特性的归属分析结果。 |
-| [`XmlSummaryTool.ProcessMode`](<Runestone/AesirModules/ScriptDocGenerator/Editor/XmlSummaryTool.ProcessMode.md>) | — |
+| [`XmlSummaryTool.ProcessMode`](<Runestone/AesirModules/ScriptDocGenerator/Editor/XmlSummaryTool.ProcessMode.md>) | ## 字段 |
 
 </div>
