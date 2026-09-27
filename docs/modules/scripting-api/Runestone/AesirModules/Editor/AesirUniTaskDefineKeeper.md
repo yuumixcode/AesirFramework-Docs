@@ -21,7 +21,7 @@ internal static class AesirUniTaskDefineKeeper
 ```
 
 自动维护 AESIR_MODULES_UNITASK 脚本宏定义符号——SceneModule 的 UniTask 驱动分支与 UniTask 适配程序集（Runestone.AesirModules.UniTask）均以该宏为编译开关。
-维护规则：游戏工程以 UPM 包（com.cysharp.unitask）安装 UniTask 时， 宏由核心程序集与适配程序集的 versionDefines 全权管理（装/卸自动生效），本维护器不干预全局符号； 其他安装形态（unitypackage / DLL 导入）按「域内是否存在 Cysharp.Threading.Tasks 程序集」 增删全局符号——存在则补齐，不存在则移除。
+维护规则：游戏工程以 UPM 包（com.cysharp.unitask）安装 UniTask 时， 宏由核心程序集与适配程序集的 versionDefines 全权管理（装/卸自动生效），本维护器不干预全局符号； 其他安装形态（unitypackage / DLL 导入）按「域内是否存在 UniTask 程序集」 增删全局符号——存在则补齐，不存在则移除。
 
 **备注**
 

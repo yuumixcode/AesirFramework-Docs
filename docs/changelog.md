@@ -11,11 +11,23 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.27.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.27.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.27.1** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.27.1** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.27.1] - 2026-09-27
+
+---
+
+### Aesir Modules
+
+**Fixed**
+
+- **UniTask 集成的程序集名错误(asmdef 引用名与宏维护器检测名)** — UniTask 的命名空间名 `Cysharp.Threading.Tasks` 被误当作程序集名使用(com.cysharp.unitask 包内 asmdef 实际名为 `UniTask`):①核心与适配程序集的 asmdef `references` 解析不到任何程序集,含 UniTask 的消费工程刷新即报 `CS0246`(`'Cysharp'` / `'UniTaskVoid'` 找不到);②`AesirUniTaskDefineKeeper` 按该名检测域内程序集恒为 false,unitypackage / DLL 安装形态下已装 UniTask 的工程全局宏 `AESIR_MODULES_UNITASK` 反被误删、UniTask 分支与适配程序集静默失效零报错(UPM 安装形态宏由 versionDefines 管理,未受影响——多数工程未察觉的原因)。现 references 改按程序集名 `UniTask` 引用;检测改为白名单(`UniTask`——asmdef 源码 / unitypackage 形态;`Cysharp.Threading.Tasks`——NuGet 预编译 DLL);`AesirUniTaskDefineKeeperTests` 新增命名守卫 2 用例(白名单含真实程序集名 + 两处 asmdef 引用锁定),共 7 用例
+
+Aesir Architecture 本版本无功能变更,随版本配套发布。
 
 ## [0.27.0] - 2026-09-27
 
