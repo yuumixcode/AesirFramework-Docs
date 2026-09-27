@@ -96,6 +96,8 @@ Package Manager → Aesir Modules → **Samples**:
 | `Audio/01_BasicUsage` | 音频模块基础用法:SFX 播放、BGM 淡入淡出切歌、三通道音量与静音持久化 |
 | `UI/01_BasicUsage` | UI 模块基础用法:面板与 Canvas 根窗口协作、蒙版单遮/叠遮切换对照、点击蒙版关闭、全屏加载窗口 |
 
+> Getting Started 窗口(Tools → Aesir → Getting Started)可一键导入:未导入示例点击右侧「导入 Sample」按钮,确认框含示例介绍与导入位置(可取消),确认后直接导入到 `Assets/Samples/` 并自动刷新示例清单。
+
 ## 下一步
 
 - [特性一览](features.md) — 五模块与 Binder 速览

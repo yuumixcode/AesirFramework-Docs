@@ -127,6 +127,8 @@ Package Manager → Aesir Architecture → **Samples** 标签页,按需导入:
 
 本仓库用户也可直接浏览包内 `Samples/` 目录;示例场景可运行,构建时自动剔除(整文件 `#if UNITY_EDITOR`)。
 
+> Getting Started 窗口(Tools → Aesir → Getting Started)可一键导入:未导入示例点击右侧「导入 Sample」按钮,确认框含示例介绍与导入位置(可取消),确认后直接导入到 `Assets/Samples/` 并自动刷新示例清单。
+
 ## 下一步
 
 - [特性一览](features.md) — 核心机制速览与选型决策
