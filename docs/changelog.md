@@ -11,13 +11,13 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.27.1** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.27.1** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.28.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.28.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
 
-## [Unreleased]
+## [0.28.0] - 2026-09-27
 
 ### Aesir Modules
 

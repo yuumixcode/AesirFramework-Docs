@@ -11,13 +11,13 @@
 Unity Package Manager → `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.27.1
+https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.28.0
 ```
 
 UPM 不支持在包内声明 Git URL 依赖(Unity 官方限制),本包不携带对 Aesir Architecture 的依赖声明——**两个包需要分别添加**;只添加本包也能安装成功,但核心程序集会因缺少 Aesir Architecture 编译失败,此时菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,一键补装:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.1
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.28.0
 ```
 
 或编辑 `Packages/manifest.json`:
@@ -25,8 +25,8 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.1
 ```json
 {
   "dependencies": {
-    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.1",
-    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.27.1"
+    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.28.0",
+    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.28.0"
   }
 }
 ```
