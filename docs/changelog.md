@@ -17,6 +17,24 @@
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
 
+## [Unreleased]
+
+**仓库级变更**:Git 分支策略重构——版本分支(`AesirXxx-v<版本>`,随发版轮换并删除)废弃,改为常驻滚动分支 `AesirArchitecture-latest` / `AesirModules-latest`(CI 每次推送 main 时 subtree split 滚动更新,分支名永久固定):Git URL 一次输入持续可用,升级 = Package Manager 移除后用同一 URL 重新添加;钉旧版本用 Release tag(`?path=Assets/Runestone/<包目录>#v<版本>`,tag 永久保留);CI 自动清理远端残留的版本分支。
+
+### Aesir Architecture
+
+- **Changed**
+
+    - README 安装指引改锚常驻 latest 分支——UPM 安装 URL 由固定版本分支改为 `#AesirArchitecture-latest`,升级口径同步为「移除后用同一 URL 重新添加,无需随发版修改」。
+
+### Aesir Modules
+
+- **Changed**
+
+    - `AesirDependencyInstaller` 补装 URL 常驻分支化——缺 Aesir Architecture 时一键补装的 Git URL 改为固定常量 `#AesirArchitecture-latest`(不再按本包 version 拼接版本分支),移除版本推导函数与 `FallbackSelfVersion` 兜底常量(发版零联动);安装确认框与收尾日志文案同步。
+
+    - README 安装指引改锚常驻 latest 分支(含 manifest.json 示例)。
+
 ## [0.29.0] - 2026-09-27
 
 ### Aesir Architecture

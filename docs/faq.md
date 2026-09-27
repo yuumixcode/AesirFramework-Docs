@@ -6,7 +6,7 @@
 
 | 方式 | 适合谁 |
 |------|--------|
-| **Git URL(固定版本分支)** | 常规项目;包只读、经 Package Manager 更新,不碰用户代码区 |
+| **Git URL(常驻 latest 分支)** | 常规项目;包只读、经 Package Manager 管理(URL 一次输入持续可用),不碰用户代码区 |
 | **unitypackage + 包内更新器** | 想**改包源码**、或大陆 / 离线环境 GitHub 直连不稳的项目;安装在 `Assets/Runestone/` 下,`Tools → Aesir → Check for Updates` 一键更新 |
 | **跟踪 main(`?path=`)** | 想吃最新开发预览的用户 |
 
@@ -18,9 +18,9 @@
 
 不能。更新器只管辖 `Assets/Runestone/` 下的代码导入副本;UPM 副本请直接用 Package Manager 更新。**开发仓库(存在 `.git`)切勿点更新** —— Release 内容会覆盖本地源码(窗口已内置警告)。
 
-### 版本分支策略是什么?
+### Git URL 分支策略是什么?
 
-版本分支(`AesirArchitecture-v<版本>` / `AesirModules-v<版本>`)由 CI 在每次推送 main 时自动按包目录 subtree split 生成,**仓库只保留最新版本分支**,旧版本分支随发版删除。想锁旧版本请用 Releases 页面的 unitypackage。
+常驻分支 `AesirArchitecture-latest` / `AesirModules-latest` 由 CI 在每次推送 main 时自动按包目录 subtree split **滚动更新**,分支名永久固定——Git URL 一次输入持续可用,升级 = Package Manager 移除后用同一 URL 重新添加。想锁旧版本请用 Release tag(`?path=Assets/Runestone/<包目录>#v<版本>`,tag 永久保留)或 Releases 页面的 unitypackage。(旧策略的版本分支 `AesirXxx-v<版本>` 随发版轮换并删除,已废弃——钉住它的 URL 会在发版后失效。)
 
 ### 安装 Aesir Modules 时为什么还要添加 Architecture 的 URL?
 

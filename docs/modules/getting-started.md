@@ -11,13 +11,13 @@
 Unity Package Manager → `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.29.0
+https://github.com/yuumixcode/AesirFramework.git#AesirModules-latest
 ```
 
 UPM 不支持在包内声明 Git URL 依赖(Unity 官方限制),本包不携带对 Aesir Architecture 的依赖声明——**两个包需要分别添加**;只添加本包也能安装成功,但核心程序集会因缺少 Aesir Architecture 编译失败,此时菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,一键补装:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-latest
 ```
 
 或编辑 `Packages/manifest.json`:
@@ -25,15 +25,15 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
 ```json
 {
   "dependencies": {
-    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0",
-    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.29.0"
+    "cn.runestone.aesir.architecture": "https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-latest",
+    "cn.runestone.aesir.modules": "https://github.com/yuumixcode/AesirFramework.git#AesirModules-latest"
   }
 }
 ```
 
-**升级到新版本**:Package Manager 不会对 Git URL 安装的包显示更新提示——移除旧包后按新版本分支的 Git URL 重新添加,或直接把 `manifest.json` 中的 `#AesirArchitecture-v<版本>` / `#AesirModules-v<版本>` 分支名改为新版本。
+**升级**:Package Manager 不会对 Git URL 安装的包显示更新提示,但 `latest` 分支名永久固定——两条 URL 一次输入持续可用,升级 = 移除旧包后用同一 URL 重新添加,无需随发版修改。需要钉死旧版本时改用 Release tag(`?path=Assets/Runestone/<包目录>#v<版本>`,tag 永久保留)。
 
-**unitypackage 方式**:从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载 `AesirModules-v<版本>.unitypackage`(注意不含依赖;或直接用两包合并的 `AesirFramework-v<版本>.unitypackage`)。只导入本包而缺 Aesir Architecture 时,菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,确认后经 UPM 自动补装对应版本(装至 `Packages/` 下;依赖包在场时该菜单自动隐藏)。导入后经 `Tools → Aesir → Check for Updates` 一键更新。
+**unitypackage 方式**:从 [GitHub Releases](https://github.com/yuumixcode/AesirFramework/releases) 下载 `AesirModules-v<版本>.unitypackage`(注意不含依赖;或直接用两包合并的 `AesirFramework-v<版本>.unitypackage`)。只导入本包而缺 Aesir Architecture 时,菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,确认后经 UPM 自动补装(常驻 `latest` 分支最新版,装至 `Packages/` 下;依赖包在场时该菜单自动隐藏)。导入后经 `Tools → Aesir → Check for Updates` 一键更新。
 
 ## 第一个面板
 

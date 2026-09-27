@@ -31,21 +31,21 @@ hide:
 
 ## 安装
 
-推荐在 Package Manager 中使用**固定版本分支**，避免 `main` 的开发变更影响项目。打开 **Package Manager → `+` → Add package from git URL...**，添加你需要的包：
+推荐在 Package Manager 中使用**常驻 `latest` 分支**——分支名永久固定,Git URL 一次输入持续更新(升级 = 移除后用同一 URL 重新添加)。打开 **Package Manager → `+` → Add package from git URL...**,添加你需要的包:
 
 === "Aesir Architecture"
 
     ```text
-    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-latest
     ```
 
 === "Aesir Modules"
 
-    Modules 依赖 Architecture。安装 Modules 时请同时添加两个固定版本分支：
+    Modules 依赖 Architecture。安装 Modules 时请同时添加两个包:
 
     ```text
-    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
-    https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.29.0
+    https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-latest
+    https://github.com/yuumixcode/AesirFramework.git#AesirModules-latest
     ```
 
 === "unitypackage"
@@ -177,7 +177,7 @@ public class CounterPanel : MonoViewController<CounterContext>
 
 **04 · 工程化交付**
 
-100+ EditMode 单元测试随包验证；CI 自动发布版本分支与 unitypackage；示例构建期自动剔除，不占包体。
+100+ EditMode 单元测试随包验证；CI 自动维护常驻 latest 分支与 unitypackage 发布；示例构建期自动剔除，不占包体。
 
 </div>
 

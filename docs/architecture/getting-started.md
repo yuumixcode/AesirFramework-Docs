@@ -7,15 +7,15 @@
 
 ## 安装
 
-### 方式 1:固定版本分支(推荐)
+### 方式 1:常驻 latest 分支(推荐)
 
 Unity Package Manager → 左上角 `+` → `Add package from git URL...`:
 
 ```
-https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
+https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-latest
 ```
 
-版本分支由 CI 自动按包目录 subtree split 生成,仓库只保留最新版本分支。**升级到新版本**:Package Manager 不会对 Git URL 安装的包显示更新提示——移除旧包后按新版本分支的 Git URL 重新添加,或直接把 `manifest.json` 中的 `#AesirArchitecture-v<版本>` 分支名改为新版本。
+`latest` 分支由 CI 自动按包目录 subtree split 滚动更新,分支名永久固定——Git URL 只需输入一次,后续升级无需修改。**升级**:Package Manager 不会对 Git URL 安装的包显示更新提示,移除旧包后用同一 URL 重新添加即可(或删除 `packages-lock.json` 中对应条目后重新解析)。需要钉死旧版本时改用 Release tag:`?path=Assets/Runestone/AesirArchitecture#v<版本>`(tag 永久保留)。
 
 ### 方式 2:unitypackage 导入 + 包内更新器(大陆 / 离线友好)
 
@@ -25,7 +25,7 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.29.0
 
 !!! warning "更新器管辖范围"
 
-    经 Git URL(UPM)安装的副本**不在更新器管辖内**——纯 UPM 安装形态下该菜单经 validate 整体隐藏;Package Manager 也不会对 Git URL 包显示更新提示,升级 = 移除旧包后重新添加新版本分支的 Git URL。开发仓库(存在 `.git`)切勿点更新。
+    经 Git URL(UPM)安装的副本**不在更新器管辖内**——纯 UPM 安装形态下该菜单经 validate 整体隐藏;Package Manager 也不会对 Git URL 包显示更新提示,升级 = 移除旧包后用同一 Git URL 重新添加(`latest` 分支名永久固定)。开发仓库(存在 `.git`)切勿点更新。
 
 ### 方式 3:跟踪 main 最新(开发预览)
 
