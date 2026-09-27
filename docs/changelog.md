@@ -17,6 +17,25 @@
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
 
+## [Unreleased]
+
+### Aesir Modules
+
+- **Removed**
+
+    - `package.json` 依赖声明整段移除(破坏性)——UPM 不支持包内 Git URL 依赖(Unity 官方硬规定,保留会使单独安装直接失败),移除后单装可成功,缺 Aesir Architecture 时经 `Install Dependencies` 菜单一键补装;`com.unity.test-framework` 硬依赖一并移除(测试程序集已有 `UNITY_INCLUDE_TESTS` 守卫,非必需)。
+    - 测试程序集收敛(破坏性)——每包只保留 `xxx.Tests.Editor`(EditMode)与 `xxx.Tests`(PlayMode)两个测试程序集:`Runestone.AesirModules.Scene.Tests` 并入包级 EditMode 程序集;包级 EditMode 改名 `Runestone.AesirModules.Tests.Editor`;PlayMode 程序集改名 `Runestone.AesirModules.Tests`。
+
+- **Changed**
+
+    - `Install Dependencies` 补装菜单适用范围扩展——UPM 单独安装本包(缺 Aesir Architecture、核心程序集编译失败)同样触发一键补装;安装教程改为两包分别添加。
+
+### Aesir Architecture
+
+- **Changed**
+
+    - `Tools → Aesir → Check for Updates` 菜单按安装形态显隐——扫描不到 Assets 形态的 Aesir 包安装时(纯 UPM 形态)菜单整体隐藏,Assets 形态安装(含与 UPM 混合并存)时照常显示。
+
 ## [0.27.1] - 2026-09-27
 
 ---

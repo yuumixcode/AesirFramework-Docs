@@ -24,7 +24,7 @@ Aesir Modules 依赖补全器 —— 检测 Aesir Architecture (RAA) 缺失并�
 **备注**
 
 本类所在程序集必须零引用（不引用 RAM 核心、RAA、Odin）：Assets 形态安装本包时若 RAA 缺失，RAM 核心 / Editor 程序集因解析不到 Runestone.AesirArchitecture 全部不编译， 此时本菜单是唯一可用的 Aesir 工具入口，其编译不得依赖任何会失败的程序集。
-UPM 形态安装无需本菜单：本包 package.json 的 dependencies 已声明 RAA 的 Git URL， Package Manager 安装时自动递归拉取依赖。
+UPM 单独安装本包时同样触发本菜单：Unity Package Manager 不支持包内声明 Git URL 依赖（仅项目 manifest.json 可声明），故本包 package.json 不携带 RAA 依赖声明，单独安装可成功但缺 RAA 程序集，本菜单即为此场景提供一键补装。
 
 安装走 Add（Git URL），RAA 落在 Packages/ 下以 UPM 形态存在； RAM 核心 asmdef 按程序集名引用（非 GUID），UPM 形态的 RAA 同名程序集同样能解析， Assets + UPM 混合形态可正常编译。
 

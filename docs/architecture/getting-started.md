@@ -25,7 +25,7 @@ https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.1
 
 !!! warning "更新器管辖范围"
 
-    经 Git URL(UPM)安装的副本**不在更新器管辖内**,请直接用 Package Manager 更新。开发仓库(存在 `.git`)切勿点更新。
+    经 Git URL(UPM)安装的副本**不在更新器管辖内**,请直接用 Package Manager 更新——纯 UPM 安装形态下该菜单经 validate 整体隐藏。开发仓库(存在 `.git`)切勿点更新。
 
 ### 方式 3:跟踪 main 最新(开发预览)
 

@@ -14,7 +14,7 @@ Unity Package Manager → `+` → `Add package from git URL...`:
 https://github.com/yuumixcode/AesirFramework.git#AesirModules-v0.27.1
 ```
 
-本包对 Aesir Architecture 的依赖声明为 Git URL 版本分支(0.24.0 起),UPM 安装本包时会自动递归拉取对应版本的 Aesir Architecture——通常只需添加上面这一条 URL。若自动拉取未生效,可手动补加:
+UPM 不支持在包内声明 Git URL 依赖(Unity 官方限制),本包不携带对 Aesir Architecture 的依赖声明——**两个包需要分别添加**;只添加本包也能安装成功,但核心程序集会因缺少 Aesir Architecture 编译失败,此时菜单 `Tools → Aesir → Modules → Install Dependencies` 会出现,一键补装:
 
 ```
 https://github.com/yuumixcode/AesirFramework.git#AesirArchitecture-v0.27.1
