@@ -1,6 +1,6 @@
 # Aesir Architecture 示例总览
 
-包内含 **10 个可导入示例**(Package Manager → Aesir Architecture → Samples 标签页按需导入),外加 1 个仓库内编辑器示例。所有示例:
+包内含 **11 个可导入示例**(Package Manager → Aesir Architecture → Samples 标签页按需导入)。所有示例:
 
 - 位于包内 `Samples/` 目录(仓库浏览时直接可见、场景可直接打开运行)
 - 程序集为**运行时程序集 + 整文件 `#if UNITY_EDITOR`**:编辑器内可编译、可挂载、可 Play;玩家构建整体剔除,示例类型 0 入包
@@ -60,12 +60,12 @@
 - 组合运用 `MiniEvent` + `ObservableValue` + `MonoLifecycleProxy`
 - 素材自包含:精灵来自 [Vertical 2D Shooting BE4](https://www.goldmetal.co.kr)(Copyright ⓒ 2021 Goldmetal;标注 Goldmetal 出处即可自由使用,含商用),示例内为自包含拷贝
 
-## RuntimeInitializeLoadType(仓库内示例)
+## RuntimeInitializeLoadType(初始化时机)
 
 编辑器窗口演示 `RuntimeInitializeLoadType` 五个初始化时机的执行顺序与静态重置最佳实践。菜单 `Tools → Aesir → Architecture → Samples → RuntimeInitializeLoadType`。
 
 !!! note
-    此示例是编辑器工具(Editor-only 程序集),未注册进 package.json Samples,仅在本仓库 `Samples/RuntimeInitializeLoadType/` 目录直接可用。
+    此示例为编辑器工具(Editor-only 程序集,程序集带 ODIN_INSPECTOR 定义约束),已在 package.json Samples 登记,UPM 安装可经 Samples 标签页导入;本仓库可直接浏览 `Samples/RuntimeInitializeLoadType/`。
 
 ## 继续阅读
 

@@ -54,7 +54,7 @@ doorOpened.Invoke();
 AesirPlayerLoop.Register(
     AesirLifecyclePhase.BeforeUpdate, MyFrameCallback);
 
-// 第三方 SDK 修改 PlayerLoop 后调用一次即可自愈(Register 期也会自动检测)
+// 第三方 SDK 修改 PlayerLoop 后调用一次即可自愈(Register 期也会自动检测,检测按帧节流)
 AesirPlayerLoop.EnsureInjected();
 ```
 
@@ -97,7 +97,7 @@ Engine 层零 MonoBehaviour 依赖,适配层按需选用:
 
 ## GenericLocator\<T\> — 类型键控定位器
 
-按类型注册 / 查询的通用定位器,按注册顺序保序,Context 内部与独立场景均可使用。
+按类型注册 / 查询的通用定位器,按注册顺序保序,Context 内部与独立场景均可使用。查询面含 `Get<T>` / `GetAll()` 与诊断用 `GetAllEntries()`(注册键值对),两者均返回物化快照——枚举期间注册 / 注销不会抛"集合已修改"。
 
 ## 包内更新器
 

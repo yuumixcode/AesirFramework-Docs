@@ -22,6 +22,7 @@
 | `IModel` | GetModel | 自身持有 `ObservableValue`,仅通过写方法 / Command 修改 |
 | `IService` | GetModel, GetService | 可直写 Model;**故意不能**执行 Command/Query(命令入口应由 Controller/Presenter 触发) |
 | `IView` | GetModel, GetService | 只读 |
+| `IView<T>` | GetModel, GetService | 只读;声明泛型参数即自动绑定 `AbstractContext<T>.Instance` 单例(默认接口实现) |
 | `IController` | GetModel, GetService, ExecuteCommand, ExecuteQuery | MVC 入口 |
 | `IPresenter` | 同 Controller + `IDisposable` | MVP 中介 |
 | `ICommand` / `IQuery<TResult>` | GetModel, GetService + 自身执行能力 | 写 / 读分发单元 |
@@ -76,7 +77,7 @@ var model = GameContext.Instance.GetModel<IScoreModel>();
 - **非泛型类**:类内 `[RuntimeInitializeOnLoadMethod(SubsystemRegistration)]` 自重置
 - **泛型类**:静态构造函数经 `ResetStaticsAssistant.Register()` 注册重置回调(泛型类中的 RIOLM 会被 Unity 静默跳过,助手补位)
 
-`AesirPlayerLoop` 同样在 SubsystemRegistration 阶段自动注入 PlayerLoop;第三方 SDK 覆盖 PlayerLoop 后由 `EnsureInjected()` 自愈(域加载时、每次 Register 时自动检测,也可手动调用)。
+`AesirPlayerLoop` 同样在 SubsystemRegistration 阶段自动注入 PlayerLoop;第三方 SDK 覆盖 PlayerLoop 后由 `EnsureInjected()` 自愈(域加载时与每次注册时自动检测;检测按帧节流,同一帧内至多复查一次,也可手动调用)。
 
 ## DDOL 显式决策
 
@@ -85,7 +86,7 @@ var model = GameContext.Instance.GetModel<IScoreModel>();
 - 默认勾选:加入 DontDestroyOnLoad 场景,跨场景持久
 - 取消勾选:随所在场景卸载销毁(Inspector 显示警告信息框),多场景叠加加载自行处理
 
-单例 `Instance` 获取优先 `FindAnyObjectByType` 搜索场景中预放置的实例,未找到才运行时创建。
+单例 `Instance` 获取优先 `FindAnyObjectByType(FindObjectsInactive.Include)` 搜索场景中预放置的实例(含未激活对象——"先禁用、用到时再启用"式预放置同样被发现),未找到才运行时创建。
 
 ## 纯 C# 核心 + MonoBehaviour 适配层
 
@@ -93,10 +94,12 @@ Engine 层(Context、角色、Command/Query)零 MonoBehaviour 依赖;表现层�
 
 | 基类 | 角色 | Odin | 用途 |
 |------|------|------|------|
-| `MonoView<T>` | IView | 否 | MVC Standard / Strict 的 View |
-| `MonoViewController<T>` | IView + IController | 否 | MVC Quick 的 View 兼 Controller |
-| `AesirView<T>` | IView | 是 | 同 MonoView,Odin 序列化增强 |
-| `AesirViewController<T>` | IView + IController | 是 | 同 MonoViewController,Odin 增强 |
+| `MonoView<T>` | `IView<T>` | 否 | MVC Standard / Strict 的 View |
+| `MonoViewController<T>` | `IView<T>` + `IController<T>` | 否 | MVC Quick 的 View 兼 Controller |
+| `AesirView<T>` | `IView<T>` | 是 | 同 MonoView,Odin 序列化增强 |
+| `AesirViewController<T>` | `IView<T>` + `IController<T>` | 是 | 同 MonoViewController,Odin 增强 |
+
+泛型接口 `IView<T>` / `IController<T>` / `IPresenter<T>` 经默认接口实现(DIM)把 `IContextHolder.Context` 绑定到 `AbstractContext<T>.Instance`:声明泛型参数即完成绑定,无需手写显式实现;View 角色保持非泛型 `IView` 声明,VC 适配对同时实现 `IView<T>` 与 `IController<T>`。
 
 另有 `AesirMonoBehaviour` / `AesirScriptableObject` 架构感知基类:Odin 存在时继承 `SerializedMonoBehaviour` / 对应 SO 版本,否则继承原生基类(条件编译,核心程序集不引用 Odin 程序集)。
 

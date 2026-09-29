@@ -145,11 +145,12 @@ UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
 
 ## DDOL 机制
 
-`AesirModules` / `UIRoot` / `UIModule` 均有 `[SerializeField] bool dontDestroyOnLoad = true`:
+`AesirModules` / `UIRoot` / `UIModule` / `EventModule` 均有 `[SerializeField] bool dontDestroyOnLoad = true`:
 
 - `AesirModules` 宿主:运行时创建恒为 DDOL
 - `UIRoot`:预放置与运行时创建统一由该字段控制
 - `UIModule`:字段仅在**预放置为根物体**时生效;运行时自动创建时挂载于 `[Aesir Modules]` 宿主下,跟随宿主决策
+- `EventModule`:预放置实例同样由该字段控制(0.31.0 起补上字段)——此前预放置在场景根的事件模块会随场景卸载被销毁,注册表整体消失
 
 ## 设计边界
 
@@ -167,6 +168,8 @@ UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
 2. `BinderAssistant` 挂在面板根(右键菜单 `GameObject → Aesir → 挂载 BinderAssistant`),「构建绑定单元」按标记增量维护绑定列表
 3. 「生成脚本」产出绑定代码;编译完成后自动挂载组件并执行一次绑定
 
+生成配置(后缀列表 / 默认后缀 / 最近命名空间)经 `BinderEditorSettings` 持久化到 `ScriptableSingleton/AesirModules/BinderEditorSettings.asset`,重启编辑器后保留。
+
 两种生成模式:
 
 | 模式 | 行为 |
@@ -177,7 +180,7 @@ UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
 生成脚本基类可下拉选择:`MonoBehaviour`、Aesir 面板 / 窗口家族(`AesirBasePanel` / `AesirBasePanelView<T>` / `AesirBasePanelViewController<T>` / `AesirBaseWindow` / `AesirBaseWindowView<T>` / `AesirBaseWindowViewController<T>`;Canvas 根物体上默认基类直指 `AesirBaseWindow`、默认脚本名取 `Window` 后缀,面板根保持 `Panel`,已带对应后缀的物体名不重复拼接)或用户以 `[BinderBaseType]` 标记的自定义基类;选择 Aesir 泛型基类时,「Context 类型」下拉扫描项目内 `AbstractContext` 派生类(自动排除 `[InternalContext]` 标记的示例 / 测试 Context)。
 
 !!! note "Odin 依赖"
-    Binder 的类型选择器(组件 / 基类下拉)强依赖 Odin Inspector,整套功能收录于独立 Odin 程序集;未安装 Odin 时整体排除,不影响 UI 框架其余功能。
+    Binder 的类型选择器(组件 / 基类下拉)强依赖 Odin Inspector:运行时可见部分在 `Runestone.AesirModules.OdinInspector`(编辑器实现整文件 `#if UNITY_EDITOR` 剔除,不随 Player 构建打包),编辑器入口在 `Runestone.AesirModules.Editor.OdinInspector`;未安装 Odin 时整体排除,不影响 UI 框架其余功能。
 
 ## 继续阅读
 

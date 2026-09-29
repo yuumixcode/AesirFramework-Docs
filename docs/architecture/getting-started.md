@@ -177,6 +177,8 @@ Package Manager → Aesir Architecture → **Samples** 标签页,按需导入:
 | `Counter-Mvp-Quick / Standard / Strict` | MVP 三课 | 与 MVC 逐课同构,View 被动、Presenter 推送 |
 | `MiniEvent` / `ObservableValue` | 工具类 | MiniEvent 用法 / Odin Drawer 演示(后者需 Odin) |
 | `PlaneWar` | 实战 | 纵版射击完整小游戏:MiniEvent + ObservableValue + MonoLifecycleProxy 组合运用 |
+| `ObservableCollections` | 工具类 | 单轨变更通知 `AddListener` 与集合运算(ContextMenu 驱动) |
+| `RuntimeInitializeLoadType` | 进阶 | 五个初始化时机的执行顺序与静态重置最佳实践(Editor-only) |
 
 本仓库用户也可直接浏览包内 `Samples/` 目录;示例场景可运行,构建时自动剔除(整文件 `#if UNITY_EDITOR`)。
 

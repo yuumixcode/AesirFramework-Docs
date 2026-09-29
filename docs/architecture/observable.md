@@ -66,7 +66,7 @@ scoreChanged.Invoke(10);
 MonoLifecycleProxy.Instance.AddListener(MonoLifecycleEvent.Update, MyTick, order: 0);
 
 // 方式 2:接口自动注册(实现 ICustomUpdate / ICustomFixedUpdate 等 8 个接口之一)
-this.RegisterCustomLifecycle();
+MonoLifecycleProxy.Register(this as MonoBehaviour);   // 扩展方法形式已于 0.31.0 整体移除
 ```
 
 可用事件:`FixedUpdate`、`BeforeUpdate`、`Update`、`LateUpdate`、`AfterUpdate`、`OnApplicationFocus`、`OnApplicationPause`、`OnApplicationQuit` —— 其中 `BeforeUpdate` / `AfterUpdate` 由 PlayerLoop 驱动,其余由 Unity 原生回调触发。
@@ -93,7 +93,7 @@ AesirPlayerLoop.Unregister(
 
 特性:
 
-- **注入自愈** —— 第三方 SDK 用缓存副本 `SetPlayerLoop` 会抹掉框架注入点;`EnsureInjected()` 在域加载时与每次 Register 时自动补插,也可手动调用
+- **注入自愈** —— 第三方 SDK 用缓存副本 `SetPlayerLoop` 会抹掉框架注入点;`EnsureInjected()` 在域加载时与每次注册时自动补插(检测按帧节流,同一帧内至多复查一次),也可手动调用
 - **稳定排序** —— `order` 越小越先执行;同 order 按注册顺序(插入序号次级键)
 - **待处理命令** —— 遍历期间 Register / Unregister 不立即生效,缓存到趟末统一执行
 

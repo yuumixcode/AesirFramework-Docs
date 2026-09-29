@@ -80,7 +80,7 @@ AesirFramework 由两个同号发布的包组成。先用 **Aesir Architecture**
 
 - 三档渐进路径：快捷 → 标准 → 严格
 - `ObservableValue`、`MiniEvent` 与生命周期能力
-- 9 个可导入示例，包含 6 个计数器对照和 PlaneWar
+- 11 个可导入示例，包含 6 个计数器对照和 PlaneWar
 
 [快速开始](architecture/getting-started.md){ .md-button .md-button--primary }
 [特性一览](architecture/features.md){ .md-button }
@@ -177,7 +177,7 @@ public class CounterPanel : MonoViewController<CounterContext>
 
 **04 · 工程化交付**
 
-100+ EditMode 单元测试随包验证；CI 自动维护常驻 latest 分支与 unitypackage 发布；示例构建期自动剔除，不占包体。
+800+ EditMode 单元测试随包验证；CI 自动维护常驻 latest 分支与 unitypackage 发布；示例构建期自动剔除，不占包体。
 
 </div>
 

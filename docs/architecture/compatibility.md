@@ -21,7 +21,7 @@
 ## 包依赖
 
 - **不依赖任何 Aesir 子包**,可独立安装
-- `com.unity.test-framework` 1.1.33(仅测试程序集引用)
+- 包本身不声明任何依赖;运行包内测试需工程自带 `com.unity.test-framework`(本仓 1.1.33)
 - 可选集成:Odin Inspector(见上)
 
 ## 线程与运行时约定

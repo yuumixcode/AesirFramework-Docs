@@ -120,7 +120,6 @@ MonoLifecycleProxy.Instance.AddListener(MonoLifecycleEvent.Update, MyTick, order
 
 // 方式 2:实现 ICustom* 接口后自动注册(扫描接口,免手工对表)
 MonoLifecycleProxy.Register(this as MonoBehaviour);      // MonoBehaviour:GameObject 销毁时自动取消订阅
-this.RegisterCustomLifecycle();                          // 扩展方法形式
 ```
 
 可订阅 [`MonoLifecycleEvent`](scripting-api/Runestone/AesirArchitecture/MonoLifecycleEvent.md) 共 8 个事件:
@@ -149,7 +148,8 @@ this.RegisterCustomLifecycle();                          // 扩展方法形式
 var locator = new GenericLocator<IWeapon>();
 locator.Register(new Sword());        // 以 typeof(Sword) 为键
 locator.Get<Sword>().Attack();        // 注册与查询必须使用相同的类型参数
-locator.GetAll();                     // 按注册顺序枚举
+locator.GetAll();                     // 按注册顺序枚举(物化快照)
+locator.GetAllEntries();              // 注册键值对(诊断用,同为物化快照)
 locator.Unregister<Sword>();          // 注销后再注册,追加到顺序末尾
 ```
 
@@ -158,6 +158,7 @@ locator.Unregister<Sword>();          // 注销后再注册,追加到顺序末�
 - **注册顺序保序** —— `GetAll` 按插入顺序枚举,由显式顺序列表提供结构保证(不依赖 Dictionary 枚举顺序这一无契约保证的实现细节);Context 的"按注册顺序初始化 Model → Service、逆序 Dispose"即建立在此之上
 - **键精确匹配** —— 以 `typeof(TItem)` 为键,注册与查询必须使用相同类型参数(按实现类注册、按接口获取会 miss)
 - **覆盖不移位** —— 重复注册覆盖实例但不改变原位置;`Unregister` 后再注册按新插入语义追加到末尾
+- **快照语义** —— `GetAll` 与 `GetAllEntries()` 均返回物化快照:枚举期间注册 / 注销不会抛"集合已修改";接口同时继承 `IDisposable`
 - `[Serializable]` + `IDisposable`,`Dispose` 清空全部注册
 
 架构内用法:`AbstractContext<T>` 内部持有两个 `GenericLocator<T>` 实例分别管理 IModel 与 IService;独立用法:任何需要"类型 → 实例"注册表的场景(如局部对象池登记、编辑器工具)。
@@ -166,7 +167,7 @@ locator.Unregister<Sword>();          // 注销后再注册,追加到顺序末�
 
 ## Utilities — 工具模块 {#module-utilities}
 
-**作用**:封装 Unity PlayerLoop 这一引擎底层能力,为纯 C# 代码(无 MonoBehaviour)提供游戏级帧驱动与延时手段 —— 架构里的 Model / Service / Command 不持有协程,延时需求在这里闭环。
+**作用**:封装 Unity PlayerLoop 这一引擎底层能力,为纯 C# 代码(无 MonoBehaviour)提供游戏级帧驱动 —— 框架不内置时间调度原语(0.31.0 起连帧粒度调度器也已整体移除),需要延时请用 MonoLifecycleProxy 帧代理 + 计时字段,或直接把驱动方挂在 GameObject 上用协程。
 
 ### AesirPlayerLoop — 游戏级帧钩子
 
@@ -182,7 +183,7 @@ AesirPlayerLoop.Register(
     AesirLifecyclePhase.BeforeUpdate, MyFrameCallback, order: 0);  // 返回句柄
 ```
 
-- **注入自愈** —— 第三方 SDK 用缓存副本 `SetPlayerLoop` 会抹掉注入点;`EnsureInjected()` 在域加载时与每次 Register 时自动补插,也可手动调用
+- **注入自愈** —— 第三方 SDK 用缓存副本 `SetPlayerLoop` 会抹掉注入点;`EnsureInjected()` 在域加载时与每次注册时自动补插(检测按帧节流,同一帧内至多复查一次),也可手动调用
 - **稳定排序** —— `order` 越小越先执行,同 order 按注册顺序
 - **趟末生效** —— 遍历期间 Register / Unregister 缓存到趟末统一执行
 

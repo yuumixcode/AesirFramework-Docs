@@ -12,7 +12,7 @@ Aesir Architecture 为独立游戏内置的三种高频集合 —— `Observable
 | [ObservableDictionary\<TKey, TValue\>](scripting-api/Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md) | 配置表、属性表、名称索引 | 索引器分流(新键 Add / 已有键 Replace 含旧值) |
 | [ObservableHashSet\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableHashSet{T}.md) | 在线玩家、去重标记 | Add / Remove / Contains 与批量增删(0.23.0 起不再继承 `ISet<T>`,不含集合代数——需要时用内部 `HashSet<T>` 或上游) |
 
-三者统一经 `AddListener` / `RemoveListener` 订阅变更,并各自提供 `ClearListeners()` 一次清空全部监听。
+三者统一经 `AddListener` / `RemoveListener` 订阅变更,并各自提供 `ClearListeners()` 一次清空全部监听(已声明进 `IObservableCollection<T>` / `IReadOnlyObservableValue<T>` 接口面,只持有只读接口的 View / Presenter 同样可调)。
 
 ## 单轨变更通知
 

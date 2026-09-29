@@ -10,7 +10,7 @@
 | 依赖 | 必需性 | 说明 |
 |------|--------|------|
 | `cn.runestone.aesir.architecture` | **必需** | 两包同号发版,推荐同版本安装(如 0.31.0);经 Git URL 安装时需同时添加两个包的 URL |
-| `com.unity.test-framework` | 仅测试程序集 | 运行时无依赖 |
+| — | — | 包本身不声明任何依赖;运行包内测试需工程自带 `com.unity.test-framework` |
 
 ## 可选集成
 
@@ -18,7 +18,7 @@
 
 ### Odin Inspector(`ODIN_INSPECTOR`)
 
-- Binder 组件绑定全家桶位于独立 Odin 程序集(`Runestone.AesirModules.OdinInspector`),未安装 Odin 时整体排除
+- Binder 组件绑定位于 Odin 程序集 `Runestone.AesirModules.OdinInspector`(运行时可见,编辑器实现整文件 `#if UNITY_EDITOR` 剔除)与编辑器入口 `Runestone.AesirModules.Editor.OdinInspector`(Editor-only);未安装 Odin 时整体排除,编辑器工具链**不随 Player 构建打包**
 - UI / Scene / Audio 模块的 AttributeProcessor 样式增强同理条件编译;脚本文档生成模块强依赖 Odin(未安装自动排除)
 - `SceneAssetWrapper` 的 Inspector 面板效果(拖拽赋值 / 着色 / 一键修复)依赖 Odin;未安装时仅保证 API 可用(`FromScenePath` 构造 / 代码赋值 / TryGet 家族)
 - 核心功能(UIModule / UIRoot / SceneModule / AudioModule / EventModule)无 Odin 完整可用

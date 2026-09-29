@@ -43,6 +43,7 @@ AudioModule.MasterMute = true;
 | `MasterVolume` / `BgmVolume` / `SfxVolume` | 三通道音量(0-1,乘法链:通道 × 总) |
 | `MasterMute` / `BgmMute` / `SfxMute` | 三通道静音开关 |
 | `CurrentBgm` / `IsBgmPlaying` | 当前 BGM 状态查询 |
+| `Channels` / `AudioChannel` | 通道维度单一数据源(BGM / SFX);新增通道只需在通道集合登记一项 |
 | `ApplyConfig(config)` | 运行时替换配置资产并重新载入 |
 
 ## 配置资产(AudioConfigSO)

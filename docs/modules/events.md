@@ -131,11 +131,13 @@ scoredEventAsset.Raise();
 
 ### 双注册表与分发流程
 
+以下两个注册表自 0.31.0 起收为 `internal` 实现细节:订阅 / 退订必须经 EventModule 公开 API(走同一套绑定键与死引用清理),包外代码不再可直接读取(包内测试经 `InternalsVisibleTo` 访问)。
+
 ```
-AttributeBindings (Dictionary<string, List<BindingInfo>>)
+AttributeBindings (Dictionary<string, List<BindingInfo>>)   // internal
   └─ StaticBindingInfo   — MethodInfo + 表达式树编译委托
 
-DynamicBindings (Dictionary<string, List<BindingInfo>>)
+DynamicBindings (Dictionary<string, List<BindingInfo>>)    // internal
   └─ DynamicBindingInfo<T> — Action<T> 直接委托
 
 分发流程:

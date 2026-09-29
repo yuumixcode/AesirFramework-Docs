@@ -72,7 +72,7 @@ Scene last = SceneModule.LastLoadedScene;
 
 ## Addressables 集成(可选)
 
-条件编译架构:核心 asmdef 经 `versionDefines` 定义 `AESIR_MODULES_ADDRESSABLES`,独立胶水程序集在**未安装 Addressables 时整体不编译**(零报错):
+条件编译架构:核心运行时程序集与胶水程序集**各自**声明一份 `versionDefines` 定义 `AESIR_MODULES_ADDRESSABLES`(belt-and-braces),胶水程序集在**未安装 Addressables 时整体不编译**(零报错):
 
 - 装包即启用:`SceneAssetWrapper.Address` / `TryGetAddress` 地址查询能力
 - 卸包自动隐藏:相关 API 运行期访问才抛 `AddressablesSupportDisabledException`(API 始终可见可编译,最小惊讶)
