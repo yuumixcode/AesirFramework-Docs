@@ -11,11 +11,20 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.31.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.31.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.31.1** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.31.1** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.31.1] - 2026-09-29
+
+**文档补丁版本**:两包源码与 0.31.0 一致,无功能变更;本轮全部内容落在本站与仓库记忆:
+
+- **Scripting API 页全量重生成**至 0.31.0 口径(RAA 131 页 / RAM 153 页,9 个程序集 284 类型):新增 `IView<T>`、`AesirPlayerLoop` 家族、`AudioChannel`、`SceneModuleUniTask`、`NiceTypeName`、`SceneModuleSettingsWindowOdin` 等页,移除 `Internal/ListExtensions`、`Editor/SceneManagerWindow`
+- **修复侧栏 API 导航缺陷**:导航路径前缀重复(`architecture/scripting-api/architecture/scripting-api/…`)导致全部 API 链接 404;修复后 284 条导航目标全部有效且与页面一一对应
+- **内容页对齐 0.31.0 共 27 处**:示例总数 9/10 → 11 与 `RuntimeInitializeLoadType` 登记状态、已删 `RegisterCustomLifecycle` 用法示例、`AesirPlayerLoop` 按帧节流自愈口径、双注册表收 internal、Binder 编辑器工具链不随 Player 打包、包不再声明测试框架依赖,以及 `IView<T>` / `GetAllEntries` / `ClearListeners` 接口面 / `EventModule` DDOL / Binder 设置持久化 / `Channels` 等新能力补录
+- **补第三方素材出处**:PlaneWar 示例使用的 Vertical 2D Shooting BE4(Goldmetal)补上版权与授权口径,与包内 Third Party Notices 对齐
 
 ## [0.31.0] - 2026-09-29
 
