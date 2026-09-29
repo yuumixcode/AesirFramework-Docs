@@ -66,7 +66,7 @@ scoreChanged.Invoke(10);
 MonoLifecycleProxy.Instance.AddListener(MonoLifecycleEvent.Update, MyTick, order: 0);
 
 // 方式 2:接口自动注册(实现 ICustomUpdate / ICustomFixedUpdate 等 8 个接口之一)
-MonoLifecycleProxy.Register(this as MonoBehaviour);   // 扩展方法形式已于 0.31.0 整体移除
+MonoLifecycleProxy.Register(this as MonoBehaviour);   // 扩展方法形式已于 0.31.1 整体移除
 ```
 
 可用事件:`FixedUpdate`、`BeforeUpdate`、`Update`、`LateUpdate`、`AfterUpdate`、`OnApplicationFocus`、`OnApplicationPause`、`OnApplicationQuit` —— 其中 `BeforeUpdate` / `AfterUpdate` 由 PlayerLoop 驱动,其余由 Unity 原生回调触发。

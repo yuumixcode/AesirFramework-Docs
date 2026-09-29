@@ -150,7 +150,7 @@ UIModule.Instance.RegisterAssetLoader(new MyAddressablesLoader());
 - `AesirModules` 宿主:运行时创建恒为 DDOL
 - `UIRoot`:预放置与运行时创建统一由该字段控制
 - `UIModule`:字段仅在**预放置为根物体**时生效;运行时自动创建时挂载于 `[Aesir Modules]` 宿主下,跟随宿主决策
-- `EventModule`:预放置实例同样由该字段控制(0.31.0 起补上字段)——此前预放置在场景根的事件模块会随场景卸载被销毁,注册表整体消失
+- `EventModule`:预放置实例同样由该字段控制(0.31.1 起补上字段)——此前预放置在场景根的事件模块会随场景卸载被销毁,注册表整体消失
 
 ## 设计边界
 
