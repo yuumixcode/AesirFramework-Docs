@@ -51,6 +51,42 @@ SFX 采用固定数量独占音源轮询（等效池化：无每播实例化开�
 public AudioModule()
 ```
 
+## 字段
+
+<div class="api-summary-table" markdown="1">
+
+| 名称 | 描述 |
+| :--- | :--- |
+| [`Bgm`](#field-bgm) | — |
+| [`Sfx`](#field-sfx) | — |
+| [`Channels`](#field-channels) | 全部音频通道（只读视图）。通道在此集中登记一次，音量/静音的存取、 PlayerPrefs 持久化与配置默认值载入均遍历本列表。 |
+
+</div>
+
+### Bgm {#field-bgm}
+
+``` csharp
+public static readonly AudioChannel Bgm = Runestone.AesirModules.AudioChannel;
+```
+
+### Sfx {#field-sfx}
+
+``` csharp
+public static readonly AudioChannel Sfx = Runestone.AesirModules.AudioChannel;
+```
+
+### Channels {#field-channels}
+
+全部音频通道（只读视图）。通道在此集中登记一次，音量/静音的存取、 PlayerPrefs 持久化与配置默认值载入均遍历本列表。
+
+**备注**
+
+总音量与总静音是跨通道的总闸，不属于"通道"，仍由独立字段承载 （MasterVolume / MasterMute）。 新增通道时在 Index 与本列表中同步登记同一位置。
+
+``` csharp
+public static readonly IReadOnlyList<AudioChannel> Channels;
+```
+
 ## 属性
 
 **声明的属性**
@@ -59,10 +95,10 @@ public AudioModule()
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`CurrentBgm`](#property-currentbgm) | — |
+| [`CurrentBgm`](#property-currentbgm) | 当前背景音乐片段。停止播放后仍保留最后一次播放的片段，未播放过时为 null。 |
 | [`Instance`](#property-instance) | 全局单例入口。 优先在已加载场景中查找预放置的实例；未找到时在 AesirModules（DDOL）下创建子物体。 |
 | [`BgmMute`](#property-bgmmute) | 背景音乐静音开关，与总静音相或生效。设置即时生效，并按配置持久化。 |
-| [`IsBgmPlaying`](#property-isbgmplaying) | — |
+| [`IsBgmPlaying`](#property-isbgmplaying) | 背景音乐是否正在播放。 |
 | [`MasterMute`](#property-mastermute) | 总静音开关（总闸，与各通道静音相或生效）。设置即时生效，并按配置持久化。 |
 | [`SfxMute`](#property-sfxmute) | 音效静音开关，与总静音相或生效。设置即时生效，并按配置持久化。 |
 | [`BgmVolume`](#property-bgmvolume) | 背景音乐通道音量（0-1），与总音量相乘生效。设置即时生效，并按配置持久化。 |
@@ -105,6 +141,12 @@ public AudioModule()
 
 ### CurrentBgm {#property-currentbgm}
 
+当前背景音乐片段。停止播放后仍保留最后一次播放的片段，未播放过时为 null。
+
+**备注**
+
+只读查询，不创建模块实例：模块不存在（从未播放过任何音频）时返回 null。
+
 ``` csharp
 public static AudioClip CurrentBgm { get; }
 ```
@@ -121,11 +163,21 @@ public static AudioModule Instance { get; }
 
 背景音乐静音开关，与总静音相或生效。设置即时生效，并按配置持久化。
 
+**备注**
+
+读取会确保模块实例存在（取值语义见 MasterVolume）。
+
 ``` csharp
 public static bool BgmMute { get; set; }
 ```
 
 ### IsBgmPlaying {#property-isbgmplaying}
+
+背景音乐是否正在播放。
+
+**备注**
+
+只读查询，不创建模块实例：模块不存在或尚未初始化时返回 false （没有音频源，等价于"没在播放"）。
 
 ``` csharp
 public static bool IsBgmPlaying { get; }
@@ -135,6 +187,10 @@ public static bool IsBgmPlaying { get; }
 
 总静音开关（总闸，与各通道静音相或生效）。设置即时生效，并按配置持久化。
 
+**备注**
+
+读取会确保模块实例存在（取值语义见 MasterVolume）。
+
 ``` csharp
 public static bool MasterMute { get; set; }
 ```
@@ -142,6 +198,10 @@ public static bool MasterMute { get; set; }
 ### SfxMute {#property-sfxmute}
 
 音效静音开关，与总静音相或生效。设置即时生效，并按配置持久化。
+
+**备注**
+
+读取会确保模块实例存在（取值语义见 MasterVolume）。
 
 ``` csharp
 public static bool SfxMute { get; set; }
@@ -151,6 +211,10 @@ public static bool SfxMute { get; set; }
 
 背景音乐通道音量（0-1），与总音量相乘生效。设置即时生效，并按配置持久化。
 
+**备注**
+
+读取会确保模块实例存在（取值语义见 MasterVolume）。
+
 ``` csharp
 public static float BgmVolume { get; set; } = 1f;
 ```
@@ -159,6 +223,10 @@ public static float BgmVolume { get; set; } = 1f;
 
 总音量（0-1），与各通道音量相乘生效。设置即时生效，并按配置持久化到 PlayerPrefs。
 
+**备注**
+
+读取会确保模块实例存在（与 IsBgmPlaying / CurrentBgm 不同）：音量与静音的"有效值" 由配置资产决定（AudioConfigSO 的默认音量 / 持久化开关 / PlayerPrefs 键前缀都挂在模块实例的序列化字段上）， 无实例时无法还原该配置——非创建式取值只可能返回代码默认值，与项目配置矛盾（静默给出错误音量）。 故本组（音量与静音）保持创建式取值，只读播放状态则走非创建式。
+
 ``` csharp
 public static float MasterVolume { get; set; } = 1f;
 ```
@@ -166,6 +234,10 @@ public static float MasterVolume { get; set; } = 1f;
 ### SfxVolume {#property-sfxvolume}
 
 音效通道音量（0-1），与总音量相乘生效。设置即时生效，并按配置持久化。
+
+**备注**
+
+读取会确保模块实例存在（取值语义见 MasterVolume）。
 
 ``` csharp
 public static float SfxVolume { get; set; } = 1f;

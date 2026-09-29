@@ -32,8 +32,6 @@ public sealed class MiniEvent : System.IDisposable
 基于 Action{T} 委托的轻量级事件实现。不使用 List{T} 存储监听者， 而是直接通过 += / -= 操作委托，实现 Invoke 路径零分配（直接多播调用）。 注意：订阅与退订路径（+= / -=）有与当前监听者数量成正比的委托分配，仅适合低频订阅场景。
 AddListener 返回 AutoRemoveListenerHandle， 支持使用 using 语句在作用域结束时自动移除监听，或通过 RemoveListenerExtensions 绑定到 Unity 生命周期事件。
 
-GetListeners 返回当前委托调用列表，可用于调试或检查已注册的监听者数量。
-
 与 C# event 关键字的区别：MiniEvent{T} 提供 Dispose 方法， 可主动清空所有委托引用，适合在响应式系统中随宿主对象一起释放资源， 而 C# event 没有内置的清空机制。
 
 ## 构造方法

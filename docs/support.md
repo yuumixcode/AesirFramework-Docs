@@ -26,3 +26,4 @@
 - **Aesir Inspector** — 独立公开仓库,面向 Odin Inspector 开发者的学习工具包:[yuumixcode/AesirInspector](https://github.com/yuumixcode/AesirInspector)
 - **Cysharp/ObservableCollections** — 高性能可观察集合库(MIT),Aesir Observable 家族的高级能力推荐直接使用
 - **Eflatun.SceneReference** — 强类型场景引用方案(MIT),`SceneAssetWrapper` 的功能设计参考
+- **Vertical 2D Shooting BE4**(Goldmetal) — 纵版射击 2D 精灵素材包(Copyright ⓒ 2021 Goldmetal;标注 Goldmetal 出处即可自由使用,含商用),Aesir Architecture 的 PlaneWar 示例内含自包含拷贝:[Goldmetal Studio](https://www.goldmetal.co.kr)

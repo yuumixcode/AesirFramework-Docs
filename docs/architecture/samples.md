@@ -58,7 +58,7 @@
 
 - 得分 HUD(`ObservableValue` 驱动)、三型敌机、子弹命中计分(A=10 / B=20 / C=30)、坠毁重开流程
 - 组合运用 `MiniEvent` + `ObservableValue` + `MonoLifecycleProxy`
-- 素材自包含
+- 素材自包含:精灵来自 [Vertical 2D Shooting BE4](https://www.goldmetal.co.kr)(Copyright ⓒ 2021 Goldmetal;标注 Goldmetal 出处即可自由使用,含商用),示例内为自包含拷贝
 
 ## RuntimeInitializeLoadType(仓库内示例)
 

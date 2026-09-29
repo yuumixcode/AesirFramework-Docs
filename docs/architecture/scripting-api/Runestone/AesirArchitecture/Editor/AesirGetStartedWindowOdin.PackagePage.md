@@ -81,6 +81,18 @@ public AesirGetStartedService.AesirPackageInfo Package;
 
 ## 方法
 
+**声明的方法**
+
+<div class="api-summary-table" markdown="1">
+
+| 名称 | 描述 |
+| :--- | :--- |
+| [`Rebind(AesirGetStartedService.AesirPackageInfo)`](#method-rebind-aesirgetstartedservice-aesirpackageinfo) | （重）绑定包实例并重建分组视图与页脚（导入示例后 RefreshAfterImport 重扫刷新复用）。 |
+
+</div>
+
+**继承的方法**
+
 <div class="api-summary-table" markdown="1">
 
 | 名称 | 描述 | 声明类型 |
@@ -97,6 +109,24 @@ public AesirGetStartedService.AesirPackageInfo Package;
 | `Finalize()` | — | `object` |
 | `BeginScrollableLayoutPage(Rect, int)` | — | `AesirGetStartedWindowOdin.GetStartedPage` |
 | `EndScrollableLayoutPage()` | — | `AesirGetStartedWindowOdin.GetStartedPage` |
+
+</div>
+
+### Rebind(AesirGetStartedService.AesirPackageInfo) {#method-rebind-aesirgetstartedservice-aesirpackageinfo}
+
+（重）绑定包实例并重建分组视图与页脚（导入示例后 RefreshAfterImport 重扫刷新复用）。
+
+``` csharp
+public void Rebind(AesirGetStartedService.AesirPackageInfo pkg)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `pkg` | `AesirGetStartedService.AesirPackageInfo` | — |
 
 </div>
 

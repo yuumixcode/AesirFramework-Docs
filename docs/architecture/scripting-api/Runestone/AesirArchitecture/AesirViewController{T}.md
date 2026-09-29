@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.AesirViewController<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `Sirenix.OdinInspector.SerializedMonoBehaviour` → `Runestone.AesirArchitecture.AesirMonoBehaviour` → `AesirViewController<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Runestone.AesirArchitecture.IController<T>`，`Sirenix.Serialization.ISupportsPrefabSerialization`，`Runestone.AesirArchitecture.IContextHolder`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`
 
 **类型参数**
 
@@ -23,22 +23,23 @@ description: "Runestone.AesirArchitecture.AesirViewController<T> 的 API 文档"
 
 ``` csharp
 public abstract class AesirViewController<T> : Runestone.AesirArchitecture.AesirMonoBehaviour, 
-Runestone.AesirArchitecture.ICanExecuteCommand, 
 Runestone.AesirArchitecture.ICanExecuteQuery, 
 Runestone.AesirArchitecture.IController, 
+Runestone.AesirArchitecture.IController<T>, 
 Sirenix.Serialization.ISupportsPrefabSerialization, 
-UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IContextHolder, 
+UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
+Runestone.AesirArchitecture.ICanGetService, 
+Runestone.AesirArchitecture.ICanExecuteCommand where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 View + Controller 双角色基类。通过泛型上下文获取模块访问能力，自动支持 Odin Inspector 序列化。
 
 **备注**
 
-同时实现 IView 和 IController，具备只读数据访问 + 命令执行 + 查询能力。 通过显式接口实现 Context 自动绑定到 Instance 单例。
+同时实现 IView 和 IController，具备只读数据访问 + 命令执行 + 查询能力。 上下文绑定经 IController{T} 的默认接口实现（DIM）自动指向 Instance 单例—— View 角色不存在泛型 DIM 接口，由 IController<T> 单独供给，避免双 DIM 冲突。
 继承自 AesirMonoBehaviour，在编辑器环境或配置允许时自动获得 Odin 序列化能力。
 
 ## 属性

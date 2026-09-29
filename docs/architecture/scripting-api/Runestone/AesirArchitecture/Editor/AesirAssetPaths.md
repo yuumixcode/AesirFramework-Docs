@@ -20,7 +20,7 @@ internal static class AesirAssetPaths
 ```
 
 Aesir 本地安装路径定位器 — 解析 Assets 形态安装（复制 / unitypackage 导入）的 Runestone 安装根目录，确保 Runestone 可移动到项目的任意文件夹。
-机制参照 Odin Inspector 的 SirenixAssetPaths（OdinPathLookup.asset 锚点）：每包包根放一个 AesirPathLookup 锚点资产，文件夹移动时 .meta GUID 保持不变，依次按 「默认安装根 → 锚点 GUID 查询 → 锚点类型搜索」三级定位（一级命中即止、逐级变慢）。
+机制参照 Odin Inspector 的 SirenixAssetPaths（OdinPathLookup.asset 锚点）：每包包根放一个 AesirPathLookup 锚点资产，文件夹移动时 .meta GUID 保持不变，依次按 「默认安装根（磁盘存在性）→ 锚点 GUID 查询 → 锚点类型搜索」三级定位，逐级变慢且逐级兜底： 第二级**始终执行**（多安装根是常态，需要逐个锚点收集），仅第三级在第二级无果时才跑。
 
 结果在静态构造期解析一次，域重载后自动重解析；移动含脚本的 Runestone 目录必然触发域重载， 各消费端（构建剔除 / 更新器 / Getting Started）下一次访问即拿到新位置。
 

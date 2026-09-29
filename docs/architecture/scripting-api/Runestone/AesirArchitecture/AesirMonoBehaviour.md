@@ -28,7 +28,7 @@ RAA 架构标准 MonoBehaviour 基类，根据运行环境自动选择序列化�
 **备注**
 
 通过条件编译在编译期决定基类，避免运行时反射开销： 编辑器 + 定义了 ODIN_INSPECTOR：继承 SerializedMonoBehaviour，获得 Odin 序列化能力，编辑器内可使用 Odin Inspector。 运行时 + 定义了 ODIN_INSPECTOR 且未定义 ODIN_INSPECTOR_EDITOR_ONLY：继承 SerializedMonoBehaviour，运行时也使用 Odin 序列化。 其他情况：继承 MonoBehaviour，使用 Unity 默认序列化。
-ODIN_INSPECTOR_EDITOR_ONLY 宏用于在运行时剔除 Odin 序列化（减小包体）， 同时保留编辑器内的 Odin Inspector 体验。
+ODIN_INSPECTOR_EDITOR_ONLY 宏用于在运行时剔除 Odin 序列化（减小包体）， 同时保留编辑器内的 Odin Inspector 体验。 警告：定义该宏后，编辑器分支经 Odin 序列化后端持久化、构建分支回退为裸 Unity 序列化后端—— 编辑器内经 Odin 录入而 Unity 无法原生序列化的数据（字典、私有字段等）在玩家构建中会静默丢失。 使用该宏前请确认序列化字段均为 Unity 原生可序列化形态。
 
 ## 属性
 

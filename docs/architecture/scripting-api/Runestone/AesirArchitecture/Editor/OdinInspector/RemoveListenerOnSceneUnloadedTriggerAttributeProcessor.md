@@ -18,7 +18,7 @@ description: "Runestone.AesirArchitecture.Editor.OdinInspector.RemoveListenerOnS
 ## 声明
 
 ``` csharp
-public class RemoveListenerOnSceneUnloadedTriggerAttributeProcessor : Sirenix.OdinInspector.Editor.OdinAttributeProcessor<RemoveListenerOnSceneUnloadedTrigger>, 
+internal sealed class RemoveListenerOnSceneUnloadedTriggerAttributeProcessor : Sirenix.OdinInspector.Editor.OdinAttributeProcessor<RemoveListenerOnSceneUnloadedTrigger>, 
 Sirenix.Utilities.Editor.IHideObjectMembers
 ```
 

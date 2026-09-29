@@ -1,9 +1,9 @@
 ---
-title: SceneModuleConfigAssetInitializer
-description: "Runestone.AesirModules.Editor.SceneModuleConfigAssetInitializer 的 API 文档"
+title: AesirSingletonAssetInitializer
+description: "Runestone.AesirModules.Editor.AesirSingletonAssetInitializer 的 API 文档"
 ---
 
-# `SceneModuleConfigAssetInitializer`
+# `AesirSingletonAssetInitializer`
 
 !!! note ""
 
@@ -11,19 +11,19 @@ description: "Runestone.AesirModules.Editor.SceneModuleConfigAssetInitializer �
     - **命名空间:** `Runestone.AesirModules.Editor`
     - **程序集:** `Runestone.AesirModules.Editor`
 
-**继承链:** `System.Object` → `SceneModuleConfigAssetInitializer`
+**继承链:** `System.Object` → `AesirSingletonAssetInitializer`
 
 ## 声明
 
 ``` csharp
-internal static class SceneModuleConfigAssetInitializer
+internal static class AesirSingletonAssetInitializer
 ```
 
-确保场景模块配置资产存在：编辑模式域加载后，Resources 兜底路径缺失且项目中无同类型资产时， 自动创建 SceneModuleConfigSO 至 Assets/Resources/SceneModuleConfig/， 免去用户手动创建资产的前置步骤（配置调整不依赖预放置 [SceneModule]）。
+模块配置资产（单例 ScriptableObject）的自动创建共用实现。
 
 **备注**
 
-创建逻辑与 UI 模块共用 AesirSingletonAssetInitializer（单一真源）。
+各模块的 XxxModuleConfigAssetInitializer 负责在 [InitializeOnLoadMethod] 里注册 EditorApplication.delayCall（域加载期 AssetDatabase 未就绪，此刻 CreateAsset 会报 "Unable to import newly created asset"），实际创建推迟到编辑器空闲首帧并由本类执行—— UI / Scene 两个配置资产此前各持一份等价实现，此处收敛为单一真源。
 
 ## 方法
 

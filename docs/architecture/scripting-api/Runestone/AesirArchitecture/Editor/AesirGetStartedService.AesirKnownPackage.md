@@ -44,6 +44,7 @@ public AesirGetStartedService.AesirKnownPackage()
 | 名称 | 描述 |
 | :--- | :--- |
 | [`Description`](#field-description) | 包定位描述（概览卡片文案）。 |
+| [`DirName`](#field-dirname) | 包目录名（Release 资产命名与默认安装目录名；更新器的补装与差集清理亦按此定位）。 |
 | [`DisplayName`](#field-displayname) | 包显示名（概览卡片标题）。 |
 | [`Id`](#field-id) | package.json name（包唯一标识）。 |
 
@@ -55,6 +56,14 @@ public AesirGetStartedService.AesirKnownPackage()
 
 ``` csharp
 public string Description;
+```
+
+### DirName {#field-dirname}
+
+包目录名（Release 资产命名与默认安装目录名；更新器的补装与差集清理亦按此定位）。
+
+``` csharp
+public string DirName;
 ```
 
 ### DisplayName {#field-displayname}

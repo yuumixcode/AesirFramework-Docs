@@ -15,6 +15,10 @@ description: "Runestone.AesirArchitecture.Internal.CloneCollection<T>.Enumerable
 
 **实现接口:** `System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<T>`
 
+**类型参数**
+
+- `T` — 元素类型。
+
 ## 声明
 
 ``` csharp
@@ -24,7 +28,11 @@ System.Collections.IEnumerable,
 System.Collections.Generic.ICollection<T> 
 ```
 
-ReadOnly cloned collection.
+只读克隆集合：把源序列物化为租借数组的临时快照， 供批量操作在写入自身前先完成拷贝（如源序列传入集合自身时避免"枚举中修改"异常）。
+
+**备注**
+
+数组经 Shared 租借、Dispose 时归还； 上游 Cysharp.ObservableCollections 经 CollectionsMarshal 零拷贝取 List{T} 内部数组， Unity netstandard2.1 参考程序集无该 API，本项目以逐项物化作语义等价的降级实现。
 
 ## 构造方法
 
@@ -32,11 +40,13 @@ ReadOnly cloned collection.
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`CloneCollection(T[], int)`](#constructor-clonecollection-t-int) | — |
+| [`CloneCollection(T[], int)`](#constructor-clonecollection-t-int) | 以可能为 null 的租借数组构造（null 视为空集合）。 |
 
 </div>
 
 ### CloneCollection(T[], int) {#constructor-clonecollection-t-int}
+
+以可能为 null 的租借数组构造（null 视为空集合）。
 
 ``` csharp
 public CloneCollection<T>.EnumerableCollection<T>(T[] array, int count)
@@ -59,18 +69,22 @@ public CloneCollection<T>.EnumerableCollection<T>(T[] array, int count)
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`IsReadOnly`](#property-isreadonly) | — |
-| [`Count`](#property-count) | — |
+| [`IsReadOnly`](#property-isreadonly) | 固定为只读。 |
+| [`Count`](#property-count) | 已物化的元素数。 |
 
 </div>
 
 ### IsReadOnly {#property-isreadonly}
+
+固定为只读。
 
 ``` csharp
 public bool IsReadOnly { get; }
 ```
 
 ### Count {#property-count}
+
+已物化的元素数。
 
 ``` csharp
 public int Count { get; }
@@ -84,12 +98,12 @@ public int Count { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`GetEnumerator()`](#method-getenumerator) | — |
-| [`Contains(T)`](#method-contains-t) | — |
-| [`Remove(T)`](#method-remove-t) | — |
-| [`Add(T)`](#method-add-t) | — |
-| [`Clear()`](#method-clear) | — |
-| [`CopyTo(T[], int)`](#method-copyto-t-int) | — |
+| [`GetEnumerator()`](#method-getenumerator) | 按序枚举已物化区间。 |
+| [`Contains(T)`](#method-contains-t) | 按值扫描已物化区间。实现 ICollection{T} 契约而非抛异常—— 调用方按接口约定使用 Contains 不应触雷。 |
+| [`Remove(T)`](#method-remove-t) | 不支持——克隆为只读快照。 |
+| [`Add(T)`](#method-add-t) | 不支持——克隆为只读快照。 |
+| [`Clear()`](#method-clear) | 不支持——克隆为只读快照。 |
+| [`CopyTo(T[], int)`](#method-copyto-t-int) | 拷贝已物化区间到目标数组。 |
 
 </div>
 
@@ -110,6 +124,8 @@ public int Count { get; }
 
 ### GetEnumerator() {#method-getenumerator}
 
+按序枚举已物化区间。
+
 ``` csharp
 [IteratorStateMachine]
 public IEnumerator<T> GetEnumerator()
@@ -126,6 +142,8 @@ public IEnumerator<T> GetEnumerator()
 </div>
 
 ### Contains(T) {#method-contains-t}
+
+按值扫描已物化区间。实现 ICollection{T} 契约而非抛异常—— 调用方按接口约定使用 Contains 不应触雷。
 
 ``` csharp
 public bool Contains(T item)
@@ -153,6 +171,8 @@ public bool Contains(T item)
 
 ### Remove(T) {#method-remove-t}
 
+不支持——克隆为只读快照。
+
 ``` csharp
 public bool Remove(T item)
 ```
@@ -179,6 +199,8 @@ public bool Remove(T item)
 
 ### Add(T) {#method-add-t}
 
+不支持——克隆为只读快照。
+
 ``` csharp
 public void Add(T item)
 ```
@@ -195,11 +217,15 @@ public void Add(T item)
 
 ### Clear() {#method-clear}
 
+不支持——克隆为只读快照。
+
 ``` csharp
 public void Clear()
 ```
 
 ### CopyTo(T[], int) {#method-copyto-t-int}
+
+拷贝已物化区间到目标数组。
 
 ``` csharp
 public void CopyTo(T[] dest, int destIndex)

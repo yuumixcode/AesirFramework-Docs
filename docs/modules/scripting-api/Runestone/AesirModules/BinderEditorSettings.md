@@ -16,11 +16,15 @@ description: "Runestone.AesirModules.BinderEditorSettings 的 API 文档"
 ## 声明
 
 ``` csharp
+[FilePath]
 public class BinderEditorSettings : UnityEditor.ScriptableSingleton<BinderEditorSettings>
 ```
 
-Binder 编辑器持久化设置（ScriptableSingleton，随编辑器会话持久存储）。
-保存 partial 分部类模式的可选文件后缀列表、默认后缀与最近使用的命名空间， 供新建 BinderAssistant 的默认值与后缀下拉共用。
+Binder 编辑器持久化设置（ScriptableSingleton）：保存 partial 分部类模式的可选文件后缀列表、 默认后缀与最近使用的命名空间，供新建 BinderAssistant 的默认值与后缀下拉共用。
+
+**备注**
+
+落盘路径为项目根 ScriptableSingleton/AesirModules/BinderEditorSettings.asset（已被 .gitignore 覆盖）。 ScriptableSingleton 走 Unity 原生序列化，故除 FilePathAttribute 外， 每个持久字段还需 [SerializeField]，且写盘必须调用基类 Save(true)—— 仅 EditorUtility.SetDirty / AssetDatabase.SaveAssets 对本单例无效（它不是资产）。
 
 ## 构造方法
 
@@ -49,7 +53,7 @@ public BinderEditorSettings()
 | [`PartialSuffixes`](#property-partialsuffixes) | partial 分部类模式下自动维护文件的可选后缀列表（含扩展名，如 .designer.cs）。 |
 | [`DefaultPartialSuffix`](#property-defaultpartialsuffix) | 新建 BinderAssistant 时默认选中的自动维护文件后缀。 |
 | [`LastNamespace`](#property-lastnamespace) | 最近一次成功生成脚本时使用的命名空间，作为新建 BinderAssistant 的命名空间默认值。 |
-| [`Settings`](#property-settings) | 实例访问器。标准 Unity 的 ScriptableSingleton 暴露大写 Instance， 团结引擎为小写 instance，此处经反射做双引擎兼容并缓存。 |
+| [`Settings`](#property-settings) | 实例访问器。Unity 的 ScriptableSingleton<T> 暴露小写 instance 属性 （双引擎一致），此处仍按大写/小写双探测并缓存，以免依赖单一拼写。 |
 
 </div>
 
@@ -90,7 +94,7 @@ public string LastNamespace { get; }
 
 ### Settings {#property-settings}
 
-实例访问器。标准 Unity 的 ScriptableSingleton 暴露大写 Instance， 团结引擎为小写 instance，此处经反射做双引擎兼容并缓存。
+实例访问器。Unity 的 ScriptableSingleton<T> 暴露小写 instance 属性 （双引擎一致），此处仍按大写/小写双探测并缓存，以免依赖单一拼写。
 
 ``` csharp
 public static BinderEditorSettings Settings { get; }
@@ -104,9 +108,9 @@ public static BinderEditorSettings Settings { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Save()`](#method-save) | 立即落盘（后缀列表编辑为低频操作，直接 SaveAssets 保证持久化）。 |
+| [`Save()`](#method-save) | 立即落盘（后缀列表编辑为低频操作，直接写入设置文件保证持久化）。 |
 | [`SetDefaultPartialSuffix(string)`](#method-setdefaultpartialsuffix-string) | 更新默认选中的自动维护文件后缀。 |
-| [`SetLastNamespace(string)`](#method-setlastnamespace-string) | 更新最近使用的命名空间（由生成流程调用，随后统一 SaveAssets 落盘）。 |
+| [`SetLastNamespace(string)`](#method-setlastnamespace-string) | 更新最近使用的命名空间（由生成流程调用，随即写盘）。 |
 | [`SetPartialSuffixes(List<string>)`](#method-setpartialsuffixes-list-string) | 用编辑器内编辑过的列表替换可选后缀列表并落盘。 |
 
 </div>
@@ -131,7 +135,7 @@ public static BinderEditorSettings Settings { get; }
 
 ### Save() {#method-save}
 
-立即落盘（后缀列表编辑为低频操作，直接 SaveAssets 保证持久化）。
+立即落盘（后缀列表编辑为低频操作，直接写入设置文件保证持久化）。
 
 ``` csharp
 public void Save()
@@ -157,7 +161,7 @@ public void SetDefaultPartialSuffix(string suffix)
 
 ### SetLastNamespace(string) {#method-setlastnamespace-string}
 
-更新最近使用的命名空间（由生成流程调用，随后统一 SaveAssets 落盘）。
+更新最近使用的命名空间（由生成流程调用，随即写盘）。
 
 ``` csharp
 public void SetLastNamespace(string targetNamespace)

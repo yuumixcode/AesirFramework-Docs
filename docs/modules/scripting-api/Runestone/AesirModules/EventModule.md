@@ -19,6 +19,7 @@ description: "Runestone.AesirModules.EventModule 的 API 文档"
 
 ``` csharp
 [DisallowMultipleComponent]
+[DefaultExecutionOrder]
 [AddComponentMenu]
 public class EventModule : Runestone.AesirArchitecture.AesirMonoBehaviour, 
 Sirenix.Serialization.ISupportsPrefabSerialization, 
@@ -30,7 +31,7 @@ UnityEngine.ISerializationCallbackReceiver
 
 分发期可靠性：自动检测并清理已销毁的 Unity 对象订阅者（死引用）； 支持 WithFilter 声明的订阅者过滤器实现精确投递； 可通过 executionMsLimit 开启分发耗时告警。
 
-快照语义与重入安全：每趟分发基于注册表快照迭代——回调内退订/注册只影响后续分发， 不干扰本趟；回调内同步发布事件（重入）使用独立的迭代缓冲区与参数数组， 外层分发不受覆写影响。性能计时（executionMsLimit）仅对顶层分发生效。 排序为 Priority 主键 + 注册序号次键的稳定排序，同优先级按注册顺序执行。
+快照语义与重入安全：每趟分发基于注册表快照迭代——回调内退订/注册只影响后续分发， 不干扰本趟；回调内同步发布事件（重入）使用独立的迭代缓冲区与参数数组， 外层分发不受覆写影响。发布者同理按快照校正：内层分发覆写共享参数实例的 Sender 后，外层遍历会把 Sender 重新校正回本趟发布者， 过滤器判定与订阅者读取均不受内层污染。性能计时（executionMsLimit）仅对顶层分发生效。 排序为 Priority 主键 + 注册序号次键的稳定排序，同优先级按注册顺序执行。
 
 作为 AesirModules 的子物体存在，由 GetOrAddChild{T} 懒加载创建。
 
@@ -48,33 +49,6 @@ UnityEngine.ISerializationCallbackReceiver
 
 ``` csharp
 public EventModule()
-```
-
-## 字段
-
-<div class="api-summary-table" markdown="1">
-
-| 名称 | 描述 |
-| :--- | :--- |
-| [`AttributeBindings`](#field-attributebindings) | Attribute 订阅注册表。以事件类型 AssemblyQualifiedName 为键。 |
-| [`DynamicBindings`](#field-dynamicbindings) | Script 订阅注册表。以事件类型 AssemblyQualifiedName 为键。 |
-
-</div>
-
-### AttributeBindings {#field-attributebindings}
-
-Attribute 订阅注册表。以事件类型 AssemblyQualifiedName 为键。
-
-``` csharp
-public Dictionary<string, List<BindingInfo>> AttributeBindings;
-```
-
-### DynamicBindings {#field-dynamicbindings}
-
-Script 订阅注册表。以事件类型 AssemblyQualifiedName 为键。
-
-``` csharp
-public Dictionary<string, List<BindingInfo>> DynamicBindings;
 ```
 
 ## 属性
@@ -142,7 +116,7 @@ public static EventModule Instance { get; }
 | [`AddListener(object, Action<TEventArgs>)`](#method-addlistener-object-action-teventargs) | 添加 Script 订阅。通过 Lambda 委托监听指定事件类型，无需 [AesirListener] 特性。 返回自动移除句柄，Dispose 或 using 块结束时自动注销。 默认优先级 Medium。 |
 | [`AddListener(object, Action<TEventArgs>, SubscriberPriority)`](#method-addlistener-object-action-teventargs-subscriberpriority) | 添加 Script 订阅，指定优先级。返回自动移除句柄。 |
 | [`AddListener(object)`](#method-addlistener-object) | 添加 Attribute 订阅者。反射扫描对象上标有 [AesirListener] 的方法并注册。 通常在 OnEnable 中调用。 |
-| [`InvokeEvent(object, TEventArgs)`](#method-invokeevent-object-teventargs) | 触发事件。合并两个注册表的订阅者，按优先级排序后依次调用。 |
+| [`InvokeEvent(object, TEventArgs)`](#method-invokeevent-object-teventargs) | 触发事件。合并两个注册表的订阅者，按优先级排序后依次调用。 走非创建式获取：订阅表是实例字段，因此"不存在实例"等价于"不存在任何订阅者"， 分发无事可做——若走 Instance 会在场景卸载等时机重建 DDOL 宿主 （详见 TryGetExisting 的说明）。 |
 | [`RemoveListener(object)`](#method-removelistener-object) | 移除订阅者。从两个注册表中移除该对象的所有绑定（含 Attribute 和 Script）。 通常在 OnDisable 中调用。 |
 
 </div>
@@ -362,6 +336,7 @@ public static void AddListener(object subscriber)
 ### InvokeEvent(object, TEventArgs) {#method-invokeevent-object-teventargs}
 
 触发事件。合并两个注册表的订阅者，按优先级排序后依次调用。
+走非创建式获取：订阅表是实例字段，因此"不存在实例"等价于"不存在任何订阅者"， 分发无事可做——若走 Instance 会在场景卸载等时机重建 DDOL 宿主 （详见 TryGetExisting 的说明）。
 
 ``` csharp
 public static void InvokeEvent<TEventArgs>(object sender, TEventArgs eventArgs)

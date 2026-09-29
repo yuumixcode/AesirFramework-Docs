@@ -124,7 +124,7 @@ public string HierarchyPath;
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`DefaultFieldName()`](#method-defaultfieldname) | 将字段名重置为默认值: 「物体名_类型简称」的 camelCase 形式（如 playButton_Button）。 可能与其他单元重名，重名会在校验时报错。 |
+| [`DefaultFieldName()`](#method-defaultfieldname) | 将字段名重置为默认值: 「物体名_类型简称」的 camelCase 形式（如 playButton_Button）。 可能与其他单元重名，重名会在校验时报错。 仅编辑器可用：依赖运行时可见程序集 Runestone.AesirModules.OdinInspector 内、 由 #if UNITY_EDITOR 收拢的代码生成器。 |
 | [`UpdatePath(BinderAssistant)`](#method-updatepath-binderassistant) | 更新相对于 BinderAssistant 的层级路径。 物体丢失或缺少 BinderTag 标记时置空，交由校验报错。 |
 
 </div>
@@ -147,6 +147,7 @@ public string HierarchyPath;
 ### DefaultFieldName() {#method-defaultfieldname}
 
 将字段名重置为默认值: 「物体名_类型简称」的 camelCase 形式（如 playButton_Button）。 可能与其他单元重名，重名会在校验时报错。
+仅编辑器可用：依赖运行时可见程序集 Runestone.AesirModules.OdinInspector 内、 由 #if UNITY_EDITOR 收拢的代码生成器。
 
 ``` csharp
 public void DefaultFieldName()

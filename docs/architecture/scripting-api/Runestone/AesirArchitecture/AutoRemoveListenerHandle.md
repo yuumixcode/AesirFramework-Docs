@@ -31,6 +31,8 @@ System.IDisposable
 
 该句柄由 AddListener 和 ObservableValue<T>.AddListener 返回。
 
+每个句柄只对应一次 AddListener 调用：句柄捕获的是"本次注册所传入的回调"， 注销时执行一次等价的 RemoveListener。这与原生 C# 事件的语义一致 （+= 允许同一方法组重复入列，-= 只摘除一个匹配项）—— 同一回调注册 N 次会得到 N 个句柄，需 Dispose 全部 N 个才彻底退订。
+
 ## 构造方法
 
 <div class="api-summary-table" markdown="1">

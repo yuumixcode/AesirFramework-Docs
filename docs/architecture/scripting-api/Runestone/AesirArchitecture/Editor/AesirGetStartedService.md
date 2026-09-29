@@ -20,9 +20,9 @@ public static class AesirGetStartedService
 ```
 
 Aesir Getting Started 服务 — 两版 Getting Started 窗口（IMGUI 兜底 / Odin 版）共用的无状态数据层： 扫描本机安装的 Aesir 包、解析示例清单与场景资产、按教学分组归置示例，并提供跳转动作。
-包发现覆盖三种安装形态（同名包按此优先级取一）：① 代码导入 InstallRootRelativePath（复制 / unitypackage，示例位于包内 Samples/）；② 嵌入式包（Packages/ 目录下的包源码）；③ UPM Git URL 安装 （包源在 PackageCacheRootPath）。后两种 UPM 形态的示例须经 Package Manager → Samples 导入到 Assets/Samples/<包显示名>/<版本>/<示例显示名>/， 未导入的条目仍保留在清单中（IsImported 为 false）， 由窗口引导用户去 Package Manager 导入。
+包发现覆盖三种安装形态（同名包按此优先级取一）：① 代码导入 InstallRootRelativePath（复制 / unitypackage，示例位于包内 Samples/）；② 嵌入式包（Packages/ 目录下的包源码）；③ UPM Git URL 安装 （包源在 PackageCacheRootPath）。后两种 UPM 形态的示例须导入到 Assets/Samples/<包显示名>/<版本>/<示例显示名>/，未导入的条目仍保留在清单中 （IsImported 为 false），由窗口的「导入 Sample」按钮经确认框 直接调用 Unity Package Manager 的 Sample API 导入（ConfirmAndImportUpmSample）。
 
-示例元数据（显示名 / 描述 / 顺序 / 档位）以各包 package.json 的 samples 清单为唯一真源， 本类不做逐示例硬编码登记——新增示例只需更新 package.json，窗口自动跟进。
+示例清单（出现与否、路径、显示名、描述）以各包 package.json 的 samples 列表为唯一真源—— 新增示例只需更新 package.json，窗口自动跟进。而分组 / 顺序 / 档位徽章是代码侧展示启发式 （登记点即 GetSampleGroup / GetGroupOrder / GetSampleBadge 三个方法， 未命中启发式的示例落入默认分组）——需自定义分组归属时改这三个登记点，而非 package.json。
 
 ## 字段
 
@@ -32,8 +32,10 @@ Aesir Getting Started 服务 — 两版 Getting Started 窗口（IMGUI 兜底 / 
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`ImportConfirmCancelButton`](#field-importconfirmcancelbutton) | 导入确认框的取消按钮文本。 |
+| [`ImportConfirmOkButton`](#field-importconfirmokbutton) | 导入确认框的确认按钮文本。 |
+| [`ImportConfirmTitle`](#field-importconfirmtitle) | 导入确认框标题。 |
 | [`PackageCacheRootPath`](#field-packagecacherootpath) | UPM Git URL 安装的包缓存根目录（项目相对路径，Unity 不导入）。 |
-| [`PackageIdPrefix`](#field-packageidprefix) | Aesir 包的 package.json name 前缀（识别本框架包）。 |
 | [`UpmSamplesRootPath`](#field-upmsamplesrootpath) | UPM 示例导入的落地根目录（Package Manager → Samples → Import 后的位置）。 |
 
 </div>
@@ -44,9 +46,33 @@ Aesir Getting Started 服务 — 两版 Getting Started 窗口（IMGUI 兜底 / 
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`KnownPackages`](#field-knownpackages) | 已公开发布的 Aesir 包（顺序即概览卡片顺序）。 |
+| [`KnownPackages`](#field-knownpackages) | 已公开发布的 Aesir 包唯一登记（顺序即概览卡片顺序）。更新器（补装目标 / 配套版本警告 / Release 资产定位）与 Getting Started 概览卡片共用本登记——新增公开包只改此处。 |
 
 </div>
+
+### ImportConfirmCancelButton {#field-importconfirmcancelbutton}
+
+导入确认框的取消按钮文本。
+
+``` csharp
+public const string ImportConfirmCancelButton = "取消";
+```
+
+### ImportConfirmOkButton {#field-importconfirmokbutton}
+
+导入确认框的确认按钮文本。
+
+``` csharp
+public const string ImportConfirmOkButton = "导入";
+```
+
+### ImportConfirmTitle {#field-importconfirmtitle}
+
+导入确认框标题。
+
+``` csharp
+public const string ImportConfirmTitle = "导入 Sample";
+```
 
 ### PackageCacheRootPath {#field-packagecacherootpath}
 
@@ -54,14 +80,6 @@ UPM Git URL 安装的包缓存根目录（项目相对路径，Unity 不导入�
 
 ``` csharp
 public const string PackageCacheRootPath = "Library/PackageCache";
-```
-
-### PackageIdPrefix {#field-packageidprefix}
-
-Aesir 包的 package.json name 前缀（识别本框架包）。
-
-``` csharp
-public const string PackageIdPrefix = "cn.runestone.aesir.";
 ```
 
 ### UpmSamplesRootPath {#field-upmsamplesrootpath}
@@ -74,7 +92,7 @@ public const string UpmSamplesRootPath = "Assets/Samples";
 
 ### KnownPackages {#field-knownpackages}
 
-已公开发布的 Aesir 包（顺序即概览卡片顺序）。
+已公开发布的 Aesir 包唯一登记（顺序即概览卡片顺序）。更新器（补装目标 / 配套版本警告 / Release 资产定位）与 Getting Started 概览卡片共用本登记——新增公开包只改此处。
 
 ``` csharp
 public static readonly AesirGetStartedService.AesirKnownPackage[] KnownPackages;
@@ -88,14 +106,18 @@ public static readonly AesirGetStartedService.AesirKnownPackage[] KnownPackages;
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`ConfirmAndImportUpmSample(AesirGetStartedService.AesirSampleInfo, ref string)`](#method-confirmandimportupmsample-aesirgetstartedservice-aesirsampleinfo-ref-string) | 弹出 Unity 确认框（含示例介绍与导入后位置，可取消），确认后经 Unity Package Manager 的 Sample API 把示例导入到 Assets/Samples/<包显示名>/<版本>/<示例显示名>/； 取消返回 Cancelled，不动文件系统。 |
 | [`ScanPackages()`](#method-scanpackages) | 扫描本机安装的 Aesir 包并解析示例。包按 Id 字母序返回 （cn.runestone.aesir.architecture → cn.runestone.aesir.modules，恰为教学顺序）； 同名包按「Assets 副本 → 嵌入式 → PackageCache」优先级取一。 |
 | [`GroupSamples(AesirGetStartedService.AesirPackageInfo)`](#method-groupsamples-aesirgetstartedservice-aesirpackageinfo) | 按教学分组归置包内示例（组内保持 package.json 声明顺序；组间按 GetGroupOrder 排序，同序号保持首现顺序——插入排序保证稳定性）。 |
 | [`OpenSampleScene(AesirGetStartedService.AesirSampleInfo)`](#method-opensamplescene-aesirgetstartedservice-aesirsampleinfo) | 打开示例场景：先保存当前打开的场景一次（无未保存修改时为空操作），再切换到示例场景。 当前场景从未保存过（无路径）时由 Unity Save 面板兜底，用户在面板中取消保存则中止切换 （避免丢失未保存的改动）；无场景 / 未导入示例退化为 PingSample 定位。 |
 | [`PingSample(AesirGetStartedService.AesirSampleInfo)`](#method-pingsample-aesirgetstartedservice-aesirsampleinfo) | 在 Project 窗口选中并 Ping 示例根目录文件夹（未导入时打开 Package Manager）。 |
+| [`BuildImportConfirmMessage(AesirGetStartedService.AesirSampleInfo)`](#method-buildimportconfirmmessage-aesirgetstartedservice-aesirsampleinfo) | 导入确认框正文：包名 + 示例名 + 示例介绍 + 导入后位置。 |
+| [`BuildNotImportedToastMessage(AesirGetStartedService.AesirSampleInfo)`](#method-buildnotimportedtoastmessage-aesirgetstartedservice-aesirsampleinfo) | 未导入示例整卡点击的 Toast 文本（引导经右侧按钮导入——导入动作在窗口内完成，不必去 Package Manager）。 |
 | [`BuildOpenSceneToastMessage(AesirGetStartedService.AesirSampleInfo)`](#method-buildopenscenetoastmessage-aesirgetstartedservice-aesirsampleinfo) | 打开场景动作的 Toast 提示文本（告知示例场景已打开、切换前的场景已保存）。 |
 | [`BuildPingToastMessage(AesirGetStartedService.AesirSampleInfo)`](#method-buildpingtoastmessage-aesirgetstartedservice-aesirsampleinfo) | 定位动作的 Toast 提示文本（告知用户已在 Project 窗口选中示例文件夹）。 |
 | [`GetSampleBadge(AesirGetStartedService.AesirSampleInfo)`](#method-getsamplebadge-aesirgetstartedservice-aesirsampleinfo) | 档位徽章文本（无档位返回 null）：名称中的 快捷 / 标准 / 严格，或目录序号（01 基础、其余进阶）。 |
 | [`GetSampleGroup(AesirGetStartedService.AesirSampleInfo)`](#method-getsamplegroup-aesirgetstartedservice-aesirsampleinfo) | 示例分组标题（渐进式教学顺序：MVC → MVP → 功能演示 → 实战 → 各模块）。 |
+| [`GetUpmSampleImportPath(AesirGetStartedService.AesirSampleInfo)`](#method-getupmsampleimportpath-aesirgetstartedservice-aesirsampleinfo) | UPM / 嵌入式安装的示例导入后位置（项目相对路径，与 Package Manager 实际落地位置一致）。 |
 | [`OpenPackageManager()`](#method-openpackagemanager) | 打开 Package Manager（UPM / 嵌入式安装的示例经其 Samples 标签页导入）。 |
 
 </div>
@@ -112,6 +134,35 @@ public static readonly AesirGetStartedService.AesirKnownPackage[] KnownPackages;
 | `ToString()` | — | `object` |
 | `MemberwiseClone()` | — | `object` |
 | `Finalize()` | — | `object` |
+
+</div>
+
+### ConfirmAndImportUpmSample(AesirGetStartedService.AesirSampleInfo, ref string) {#method-confirmandimportupmsample-aesirgetstartedservice-aesirsampleinfo-ref-string}
+
+弹出 Unity 确认框（含示例介绍与导入后位置，可取消），确认后经 Unity Package Manager 的 Sample API 把示例导入到 Assets/Samples/<包显示名>/<版本>/<示例显示名>/； 取消返回 Cancelled，不动文件系统。
+
+``` csharp
+public static AesirGetStartedService.AesirSampleImportResult ConfirmAndImportUpmSample(AesirGetStartedService.AesirSampleInfo sample, out ref string message)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `sample` | `AesirGetStartedService.AesirSampleInfo` | — |
+| `message` | `ref string` | — |
+
+</div>
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `AesirGetStartedService.AesirSampleImportResult` | — |
 
 </div>
 
@@ -218,6 +269,62 @@ public static bool PingSample(AesirGetStartedService.AesirSampleInfo sample)
 
 </div>
 
+### BuildImportConfirmMessage(AesirGetStartedService.AesirSampleInfo) {#method-buildimportconfirmmessage-aesirgetstartedservice-aesirsampleinfo}
+
+导入确认框正文：包名 + 示例名 + 示例介绍 + 导入后位置。
+
+``` csharp
+public static string BuildImportConfirmMessage(AesirGetStartedService.AesirSampleInfo sample)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `sample` | `AesirGetStartedService.AesirSampleInfo` | — |
+
+</div>
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `string` | — |
+
+</div>
+
+### BuildNotImportedToastMessage(AesirGetStartedService.AesirSampleInfo) {#method-buildnotimportedtoastmessage-aesirgetstartedservice-aesirsampleinfo}
+
+未导入示例整卡点击的 Toast 文本（引导经右侧按钮导入——导入动作在窗口内完成，不必去 Package Manager）。
+
+``` csharp
+public static string BuildNotImportedToastMessage(AesirGetStartedService.AesirSampleInfo sample)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `sample` | `AesirGetStartedService.AesirSampleInfo` | — |
+
+</div>
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `string` | — |
+
+</div>
+
 ### BuildOpenSceneToastMessage(AesirGetStartedService.AesirSampleInfo) {#method-buildopenscenetoastmessage-aesirgetstartedservice-aesirsampleinfo}
 
 打开场景动作的 Toast 提示文本（告知示例场景已打开、切换前的场景已保存）。
@@ -306,8 +413,40 @@ public static string GetSampleBadge(AesirGetStartedService.AesirSampleInfo sampl
 
 示例分组标题（渐进式教学顺序：MVC → MVP → 功能演示 → 实战 → 各模块）。
 
+**备注**
+
+展示启发式的登记点之一：按显示名前缀归类，未命中任何前缀的示例落入「功能演示」默认组。 新增教学分组时在此追加前缀规则，并同步 GetGroupOrder 的排序键。
+
 ``` csharp
 public static string GetSampleGroup(AesirGetStartedService.AesirSampleInfo sample)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `sample` | `AesirGetStartedService.AesirSampleInfo` | — |
+
+</div>
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `string` | — |
+
+</div>
+
+### GetUpmSampleImportPath(AesirGetStartedService.AesirSampleInfo) {#method-getupmsampleimportpath-aesirgetstartedservice-aesirsampleinfo}
+
+UPM / 嵌入式安装的示例导入后位置（项目相对路径，与 Package Manager 实际落地位置一致）。
+
+``` csharp
+public static string GetUpmSampleImportPath(AesirGetStartedService.AesirSampleInfo sample)
 ```
 
 **参数**

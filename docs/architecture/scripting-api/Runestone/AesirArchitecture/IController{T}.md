@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IController<T> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`
 
 **类型参数**
 
@@ -20,12 +20,12 @@ description: "Runestone.AesirArchitecture.IController<T> 的 API 文档"
 ## 声明
 
 ``` csharp
-public interface IController<T> : Runestone.AesirArchitecture.ICanExecuteCommand, 
-Runestone.AesirArchitecture.ICanExecuteQuery, 
+public interface IController<T> : Runestone.AesirArchitecture.ICanExecuteQuery, 
 Runestone.AesirArchitecture.IController, 
 Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
+Runestone.AesirArchitecture.ICanGetService, 
+Runestone.AesirArchitecture.ICanExecuteCommand where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 泛型控制器接口。绑定指定上下文类型，实现者自动获得 Context 绑定。

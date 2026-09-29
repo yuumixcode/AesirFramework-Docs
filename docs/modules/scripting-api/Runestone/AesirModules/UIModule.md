@@ -97,6 +97,10 @@ public UIModule()
 
 UI 专用相机。正交、depth=1、cullingMask=含 UI 层 (5) 和 TransparentFX 层 (1)。
 
+**备注**
+
+UIRoot 缺失或已销毁时返回 null：显式 == null 走 Unity 假 null 语义， 避免 ?. 绕过 Object 的重载 == 而返回已销毁对象的相机。
+
 ``` csharp
 public Camera UICamera { get; }
 ```
@@ -655,7 +659,7 @@ public void RegisterAssetLoader(IUIAssetLoader loader)
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `loader` | `IUIAssetLoader` | 自定义加载器。加载契约为同步语义（如同步缓存、Resources）；Addressables 等异步管线需自行预加载后同步返回。 |
+| `loader` | `IUIAssetLoader` | 自定义加载器。加载契约为同步语义（如同步缓存、Resources）；Addressables 等异步管线需自行预加载后同步返回。为空时记录错误并保留现有加载器。 |
 
 </div>
 

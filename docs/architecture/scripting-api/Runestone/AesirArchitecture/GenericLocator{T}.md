@@ -55,6 +55,7 @@ public GenericLocator<T>()
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`GetAllEntries()`](#method-getallentries) | 获取所有已注册键值对（诊断用途，近失识别专用）。 |
 | [`GetAll()`](#method-getall) | 按注册顺序获取所有已注册的实例集合 |
 | [`Get()`](#method-get) | 获取指定类型的实例。如果不存在，返回 null。 |
 | [`TryGet(ref TItem)`](#method-tryget-ref-titem) | 尝试获取指定类型的实例 |
@@ -80,12 +81,38 @@ public GenericLocator<T>()
 
 </div>
 
+### GetAllEntries() {#method-getallentries}
+
+获取所有已注册键值对（诊断用途，近失识别专用）。
+
+**备注**
+
+正常查询请使用 Get{TItem} / TryGet{TItem}。 此成员仅供诊断路径遍历已注册条目（如 AbstractContext{T} 在"未注册"异常中 识别"已注册实例可赋值给查询类型"的近失情况）；正常路径不产生开销。
+与 GetAll 一致地返回调用时刻的物化快照：枚举期间修改定位器不会抛"集合已修改"异常， 期间发生的注册/注销不影响已返回的枚举。物化分配仅发生在调用时（异常诊断等冷路径）。
+
+``` csharp
+public IEnumerable<KeyValuePair<Type, T>> GetAllEntries()
+```
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `IEnumerable<KeyValuePair<Type, T>>` | — |
+
+</div>
+
 ### GetAll() {#method-getall}
 
 按注册顺序获取所有已注册的实例集合
 
+**备注**
+
+返回调用时刻的完整快照（同步物化）：消费端可在枚举期间修改定位器而不抛"集合已修改"异常， 期间发生的注册/注销不影响已返回的枚举。物化分配仅发生在调用时（初始化/关停等冷路径）。 与诊断成员 GetAllEntries 取同一份快照语义，两者修改安全性契约一致。
+
 ``` csharp
-[IteratorStateMachine]
 public IEnumerable<T> GetAll()
 ```
 

@@ -11,6 +11,8 @@ description: "Runestone.AesirArchitecture.IGenericLocator<T> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
+**实现接口:** `System.IDisposable`
+
 **类型参数**
 
 - `T` — 定位器管理的基类型，所有注册的实例必须可赋值给该类型。
@@ -18,7 +20,7 @@ description: "Runestone.AesirArchitecture.IGenericLocator<T> 的 API 文档"
 ## 声明
 
 ``` csharp
-public interface IGenericLocator<T> where T : class
+public interface IGenericLocator<T> : System.IDisposable where T : class
 ```
 
 泛型定位器接口。提供按类型注册、查询与获取对象实例的契约。
@@ -35,18 +37,47 @@ public interface IGenericLocator<T> where T : class
 
 | 名称 | 描述 |
 | :--- | :--- |
+| [`GetAllEntries()`](#method-getallentries) | 按注册键获取所有已注册的键值对（诊断用途）。 |
 | [`GetAll()`](#method-getall) | 按注册顺序获取所有已注册的实例。 |
 | [`Get()`](#method-get) | 获取已注册的实例，不存在则返回 null。 |
 | [`TryGet(ref TItem)`](#method-tryget-ref-titem) | 尝试获取已注册的实例。返回是否成功找到对应类型的注册。 |
+| [`Dispose()`](#method-dispose) | 释放定位器：清空全部注册（等价于清空容器，AbstractContext{T} 的收尾即依赖此语义）， 不销毁被注册的实例——实例的释放由调用方（如 Context 逆序 Dispose 模块）负责。 |
 | [`Register(Type, T)`](#method-register-type-t) | 注册实例，以 Type 作为键。重复注册将覆盖已有实例。 |
 | [`Register(TItem)`](#method-register-titem) | 注册实例，以 typeof(TItem) 作为键。重复注册将覆盖已有实例。 |
 | [`Unregister()`](#method-unregister) | 注销指定类型的注册。 |
 
 </div>
 
+### GetAllEntries() {#method-getallentries}
+
+按注册键获取所有已注册的键值对（诊断用途）。
+
+**备注**
+
+正常查询请使用 Get{TItem} / TryGet{TItem}。 此成员服务"近失识别"类诊断——例如按实现类注册、按接口查询失败时， 需要遍历注册键值对识别"已注册实例可赋值给查询类型"的近失情况并生成提示。
+与 GetAll 一致地返回调用时刻的物化快照：枚举期间修改定位器不会抛"集合已修改"异常。
+
+``` csharp
+public abstract IEnumerable<KeyValuePair<Type, T>> GetAllEntries()
+```
+
+**返回值**
+
+<div class="api-returns-table" markdown="1">
+
+| 类型 | 说明 |
+| :--- | :--- |
+| `IEnumerable<KeyValuePair<Type, T>>` | 注册键 Type 与实例的键值对枚举，不保证顺序。 |
+
+</div>
+
 ### GetAll() {#method-getall}
 
 按注册顺序获取所有已注册的实例。
+
+**备注**
+
+返回调用时刻的完整快照：之后的注册/注销不影响已返回的枚举， 消费端可在枚举期间安全地修改定位器（例如模块初始化过程中动态注册新模块，不会抛"集合已修改"异常）。 与诊断成员 GetAllEntries 取同一份快照语义，两者修改安全性契约一致。
 
 ``` csharp
 public abstract IEnumerable<T> GetAll()
@@ -108,13 +139,21 @@ public abstract bool TryGet<TItem>(out ref TItem instance)
 
 </div>
 
-### Register(Type, T) {#method-register-type-t}
+### Dispose() {#method-dispose}
 
-注册实例，以 Type 作为键。重复注册将覆盖已有实例。
+释放定位器：清空全部注册（等价于清空容器，AbstractContext{T} 的收尾即依赖此语义）， 不销毁被注册的实例——实例的释放由调用方（如 Context 逆序 Dispose 模块）负责。
 
 **备注**
 
-注意：注册与查询必须使用相同的类型参数。若以具体类型注册（如 Register<Sword>）， 再以接口类型查询（如 Get<IWeapon>），将返回 null。
+声明为继承 IDisposable 的目的是让"清空容器"成为契约的一部分： Dispose 只持有 IGenericLocator<T> 抽象， 需要经接口而非具体实现清空。
+
+``` csharp
+public abstract void Dispose()
+```
+
+### Register(Type, T) {#method-register-type-t}
+
+注册实例，以 Type 作为键。重复注册将覆盖已有实例。
 
 ``` csharp
 public abstract void Register(Type type, T instance)
@@ -134,10 +173,6 @@ public abstract void Register(Type type, T instance)
 ### Register(TItem) {#method-register-titem}
 
 注册实例，以 typeof(TItem) 作为键。重复注册将覆盖已有实例。
-
-**备注**
-
-注意：注册与查询必须使用相同的类型参数。若以具体类型注册（如 Register<Sword>）， 再以接口类型查询（如 Get<IWeapon>），将返回 null。
 
 ``` csharp
 public abstract void Register<TItem>(TItem instance)

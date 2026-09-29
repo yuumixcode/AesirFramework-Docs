@@ -224,7 +224,7 @@ public static bool AddressablesSupportEnabled { get; }
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Equals(SceneAssetWrapper)`](#method-equals-sceneassetwrapper) | 判断此引用与另一引用是否指向同一场景：优先比较 GUID，其次比较路径（均忽略大小写）。 |
+| [`Equals(SceneAssetWrapper)`](#method-equals-sceneassetwrapper) | 判断此引用与另一引用是否指向同一场景：优先按场景路径认定（均忽略大小写）， 任一侧路径缺失时回退到场景 GUID。 路径优先是为了与 GetHashCode 使用同一主键——哈希必然按路径取值 （Player 构建下 FromScenePath 构造的实例没有 GUID、反序列化实例带 GUID， 若哈希取 GUID 则同路径的两侧哈希不等）。判等与哈希主键不一致会违反哈希契约： 同一场景在 Dictionary{TKey,TValue} / HashSet{T} 中会出现两个条目且查找漏命中。  取舍说明：路径优先意味着"场景被移动后残留的陈旧路径"与"新路径"被视为两个不同引用 （一致的 false negative），而不是"GUID 相同即相等、哈希却不同"（不一致的 true-positive）。 需要跨改名稳定识别时，请依赖 sceneGuid 锚点自愈把路径写回后再比较。 |
 | [`TryGetAddress(ref string)`](#method-trygetaddress-ref-string) | 尝试获取 Addressables 地址。空引用或场景不可寻址时返回 false、不抛异常； 与 Address 的差异：Address 对空引用抛 EmptySceneAssetWrapperException、对非 Addressable 场景抛 SceneNotAddressableException，本方法一律返回 false。 项目未安装 Addressables 包时两者一致，均抛 AddressablesSupportDisabledException。 |
 | [`TryGetBuildIndex(ref int)`](#method-trygetbuildindex-ref-int) | 尝试获取 BuildSettings 序号。返回 true 时序号也可能为 -1（场景未加入 BuildSettings）。 |
 | [`TryGetLoadedScene(ref Scene)`](#method-trygetloadedscene-ref-scene) | 尝试获取已加载场景的 Scene 结构。与 LoadedScene 不同， 仅当场景确实已加载且有效时返回 true。 |
@@ -242,8 +242,8 @@ public static bool AddressablesSupportEnabled { get; }
 | 名称 | 描述 | 声明类型 |
 | :--- | :--- | :--- |
 | `GetType()` | — | `object` |
-| `Equals(object)` | 判断此引用与另一引用是否指向同一场景：优先比较 GUID，其次比较路径（均忽略大小写）。 | `SceneAssetWrapper` |
-| `GetHashCode()` | — | `SceneAssetWrapper` |
+| `Equals(object)` | 判断此引用与另一引用是否指向同一场景：优先按场景路径认定（均忽略大小写）， 任一侧路径缺失时回退到场景 GUID。 路径优先是为了与 GetHashCode 使用同一主键——哈希必然按路径取值 （Player 构建下 FromScenePath 构造的实例没有 GUID、反序列化实例带 GUID， 若哈希取 GUID 则同路径的两侧哈希不等）。判等与哈希主键不一致会违反哈希契约： 同一场景在 Dictionary{TKey,TValue} / HashSet{T} 中会出现两个条目且查找漏命中。  取舍说明：路径优先意味着"场景被移动后残留的陈旧路径"与"新路径"被视为两个不同引用 （一致的 false negative），而不是"GUID 相同即相等、哈希却不同"（不一致的 true-positive）。 需要跨改名稳定识别时，请依赖 sceneGuid 锚点自愈把路径写回后再比较。 | `SceneAssetWrapper` |
+| `GetHashCode()` | 哈希一律取场景路径（与 Equals(SceneAssetWrapper) 的主键一致）； 路径缺失时退回 GUID。 | `SceneAssetWrapper` |
 | `ToString()` | 输出场景名称；空引用输出空字符串（不抛异常）。 | `SceneAssetWrapper` |
 | `MemberwiseClone()` | — | `object` |
 | `Finalize()` | — | `object` |
@@ -263,7 +263,10 @@ public static bool AddressablesSupportEnabled { get; }
 
 ### Equals(SceneAssetWrapper) {#method-equals-sceneassetwrapper}
 
-判断此引用与另一引用是否指向同一场景：优先比较 GUID，其次比较路径（均忽略大小写）。
+判断此引用与另一引用是否指向同一场景：优先按场景路径认定（均忽略大小写）， 任一侧路径缺失时回退到场景 GUID。
+路径优先是为了与 GetHashCode 使用同一主键——哈希必然按路径取值 （Player 构建下 FromScenePath 构造的实例没有 GUID、反序列化实例带 GUID， 若哈希取 GUID 则同路径的两侧哈希不等）。判等与哈希主键不一致会违反哈希契约： 同一场景在 Dictionary{TKey,TValue} / HashSet{T} 中会出现两个条目且查找漏命中。
+
+取舍说明：路径优先意味着"场景被移动后残留的陈旧路径"与"新路径"被视为两个不同引用 （一致的 false negative），而不是"GUID 相同即相等、哈希却不同"（不一致的 true-positive）。 需要跨改名稳定识别时，请依赖 sceneGuid 锚点自愈把路径写回后再比较。
 
 ``` csharp
 public bool Equals(SceneAssetWrapper other)

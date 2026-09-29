@@ -1,9 +1,9 @@
 ---
-title: IView
-description: "Runestone.AesirArchitecture.IView 的 API 文档"
+title: IView<T>
+description: "Runestone.AesirArchitecture.IView<T> 的 API 文档"
 ---
 
-# `IView`
+# `IView<T>`
 
 !!! note ""
 
@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IView 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -20,9 +20,10 @@ description: "Runestone.AesirArchitecture.IView 的 API 文档"
 ## 声明
 
 ``` csharp
-public interface IView : Runestone.AesirArchitecture.IContextHolder, 
+public interface IView<T> : Runestone.AesirArchitecture.IContextHolder, 
+Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService
+Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 泛型表现层接口。绑定指定上下文类型，实现者自动获得 Context 绑定。

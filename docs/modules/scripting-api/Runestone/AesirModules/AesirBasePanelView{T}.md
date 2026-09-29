@@ -13,7 +13,7 @@ description: "Runestone.AesirModules.AesirBasePanelView<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `Sirenix.OdinInspector.SerializedMonoBehaviour` → `Runestone.AesirArchitecture.AesirMonoBehaviour` → `Runestone.AesirModules.AesirBasePanel` → `AesirBasePanelView<T>`
 
-**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirModules.IUIPanel`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`Runestone.AesirArchitecture.IContextHolder`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirModules.IUIPanel`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -24,11 +24,11 @@ description: "Runestone.AesirModules.AesirBasePanelView<T> 的 API 文档"
 ``` csharp
 public abstract class AesirBasePanelView<T> : Runestone.AesirModules.AesirBasePanel, 
 Sirenix.Serialization.ISupportsPrefabSerialization, 
-UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IContextHolder, 
-Runestone.AesirModules.IUIPanel, 
+UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
+Runestone.AesirModules.IUIPanel, 
 Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
@@ -144,10 +144,11 @@ Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchi
 | `OnAfterDeserialize()` | — | `SerializedMonoBehaviour` |
 | `OnBeforeSerialize()` | — | `SerializedMonoBehaviour` |
 | `OnClose()` | 面板经 HidePanel 受控销毁前调用（DestroyOnHide 为 true 的关闭路径）。 子类可覆写释放资源、解绑事件等。 | `AesirBasePanel` |
+| `OnDestroy()` | 实例被销毁时的反清理回调（向 UIModule 注销注册表条目）。 | `AesirBasePanel` |
 | `OnHide()` | 面板被隐藏时调用（默认不销毁实例）。子类可覆写清理显示状态。 | `AesirBasePanel` |
 | `OnInit()` | 面板首次实例化后调用一次。子类可覆写进行一次性初始化。 | `AesirBasePanel` |
 | `OnShow(object)` | 每次显示时调用（含首次）。默认实现为 gameObject.SetActive(true)。 | `AesirBasePanel` |
-| `HideSelf()` | 便捷关闭自身，等价于 UIModule.Instance.HidePanel(GetType())。 | `AesirBasePanel` |
+| `HideSelf()` | 便捷关闭自身，等价于 UIModule.Instance.HidePanel(GetType())。 走非创建式获取：面板销毁/场景卸载阶段 UIModule 可能已随之消失，此时"关闭自己"无对象可关， 静默返回即可——若走 Instance 会重建 DDOL 宿主（详见 TryGetExisting 的说明）。 | `AesirBasePanel` |
 | `StartCoroutine_Auto(IEnumerator)` | — | `MonoBehaviour` |
 
 </div>

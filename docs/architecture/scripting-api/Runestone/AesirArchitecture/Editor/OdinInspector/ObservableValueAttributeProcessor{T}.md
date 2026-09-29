@@ -22,7 +22,7 @@ description: "Runestone.AesirArchitecture.Editor.OdinInspector.ObservableValueAt
 ## 声明
 
 ``` csharp
-public class ObservableValueAttributeProcessor<T> : Sirenix.OdinInspector.Editor.OdinAttributeProcessor<ObservableValue<T>>, 
+internal sealed class ObservableValueAttributeProcessor<T> : Sirenix.OdinInspector.Editor.OdinAttributeProcessor<ObservableValue<T>>, 
 Sirenix.Utilities.Editor.IHideObjectMembers 
 ```
 

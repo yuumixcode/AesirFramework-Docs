@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.ObservableHashSet<T> 的 API 文档"
 
 **继承链:** `System.Object` → `ObservableHashSet<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.IObservableHashSet<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `Runestone.AesirArchitecture.IObservableHashSet<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -27,18 +27,18 @@ public sealed class ObservableHashSet<T> : Runestone.AesirArchitecture.IObservab
 Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>, 
 System.Collections.Generic.IEnumerable<T>, 
 System.Collections.IEnumerable, 
-System.Collections.Generic.ICollection<T>, 
 Runestone.AesirArchitecture.IObservableCollection<T>, 
+System.Collections.Generic.ICollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 
-可观察集合实现。
+可观察哈希集合实现。
 Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只读订阅。
 
 **备注**
 
 内部组合 HashSet{T} 存储元素，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配 （直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
-[SerializeField] 标记 set 字段——Unity 原生不序列化 HashSet{T}， 安装 Odin Inspector 后该字段可被 Odin 序列化，便于在 Inspector 中编辑初始元素（与 ObservableDictionary{TKey, TValue} 行为一致）。
+[SerializeField] 标记 set 字段——Unity 原生不序列化 HashSet{T}（该标记对 Unity 序列化无效果）， 安装 Odin Inspector 且宿主走 Odin 序列化（如 AesirMonoBehaviour 派生组件）时， 该字段可被 Odin 序列化管线接管，便于在 Inspector 中编辑初始元素（与 ObservableDictionary{TKey, TValue} 行为一致）。
 
 变更通知为单一事件（AddListener）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 无变更的操作不通知（Add 重复元素、Remove 不存在的元素、Clear 空集合）； 批量操作（AddRange / RemoveRange）逐项通知实际变更的元素； Clear 以 Reset 通知。 集合无索引概念，载荷索引固定 -1。
 
@@ -356,6 +356,10 @@ public bool TryGetValue(T equalValue, out ref T actualValue)
 
 批量添加元素序列，逐项触发 Add 通知（仅实际新增的元素）。
 
+**备注**
+
+先经 CloneCollection{T} 物化源序列再写入——源为集合自身时 直接枚举会在首次写入后触发内部 HashSet 的版本检查异常并留下部分变更，与 ObservableList 的批量操作统一"先克隆后写入"。
+
 ``` csharp
 public void AddRange(IEnumerable<T> itemsToAdd)
 ```
@@ -373,6 +377,10 @@ public void AddRange(IEnumerable<T> itemsToAdd)
 ### AddRange(T[]) {#method-addrange-t}
 
 批量添加元素数组，逐项触发 Add 通知（仅实际新增的元素）。
+
+**备注**
+
+先经 CloneCollection{T} 物化源序列再写入——源为集合自身时 直接枚举会在首次写入后触发内部 HashSet 的版本检查异常并留下部分变更，与 ObservableList 的批量操作统一"先克隆后写入"。
 
 ``` csharp
 public void AddRange(T[] itemsToAdd)
@@ -447,6 +455,10 @@ public void RemoveListener(Action<CollectionChangedEventArgs<T>> callback)
 
 批量移除元素序列，逐项触发 Remove 通知（仅实际被移除的元素）。
 
+**备注**
+
+先物化源序列再写入（与 AddRange(IEnumerable{T}) 同因：源为集合自身时避免枚举中断）。
+
 ``` csharp
 public void RemoveRange(IEnumerable<T> itemsToRemove)
 ```
@@ -464,6 +476,10 @@ public void RemoveRange(IEnumerable<T> itemsToRemove)
 ### RemoveRange(T[]) {#method-removerange-t}
 
 批量移除元素数组，逐项触发 Remove 通知（仅实际被移除的元素）。
+
+**备注**
+
+先物化源序列再写入（与 AddRange(IEnumerable{T}) 同因：源为集合自身时避免枚举中断）。
 
 ``` csharp
 public void RemoveRange(T[] itemsToRemove)

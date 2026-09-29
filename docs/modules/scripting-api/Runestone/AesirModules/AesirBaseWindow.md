@@ -116,11 +116,12 @@ public int SortingOrder { get; }
 | 名称 | 描述 |
 | :--- | :--- |
 | [`OnClose()`](#method-onclose) | 窗口经 CloseWindow 受控销毁前调用（DestroyOnHide 为 true 的关闭路径）。 子类可覆写释放资源、解绑事件等。 |
+| [`OnDestroy()`](#method-ondestroy) | 实例被销毁时的反清理回调（向 UIModule 注销注册表条目并重算蒙版）。 |
 | [`OnHide()`](#method-onhide) | 窗口被隐藏时调用（默认不销毁实例）。子类可覆写清理显示状态。 |
 | [`OnInit()`](#method-oninit) | 窗口首次实例化后调用一次。子类可覆写进行一次性初始化。 |
 | [`OnMaskClicked()`](#method-onmaskclicked) | 蒙版被点击时回调。默认按 closeOnMaskClick 决定是否关闭本窗口； 子类可覆写实现自定义行为（如提示"先完成当前操作"）。 |
 | [`OnShow(object)`](#method-onshow-object) | 每次打开时调用（含首次）。默认实现为 gameObject.SetActive(true)。 |
-| [`CloseSelf()`](#method-closeself) | 便捷关闭自身，等价于 UIModule.Instance.CloseWindow(GetType())。 |
+| [`CloseSelf()`](#method-closeself) | 便捷关闭自身，等价于 UIModule.Instance.CloseWindow(GetType())。 走非创建式获取：窗口销毁/场景卸载阶段 UIModule 可能已随之消失，此时"关闭自己"无对象可关， 静默返回即可——若走 Instance 会重建 DDOL 宿主（详见 TryGetExisting 的说明）。 |
 
 </div>
 
@@ -210,6 +211,18 @@ public int SortingOrder { get; }
 protected virtual void OnClose()
 ```
 
+### OnDestroy() {#method-ondestroy}
+
+实例被销毁时的反清理回调（向 UIModule 注销注册表条目并重算蒙版）。
+
+**备注**
+
+子类覆写本方法时必须调用 base.OnDestroy()：Unity 的消息派发只调用最派生类型的声明， 不调用 base 会使注册表残留已销毁实例。注册表另有自愈兜底 （命中已销毁条目时按未注册处理并重建），但仍应保留 base 调用以维持时序与开销。
+
+``` csharp
+protected virtual void OnDestroy()
+```
+
 ### OnHide() {#method-onhide}
 
 窗口被隐藏时调用（默认不销毁实例）。子类可覆写清理显示状态。
@@ -255,6 +268,7 @@ protected virtual void OnShow(object payload)
 ### CloseSelf() {#method-closeself}
 
 便捷关闭自身，等价于 UIModule.Instance.CloseWindow(GetType())。
+走非创建式获取：窗口销毁/场景卸载阶段 UIModule 可能已随之消失，此时"关闭自己"无对象可关， 静默返回即可——若走 Instance 会重建 DDOL 宿主（详见 TryGetExisting 的说明）。
 
 ``` csharp
 protected void CloseSelf()

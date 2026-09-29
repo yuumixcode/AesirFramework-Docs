@@ -21,6 +21,10 @@ internal static class UIModuleConfigAssetInitializer
 
 确保 UI 模块配置资产存在：编辑模式域加载后，Resources 兜底路径缺失且项目中无同类型资产时， 自动创建 UIModuleConfigSO 至 Assets/Resources/UIModuleConfig/， 免去用户手动创建资产的前置步骤（配置调整不依赖预放置 [UIModule]）。
 
+**备注**
+
+创建逻辑与 Scene 模块共用 AesirSingletonAssetInitializer（单一真源）。
+
 ## 方法
 
 <div class="api-summary-table" markdown="1">

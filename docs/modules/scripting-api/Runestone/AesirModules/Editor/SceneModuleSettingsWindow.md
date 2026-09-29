@@ -1,9 +1,9 @@
 ---
-title: SceneManagerWindow
-description: "Runestone.AesirModules.Editor.SceneManagerWindow 的 API 文档"
+title: SceneModuleSettingsWindow
+description: "Runestone.AesirModules.Editor.SceneModuleSettingsWindow 的 API 文档"
 ---
 
-# `SceneManagerWindow`
+# `SceneModuleSettingsWindow`
 
 !!! note ""
 
@@ -11,17 +11,19 @@ description: "Runestone.AesirModules.Editor.SceneManagerWindow 的 API 文档"
     - **命名空间:** `Runestone.AesirModules.Editor`
     - **程序集:** `Runestone.AesirModules.Editor`
 
-**继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.ScriptableObject` → `UnityEditor.EditorWindow` → `Sirenix.OdinInspector.Editor.OdinEditorWindow` → `SceneManagerWindow`
-
-**实现接口:** `UnityEngine.ISerializationCallbackReceiver`，`UnityEditor.IHasCustomMenu`
+**继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.ScriptableObject` → `UnityEditor.EditorWindow` → `SceneModuleSettingsWindow`
 
 ## 声明
 
 ``` csharp
-public class SceneManagerWindow : Sirenix.OdinInspector.Editor.OdinEditorWindow, 
-UnityEngine.ISerializationCallbackReceiver, 
-UnityEditor.IHasCustomMenu
+public class SceneModuleSettingsWindow : UnityEditor.EditorWindow
 ```
+
+Scene 模块设置窗口（原生 IMGUI 兜底）：展示并编辑 SceneEditorSettings 单例。
+
+**备注**
+
+双窗口模式的兜底侧（与包内更新器同款模式）：安装 Odin Inspector 时，本窗口持有的菜单项经 OdinWindowOpener 静态委托路由到 SceneModuleSettingsWindowOdin （Odin 程序集在域加载期注册打开方式）；未安装 Odin 时菜单直接打开本窗口——展示的信息量与 Odin 版等价（四个设置字段 + 手动搜集按钮）。数据层 SceneEditorSettings 为两窗口共用的单一真源，写入即时 Save 落盘。
 
 ## 构造方法
 
@@ -29,27 +31,29 @@ UnityEditor.IHasCustomMenu
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`SceneManagerWindow()`](#constructor-scenemanagerwindow) | — |
+| [`SceneModuleSettingsWindow()`](#constructor-scenemodulesettingswindow) | — |
 
 </div>
 
-### SceneManagerWindow() {#constructor-scenemanagerwindow}
+### SceneModuleSettingsWindow() {#constructor-scenemodulesettingswindow}
 
 ``` csharp
-public SceneManagerWindow()
+public SceneModuleSettingsWindow()
 ```
 
-## 字段
+## 属性
+
+**声明的属性**
 
 <div class="api-summary-table" markdown="1">
 
-| 名称 | 描述 | 声明类型 |
-| :--- | :--- | :--- |
-| `ToastPopupArea` | — | `OdinEditorWindow` |
+| 名称 | 描述 |
+| :--- | :--- |
+| [`OdinWindowOpener`](#property-odinwindowopener) | Odin 版窗口的打开委托（由 Odin 程序集经 [InitializeOnLoadMethod] 注册； 未安装 Odin Inspector 时为 null，菜单打开本原生兜底窗口）。 |
 
 </div>
 
-## 属性
+**继承的属性**
 
 <div class="api-summary-table" markdown="1">
 
@@ -62,10 +66,7 @@ public SceneManagerWindow()
 | `position` | — | `EditorWindow` |
 | `maxSize` | — | `EditorWindow` |
 | `minSize` | — | `EditorWindow` |
-| `WindowPadding` | — | `OdinEditorWindow` |
 | `rootVisualElement` | — | `EditorWindow` |
-| `DrawUnityEditorPreview` | — | `OdinEditorWindow` |
-| `UseScrollView` | — | `OdinEditorWindow` |
 | `autoRepaintOnSceneChange` | — | `EditorWindow` |
 | `docked` | — | `EditorWindow` |
 | `hasFocus` | — | `EditorWindow` |
@@ -74,31 +75,35 @@ public SceneManagerWindow()
 | `wantsLessLayoutEvents` | — | `EditorWindow` |
 | `wantsMouseEnterLeaveWindow` | — | `EditorWindow` |
 | `wantsMouseMove` | — | `EditorWindow` |
-| `DefaultEditorPreviewHeight` | — | `OdinEditorWindow` |
-| `DefaultLabelWidth` | — | `OdinEditorWindow` |
 | `depthBufferBits` | — | `EditorWindow` |
 | `name` | — | `Object` |
 | `saveChangesMessage` | — | `EditorWindow` |
-| `CurrentDrawingTargets` | — | `OdinEditorWindow` |
-| `PropertyTree` | — | `OdinEditorWindow` |
 | `antiAlias` | — | `EditorWindow` |
 | `title` | — | `EditorWindow` |
 
 </div>
 
-## 事件
+### OdinWindowOpener {#property-odinwindowopener}
+
+Odin 版窗口的打开委托（由 Odin 程序集经 [InitializeOnLoadMethod] 注册； 未安装 Odin Inspector 时为 null，菜单打开本原生兜底窗口）。
+
+``` csharp
+public static Action OdinWindowOpener { get; private set; }
+```
+
+## 方法
+
+**声明的方法**
 
 <div class="api-summary-table" markdown="1">
 
-| 名称 | 描述 | 声明类型 |
-| :--- | :--- | :--- |
-| `OnBeginGUI` | — | `OdinEditorWindow` |
-| `OnClose` | — | `OdinEditorWindow` |
-| `OnEndGUI` | — | `OdinEditorWindow` |
+| 名称 | 描述 |
+| :--- | :--- |
+| [`RegisterOdinWindowOpener(Action)`](#method-registerodinwindowopener-action) | 注册 Odin 版窗口的打开方式（域重载清空静态委托后由 Odin 程序集重新注册）。 |
 
 </div>
 
-## 方法
+**继承的方法**
 
 <div class="api-summary-table" markdown="1">
 
@@ -112,7 +117,6 @@ public SceneManagerWindow()
 | `GetHashCode()` | — | `Object` |
 | `ToString()` | — | `Object` |
 | `GetExtraPaneTypes()` | — | `EditorWindow` |
-| `AddItemsToMenu(GenericMenu)` | — | `OdinEditorWindow` |
 | `DiscardChanges()` | — | `EditorWindow` |
 | `Repaint()` | — | `EditorWindow` |
 | `SaveChanges()` | — | `EditorWindow` |
@@ -131,33 +135,29 @@ public SceneManagerWindow()
 | `ShowNotification(GUIContent, double)` | — | `EditorWindow` |
 | `ShowPopup()` | — | `EditorWindow` |
 | `ShowTab()` | — | `EditorWindow` |
-| `ShowToast(ToastPosition, SdfIconType, string, string, Color, float)` | — | `OdinEditorWindow` |
-| `ShowToast(ToastPosition, SdfIconType, string, string, Color, float, string, Action)` | — | `OdinEditorWindow` |
-| `ShowToast(ToastPosition, SdfIconType, string, Color, float)` | — | `OdinEditorWindow` |
-| `ShowToast(ToastPosition, SdfIconType, string, Color, float, string, Action)` | — | `OdinEditorWindow` |
 | `ShowUtility()` | — | `EditorWindow` |
 | `MemberwiseClone()` | — | `object` |
-| `OnEnable()` | — | `SceneManagerWindow` |
-| `GetTargets()` | — | `OdinEditorWindow` |
-| `GetTarget()` | — | `OdinEditorWindow` |
-| `DrawEditor(int)` | — | `OdinEditorWindow` |
-| `DrawEditorPreview(int, float)` | — | `OdinEditorWindow` |
-| `DrawEditors()` | — | `OdinEditorWindow` |
 | `Finalize()` | — | `object` |
-| `Initialize()` | — | `OdinEditorWindow` |
-| `OnAfterDeserialize()` | — | `OdinEditorWindow` |
 | `OnBackingScaleFactorChanged()` | — | `EditorWindow` |
-| `OnBeforeSerialize()` | — | `OdinEditorWindow` |
-| `OnBeginDrawEditors()` | — | `OdinEditorWindow` |
-| `OnDestroy()` | — | `OdinEditorWindow` |
-| `OnDisable()` | — | `OdinEditorWindow` |
-| `OnEndDrawEditors()` | — | `OdinEditorWindow` |
-| `OnImGUI()` | — | `OdinEditorWindow` |
-| `EnableAutomaticHeightAdjustment(int, bool)` | — | `OdinEditorWindow` |
-| `EnsureEditorsAreReady()` | — | `OdinEditorWindow` |
-| `UpdateEditors()` | — | `OdinEditorWindow` |
 | `SetDirty()` | — | `ScriptableObject` |
-| `OnGUI()` | — | `OdinEditorWindow` |
+
+</div>
+
+### RegisterOdinWindowOpener(Action) {#method-registerodinwindowopener-action}
+
+注册 Odin 版窗口的打开方式（域重载清空静态委托后由 Odin 程序集重新注册）。
+
+``` csharp
+public static void RegisterOdinWindowOpener(Action opener)
+```
+
+**参数**
+
+<div class="api-params-table" markdown="1">
+
+| 名称 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `opener` | `Action` | — |
 
 </div>
 

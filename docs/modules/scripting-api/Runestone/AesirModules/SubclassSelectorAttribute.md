@@ -25,7 +25,7 @@ System.Runtime.InteropServices._Attribute
 标记 [SerializeReference] 字段在 Inspector 中使用子类下拉选择器。
 点击下拉按钮弹出字段声明类型的全部可选子类（按命名空间分组）， 选择后自动创建实例并显示其序列化字段。供 AesirEventArgsSO、 UnityEventOnAesirEvent 等需要 Inspector 配置 AesirEventArgs 具体子类的场景使用。
 
-候选类型要求：非抽象、非泛型定义、标记 [Serializable]、 非 Object 派生；标有 ExcludeSubclassSelectorAttribute 的类型不出现在下拉中。
+候选类型要求：非抽象、非泛型定义、继承 [Serializable]（自身或基类声明均可—— 基类已标注时派生类无需重复标注，与 Unity 序列化规则一致）、 非 Object 派生；标有 ExcludeSubclassSelectorAttribute 的类型不出现在下拉中。
 
 ## 构造方法
 

@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IObservableHashSet<T> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -23,8 +23,8 @@ description: "Runestone.AesirArchitecture.IObservableHashSet<T> 的 API 文档"
 public interface IObservableHashSet<T> : Runestone.AesirArchitecture.IReadOnlyObservableHashSet<T>, 
 System.Collections.Generic.IEnumerable<T>, 
 System.Collections.IEnumerable, 
-System.Collections.Generic.ICollection<T>, 
 Runestone.AesirArchitecture.IObservableCollection<T>, 
+System.Collections.Generic.ICollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 

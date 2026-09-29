@@ -105,10 +105,11 @@ public bool IsOpen { get; private set; }
 | 名称 | 描述 |
 | :--- | :--- |
 | [`OnClose()`](#method-onclose) | 面板经 HidePanel 受控销毁前调用（DestroyOnHide 为 true 的关闭路径）。 子类可覆写释放资源、解绑事件等。 |
+| [`OnDestroy()`](#method-ondestroy) | 实例被销毁时的反清理回调（向 UIModule 注销注册表条目）。 |
 | [`OnHide()`](#method-onhide) | 面板被隐藏时调用（默认不销毁实例）。子类可覆写清理显示状态。 |
 | [`OnInit()`](#method-oninit) | 面板首次实例化后调用一次。子类可覆写进行一次性初始化。 |
 | [`OnShow(object)`](#method-onshow-object) | 每次显示时调用（含首次）。默认实现为 gameObject.SetActive(true)。 |
-| [`HideSelf()`](#method-hideself) | 便捷关闭自身，等价于 UIModule.Instance.HidePanel(GetType())。 |
+| [`HideSelf()`](#method-hideself) | 便捷关闭自身，等价于 UIModule.Instance.HidePanel(GetType())。 走非创建式获取：面板销毁/场景卸载阶段 UIModule 可能已随之消失，此时"关闭自己"无对象可关， 静默返回即可——若走 Instance 会重建 DDOL 宿主（详见 TryGetExisting 的说明）。 |
 
 </div>
 
@@ -198,6 +199,18 @@ public bool IsOpen { get; private set; }
 protected virtual void OnClose()
 ```
 
+### OnDestroy() {#method-ondestroy}
+
+实例被销毁时的反清理回调（向 UIModule 注销注册表条目）。
+
+**备注**
+
+子类覆写本方法时必须调用 base.OnDestroy()：Unity 的消息派发只调用最派生类型的声明， 不调用 base 会使注册表残留已销毁实例。注册表另有自愈兜底 （命中已销毁条目时按未注册处理并重建），但仍应保留 base 调用以维持时序与开销。
+
+``` csharp
+protected virtual void OnDestroy()
+```
+
 ### OnHide() {#method-onhide}
 
 面板被隐藏时调用（默认不销毁实例）。子类可覆写清理显示状态。
@@ -235,6 +248,7 @@ protected virtual void OnShow(object payload)
 ### HideSelf() {#method-hideself}
 
 便捷关闭自身，等价于 UIModule.Instance.HidePanel(GetType())。
+走非创建式获取：面板销毁/场景卸载阶段 UIModule 可能已随之消失，此时"关闭自己"无对象可关， 静默返回即可——若走 Instance 会重建 DDOL 宿主（详见 TryGetExisting 的说明）。
 
 ``` csharp
 protected void HideSelf()

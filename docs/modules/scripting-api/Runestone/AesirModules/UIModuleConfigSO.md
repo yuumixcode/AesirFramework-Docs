@@ -102,7 +102,7 @@ public static UIModuleConfigSO Instance { get; }
 | 名称 | 描述 |
 | :--- | :--- |
 | [`CreateDefault()`](#method-createdefault) | — |
-| [`RegisterConfigLoader(Func<UIModuleConfigSO>)`](#method-registerconfigloader-func-uimoduleconfigso) | 注册配置加载器，替代 Resources 兜底（注册后 Instance 只经加载器解析）。 须在 UIModule 首次实例化（其 Awake 读取配置）之前调用， 例如 [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] 或首个场景的引导脚本中。 |
+| [`RegisterConfigLoader(Func<UIModuleConfigSO>)`](#method-registerconfigloader-func-uimoduleconfigso) | 注册配置加载器，替代 Resources 兜底（注册后 Instance 只经加载器解析）。 须在 UIModule 首次消费配置（读取 MaskMode，其惰性解析首次访问）之前调用， 例如 [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] 或首个场景的引导脚本中。 |
 | [`UnregisterConfigLoader()`](#method-unregisterconfigloader) | 注销配置加载器（幂等）。注销后 Instance 重新按 Resources 兜底解析， 已按加载器路径缓存的实例一并失效。 |
 
 </div>
@@ -144,7 +144,7 @@ public static UIModuleConfigSO CreateDefault()
 
 ### RegisterConfigLoader(Func<UIModuleConfigSO>) {#method-registerconfigloader-func-uimoduleconfigso}
 
-注册配置加载器，替代 Resources 兜底（注册后 Instance 只经加载器解析）。 须在 UIModule 首次实例化（其 Awake 读取配置）之前调用， 例如 [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] 或首个场景的引导脚本中。
+注册配置加载器，替代 Resources 兜底（注册后 Instance 只经加载器解析）。 须在 UIModule 首次消费配置（读取 MaskMode，其惰性解析首次访问）之前调用， 例如 [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] 或首个场景的引导脚本中。
 
 ``` csharp
 public static void RegisterConfigLoader(Func<UIModuleConfigSO> loader)

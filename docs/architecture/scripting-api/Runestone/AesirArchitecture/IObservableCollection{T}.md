@@ -43,6 +43,7 @@ AddListener 返回 AutoRemoveListenerHandle， 可用 using 语句在作用域�
 | 名称 | 描述 |
 | :--- | :--- |
 | [`AddListener(Action<CollectionChangedEventArgs<T>>)`](#method-addlistener-action-collectionchangedeventargs-t) | 添加集合变更监听者。回调参数为本次变更（见 CollectionChangedEventArgs{T} 的字段约定）。 |
+| [`ClearListeners()`](#method-clearlisteners) | 清空所有变更监听。 |
 | [`RemoveListener(Action<CollectionChangedEventArgs<T>>)`](#method-removelistener-action-collectionchangedeventargs-t) | 移除集合变更监听者。 |
 
 </div>
@@ -74,6 +75,19 @@ public abstract AutoRemoveListenerHandle AddListener(Action<CollectionChangedEve
 | `AutoRemoveListenerHandle` | 返回一个 AutoRemoveListenerHandle，释放后自动移除监听，避免手动管理生命周期。 |
 
 </div>
+
+### ClearListeners() {#method-clearlisteners}
+
+清空所有变更监听。
+
+**备注**
+
+清除全部监听引用，防止因监听者未释放导致的内存泄漏。 与清空元素的方法（Clear）不同——本方法清除的是监听者而非集合内容。
+供持有只读接口的 View / Presenter 在对象池对象归还前统一摘除全部监听： 实现类型均为 sealed，无法经继承补出该能力，只读接口暴露本成员是"只持有接口"场景下的唯一入口。
+
+``` csharp
+public abstract void ClearListeners()
+```
 
 ### RemoveListener(Action<CollectionChangedEventArgs<T>>) {#method-removelistener-action-collectionchangedeventargs-t}
 

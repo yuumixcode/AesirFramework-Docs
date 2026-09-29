@@ -29,7 +29,7 @@ Aesir Modules 接入 MonoBehaviour 生命周期的持久化物体对象。
 
 **备注**
 
-是否加入 DontDestroyOnLoad 场景由序列化字段 dontDestroyOnLoad 统一控制， 场景预放置与运行时创建两种来源共用同一份决策： 默认（勾选）：实例在 Awake 时加入 DontDestroyOnLoad 场景，跨场景持久存在。 取消勾选：实例保留在所在场景、随场景卸载销毁——必须自行处理多场景叠加（Additive）加载下的 生命周期管理。Inspector 会显示警告信息框提示。
+是否加入 DontDestroyOnLoad 场景由序列化字段 dontDestroyOnLoad 统一控制， 场景预放置与运行时创建两种来源共用同一份决策： 默认（勾选）：实例在 Awake 时加入 DontDestroyOnLoad 场景，跨场景持久存在——仅根物体生效。 取消勾选：实例保留在所在场景、随场景卸载销毁——必须自行处理多场景叠加（Additive）加载下的 生命周期管理。Inspector 会显示警告信息框提示。
 
 ## 构造方法
 
@@ -192,6 +192,10 @@ public static AesirModules Instance { get; }
 ### GetOrAddChild() {#method-getoraddchild}
 
 获取或为架构物体创建子物体并添加指定组件
+
+**备注**
+
+已存在同名子物体但缺少目标组件时就地补齐组件，而不是另建一个同名子物体—— Find 始终命中最先的同名子物体，若空壳不被认领， 每次调用都会再堆一个，使"获取或创建"失去幂等性（与 UIRoot.EnsurePresetLayers 对"同名但缺 Canvas 的子物体"就地补齐的口径一致）。
 
 ``` csharp
 public static T GetOrAddChild<T>()

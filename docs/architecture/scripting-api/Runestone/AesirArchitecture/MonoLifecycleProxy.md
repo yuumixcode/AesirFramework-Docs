@@ -29,7 +29,7 @@ Mono 生命周期事件代理。作为全局单例挂载在 [Aesir Architecture]
 
 **备注**
 
-通过 `Instance` 访问实例方法 `AddListener`、`RemoveListener` 等。
+通过 Instance 访问实例方法 AddListener、RemoveListener 等。
 
 可排序监听列表：每个事件维护一个 List{T} 存储 ListenerEntry， 使用 Order + InsertionIndex 稳定排序，按排序结果依次调用回调。 与 AesirPlayerLoop 的排序机制一致。
 
@@ -123,7 +123,6 @@ public static MonoLifecycleProxy Instance { get; }
 | :--- | :--- |
 | [`AddListener(MonoLifecycleEvent, Action, int)`](#method-addlistener-monolifecycleevent-action-int) | 添加生命周期事件监听，返回可自动移除的监听句柄。 |
 | [`RegisterAuto(object)`](#method-registerauto-object) | 快捷注册。扫描对象实现的所有 ICustomXXX 接口， 将对应方法自动注册到匹配的生命周期事件中，返回组合句柄。 |
-| [`GetListenerCount(MonoLifecycleEvent)`](#method-getlistenercount-monolifecycleevent) | 获取指定事件当前的监听者数量 |
 | [`ClearAllListeners()`](#method-clearalllisteners) | 清空所有事件的监听者 |
 | [`RemoveListener(MonoLifecycleEvent, Action)`](#method-removelistener-monolifecycleevent-action) | 移除指定事件的监听者 |
 | [`Register(object)`](#method-register-object) | 快捷注册（任意对象）。扫描实现的所有 ICustomXXX 接口， 将对应方法自动注册到匹配的生命周期事件中。 |
@@ -268,34 +267,6 @@ public AutoRemoveListenerHandle RegisterAuto(object obj)
 | 类型 | 说明 |
 | :--- | :--- |
 | `AutoRemoveListenerHandle` | 组合句柄，Dispose 时一次性移除本次注册的所有监听；若对象未实现任何接口则返回默认句柄 |
-
-</div>
-
-### GetListenerCount(MonoLifecycleEvent) {#method-getlistenercount-monolifecycleevent}
-
-获取指定事件当前的监听者数量
-
-``` csharp
-public int GetListenerCount(MonoLifecycleEvent evt)
-```
-
-**参数**
-
-<div class="api-params-table" markdown="1">
-
-| 名称 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `evt` | `MonoLifecycleEvent` | 目标生命周期事件类型 |
-
-</div>
-
-**返回值**
-
-<div class="api-returns-table" markdown="1">
-
-| 类型 | 说明 |
-| :--- | :--- |
-| `int` | 已注册的监听者数量；若该事件无监听者则返回 0 |
 
 </div>
 

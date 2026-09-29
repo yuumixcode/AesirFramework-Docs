@@ -32,16 +32,16 @@ IMGUI 兜底窗口与 Odin 版窗口经构造注入同一 UpdateState 与视图�
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AesirUpdateController(AesirUpdateController.UpdateState, string, Action, Action<float>)`](#constructor-aesirupdatecontroller-aesirupdatecontroller-updatestate-string-action-action-float) | 构造编排控制器。 |
+| [`AesirUpdateController(AesirUpdateController.UpdateState, string, Action, Action<float>, Action)`](#constructor-aesirupdatecontroller-aesirupdatecontroller-updatestate-string-action-action-float-action) | 构造编排控制器。 |
 
 </div>
 
-### AesirUpdateController(AesirUpdateController.UpdateState, string, Action, Action<float>) {#constructor-aesirupdatecontroller-aesirupdatecontroller-updatestate-string-action-action-float}
+### AesirUpdateController(AesirUpdateController.UpdateState, string, Action, Action<float>, Action) {#constructor-aesirupdatecontroller-aesirupdatecontroller-updatestate-string-action-action-float-action}
 
 构造编排控制器。
 
 ``` csharp
-public AesirUpdateController(AesirUpdateController.UpdateState state, string progressTitle, Action viewChanged, Action<float> progressChanged)
+public AesirUpdateController(AesirUpdateController.UpdateState state, string progressTitle, Action viewChanged, Action<float> progressChanged, Action repaintRequested = null)
 ```
 
 **参数**
@@ -52,8 +52,9 @@ public AesirUpdateController(AesirUpdateController.UpdateState state, string pro
 | :--- | :--- | :--- |
 | `state` | `AesirUpdateController.UpdateState` | 状态载体（由窗口的 [SerializeField] 字段传入）。 |
 | `progressTitle` | `string` | 进度对话框标题（两个窗口各自的标题文案）。 |
-| `viewChanged` | `Action` | 状态变化后的视图刷新回调（重扫 / 忙碌切换 / 状态文本变更时触发）。 |
+| `viewChanged` | `Action` | 结构变化后的视图刷新回调（重扫 / 忙碌切换时触发，窗口据此重算列表并重绘）。 |
 | `progressChanged` | `Action<float>` | 进度变化回调（0-1；Odin 版据此更新窗口内进度条，IMGUI 版可忽略）。 |
+| `repaintRequested` | `Action` | 「仅重绘」回调（进度每 tick 更新与状态文本变更时触发）。缺省回退到 viewChanged （保持既有行为）；两个窗口都传纯 Repaint——下载期间进度回调密集， 只重绘可避免每 tick 重算列表（Odin 版还会重建全部行视图模型）。 |
 
 </div>
 

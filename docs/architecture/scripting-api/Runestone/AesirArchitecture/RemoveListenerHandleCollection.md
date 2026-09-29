@@ -16,7 +16,7 @@ description: "Runestone.AesirArchitecture.RemoveListenerHandleCollection 的 API
 ## 声明
 
 ``` csharp
-public sealed class RemoveListenerHandleCollection
+internal sealed class RemoveListenerHandleCollection
 ```
 
 监听句柄集合。管理 AutoRemoveListenerHandle 句柄的添加与批量移除， 供 RemoveListenerTrigger 和 RemoveListenerOnSceneUnloadedTrigger 复用。
@@ -24,6 +24,7 @@ public sealed class RemoveListenerHandleCollection
 **备注**
 
 作为 RemoveListenerTrigger 和 RemoveListenerOnSceneUnloadedTrigger 的共享底层实现，统一管理多个 AutoRemoveListenerHandle 的批量移除。 通过将句柄收集到同一集合中，在生命周期事件触发时一次性调用 RemoveAllListeners 即可完成全部监听的清理，无需逐个手动移除。
+internal：本集合只服务上述两个触发器（均为包内实现），公开签名只暴露 AutoRemoveListenerHandle——对外收窄以免多出一个无人使用的公开类型。
 
 ## 构造方法
 

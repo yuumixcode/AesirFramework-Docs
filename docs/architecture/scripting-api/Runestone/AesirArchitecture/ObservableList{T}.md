@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.ObservableList<T> 的 API 文档"
 
 **继承链:** `System.Object` → `ObservableList<T>`
 
-**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`Runestone.AesirArchitecture.IObservableList<T>`，`System.Collections.Generic.IEnumerable<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`Runestone.AesirArchitecture.IObservableList<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -26,12 +26,12 @@ description: "Runestone.AesirArchitecture.ObservableList<T> 的 API 文档"
 [Serializable]
 public sealed class ObservableList<T> : System.Collections.Generic.IReadOnlyList<T>, 
 Runestone.AesirArchitecture.IObservableList<T>, 
-System.Collections.Generic.IEnumerable<T>, 
 Runestone.AesirArchitecture.IReadOnlyObservableList<T>, 
+System.Collections.Generic.IEnumerable<T>, 
 System.Collections.IEnumerable, 
 System.Collections.Generic.IList<T>, 
-System.Collections.Generic.ICollection<T>, 
 Runestone.AesirArchitecture.IObservableCollection<T>, 
+System.Collections.Generic.ICollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 

@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.ObservableDictionary<TKey, TValue> 的
 
 **继承链:** `System.Object` → `ObservableDictionary<TKey, TValue>`
 
-**实现接口:** `System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>`，`Runestone.AesirArchitecture.IObservableDictionary<TKey, TValue>`，`System.Collections.Generic.IDictionary<TKey, TValue>`，`Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>`，`System.Collections.Generic.IEnumerable<KeyValuePair<TKey, TValue>>`，`System.Collections.IEnumerable`，`System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>`，`Runestone.AesirArchitecture.IObservableCollection<KeyValuePair<TKey, TValue>>`，`System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>`
+**实现接口:** `System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>`，`System.Collections.Generic.IDictionary<TKey, TValue>`，`Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>`，`System.Collections.Generic.IEnumerable<KeyValuePair<TKey, TValue>>`，`System.Collections.IEnumerable`，`Runestone.AesirArchitecture.IObservableCollection<KeyValuePair<TKey, TValue>>`，`System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>`，`System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>`，`Runestone.AesirArchitecture.IObservableDictionary<TKey, TValue>`
 
 **类型参数**
 
@@ -26,14 +26,14 @@ description: "Runestone.AesirArchitecture.ObservableDictionary<TKey, TValue> 的
 [DefaultMember]
 [Serializable]
 public sealed class ObservableDictionary<TKey, TValue> : System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>, 
-Runestone.AesirArchitecture.IObservableDictionary<TKey, TValue>, 
 System.Collections.Generic.IDictionary<TKey, TValue>, 
 Runestone.AesirArchitecture.IReadOnlyObservableDictionary<TKey, TValue>, 
 System.Collections.Generic.IEnumerable<KeyValuePair<TKey, TValue>>, 
 System.Collections.IEnumerable, 
-System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>, 
 Runestone.AesirArchitecture.IObservableCollection<KeyValuePair<TKey, TValue>>, 
-System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>  
+System.Collections.Generic.ICollection<KeyValuePair<TKey, TValue>>, 
+System.Collections.Generic.IReadOnlyCollection<KeyValuePair<TKey, TValue>>, 
+Runestone.AesirArchitecture.IObservableDictionary<TKey, TValue>  
 ```
 
 可观察字典实现。
@@ -42,7 +42,7 @@ Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey,
 **备注**
 
 内部组合 Dictionary{TKey,TValue} 存储键值，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配（直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
-[SerializeField] 标记 dictionary 字段——Unity 原生不序列化 Dictionary{TKey, TValue}， 安装 Odin Inspector 后该字段可被 Odin 序列化，便于在 Inspector 中编辑初始键值。
+[SerializeField] 标记 dictionary 字段——Unity 原生不序列化 Dictionary{TKey, TValue} （该标记对 Unity 序列化无效果），安装 Odin Inspector 且宿主走 Odin 序列化（如 AesirMonoBehaviour 派生组件）时， 该字段可被 Odin 序列化管线接管，便于在 Inspector 中编辑初始键值。
 
 变更通知为单一事件（AddListener），载荷为 CollectionChangedEventArgs{T} （T = KeyValuePair{TKey,TValue}）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 索引器为不存在的键赋值触发 Add、为已有键赋新值触发 Replace（旧值见载荷 OldItem）、赋相同值不通知； Remove 不存在的键、Clear 空字典不通知。字典无索引概念，载荷索引固定 -1。
 

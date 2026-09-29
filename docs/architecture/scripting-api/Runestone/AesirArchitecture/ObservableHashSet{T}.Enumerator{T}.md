@@ -28,13 +28,13 @@ System.Collections.IEnumerator,
 System.IDisposable 
 ```
 
-可观察集合实现。
+可观察哈希集合实现。
 Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只读订阅。
 
 **备注**
 
 内部组合 HashSet{T} 存储元素，变更通知经 MiniEvent{T} 分发——Invoke 路径零分配 （直接多播调用）。注意：订阅路径（AddListener / 句柄创建）有与监听者数量成正比的委托分配， 勿在每帧订阅场景使用。
-[SerializeField] 标记 set 字段——Unity 原生不序列化 HashSet{T}， 安装 Odin Inspector 后该字段可被 Odin 序列化，便于在 Inspector 中编辑初始元素（与 ObservableDictionary{TKey, TValue} 行为一致）。
+[SerializeField] 标记 set 字段——Unity 原生不序列化 HashSet{T}（该标记对 Unity 序列化无效果）， 安装 Odin Inspector 且宿主走 Odin 序列化（如 AesirMonoBehaviour 派生组件）时， 该字段可被 Odin 序列化管线接管，便于在 Inspector 中编辑初始元素（与 ObservableDictionary{TKey, TValue} 行为一致）。
 
 变更通知为单一事件（AddListener）：写操作完成后才触发，监听者回调中读取到的集合已是变更后的状态； 无变更的操作不通知（Add 重复元素、Remove 不存在的元素、Clear 空集合）； 批量操作（AddRange / RemoveRange）逐项通知实际变更的元素； Clear 以 Reset 通知。 集合无索引概念，载荷索引固定 -1。
 

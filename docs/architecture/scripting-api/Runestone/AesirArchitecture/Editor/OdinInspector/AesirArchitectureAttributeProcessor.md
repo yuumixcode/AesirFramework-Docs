@@ -18,7 +18,7 @@ description: "Runestone.AesirArchitecture.Editor.OdinInspector.AesirArchitecture
 ## 声明
 
 ``` csharp
-public class AesirArchitectureAttributeProcessor : Sirenix.OdinInspector.Editor.OdinAttributeProcessor<AesirArchitecture>, 
+internal sealed class AesirArchitectureAttributeProcessor : Sirenix.OdinInspector.Editor.OdinAttributeProcessor<AesirArchitecture>, 
 Sirenix.Utilities.Editor.IHideObjectMembers
 ```
 

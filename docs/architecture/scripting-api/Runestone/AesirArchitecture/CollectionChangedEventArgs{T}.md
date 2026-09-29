@@ -29,7 +29,7 @@ public struct CollectionChangedEventArgs<T> : System.ValueType
 **备注**
 
 普通（非 ref）只读结构体，可自由存入集合与闭包；事件经 MiniEvent{T} 分发， 回调以值传递接收（结构体按字段拷贝，无堆分配）。
-各 Action 携带的字段： Add → NewItem / NewStartingIndex； Remove → OldItem / OldStartingIndex； Replace → NewItem / OldItem / NewStartingIndex（等于 OldStartingIndex）； Move → NewItem（等于 OldItem， 即被移动元素）/ 两个索引； Reset → 无附加字段（Clear / Sort / Reverse 共用， 监听方按"重建视图"处理）。
+各 NotifyCollectionChangedAction 携带的字段： Add → NewItem / NewStartingIndex； Remove → OldItem / OldStartingIndex； Replace → NewItem / OldItem / NewStartingIndex（等于 OldStartingIndex）； Move → NewItem（等于 OldItem， 即被移动元素）/ 两个索引； Reset → 无附加字段（Clear / Sort / Reverse 共用， 监听方按"重建视图"处理）。
 
 无索引概念的集合（字典 / HashSet）所有索引固定为 -1。
 

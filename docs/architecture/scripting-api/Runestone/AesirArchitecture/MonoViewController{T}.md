@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.MonoViewController<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `MonoViewController<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IController`，`Runestone.AesirArchitecture.IController<T>`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirArchitecture.ICanExecuteCommand`
 
 **类型参数**
 
@@ -23,20 +23,21 @@ description: "Runestone.AesirArchitecture.MonoViewController<T> 的 API 文档"
 
 ``` csharp
 public abstract class MonoViewController<T> : UnityEngine.MonoBehaviour, 
-Runestone.AesirArchitecture.ICanExecuteCommand, 
 Runestone.AesirArchitecture.ICanExecuteQuery, 
 Runestone.AesirArchitecture.IController, 
+Runestone.AesirArchitecture.IController<T>, 
 Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
+Runestone.AesirArchitecture.ICanGetService, 
+Runestone.AesirArchitecture.ICanExecuteCommand where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 View + Controller 双角色基类。通过泛型上下文获取模块访问能力，无 Odin 依赖。
 
 **备注**
 
-与 AesirViewController{T} 功能相同，但直接继承 MonoBehaviour 而非 AesirMonoBehaviour， 不依赖 Odin 序列化。适用于不需要 Odin Inspector 特性的项目或需要最小依赖的场景。
+与 AesirViewController{T} 功能相同，但直接继承 MonoBehaviour 而非 AesirMonoBehaviour， 不依赖 Odin 序列化。适用于不需要 Odin Inspector 特性的项目或需要最小依赖的场景。 上下文绑定经 IController{T} 的默认接口实现（DIM）自动指向 Instance 单例。
 
 ## 属性
 

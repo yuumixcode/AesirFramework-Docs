@@ -13,7 +13,7 @@ description: "Runestone.AesirModules.AesirBaseWindowView<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `Sirenix.OdinInspector.SerializedMonoBehaviour` → `Runestone.AesirArchitecture.AesirMonoBehaviour` → `Runestone.AesirModules.AesirBaseWindow` → `AesirBaseWindowView<T>`
 
-**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirModules.IUIWindow`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`Runestone.AesirArchitecture.IContextHolder`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`Runestone.AesirModules.IUIWindow`
 
 **类型参数**
 
@@ -24,12 +24,12 @@ description: "Runestone.AesirModules.AesirBaseWindowView<T> 的 API 文档"
 ``` csharp
 public abstract class AesirBaseWindowView<T> : Runestone.AesirModules.AesirBaseWindow, 
 Sirenix.Serialization.ISupportsPrefabSerialization, 
-UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IContextHolder, 
+UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IView, 
-Runestone.AesirModules.IUIWindow, 
 Runestone.AesirArchitecture.ICanGetModel, 
-Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
+Runestone.AesirArchitecture.ICanGetService, 
+Runestone.AesirModules.IUIWindow where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
 窗口视图基类（MVP 模式的 View 层，Canvas 根窗口形态）。
@@ -145,11 +145,12 @@ Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchi
 | `OnAfterDeserialize()` | — | `SerializedMonoBehaviour` |
 | `OnBeforeSerialize()` | — | `SerializedMonoBehaviour` |
 | `OnClose()` | 窗口经 CloseWindow 受控销毁前调用（DestroyOnHide 为 true 的关闭路径）。 子类可覆写释放资源、解绑事件等。 | `AesirBaseWindow` |
+| `OnDestroy()` | 实例被销毁时的反清理回调（向 UIModule 注销注册表条目并重算蒙版）。 | `AesirBaseWindow` |
 | `OnHide()` | 窗口被隐藏时调用（默认不销毁实例）。子类可覆写清理显示状态。 | `AesirBaseWindow` |
 | `OnInit()` | 窗口首次实例化后调用一次。子类可覆写进行一次性初始化。 | `AesirBaseWindow` |
 | `OnMaskClicked()` | 蒙版被点击时回调。默认按 closeOnMaskClick 决定是否关闭本窗口； 子类可覆写实现自定义行为（如提示"先完成当前操作"）。 | `AesirBaseWindow` |
 | `OnShow(object)` | 每次打开时调用（含首次）。默认实现为 gameObject.SetActive(true)。 | `AesirBaseWindow` |
-| `CloseSelf()` | 便捷关闭自身，等价于 UIModule.Instance.CloseWindow(GetType())。 | `AesirBaseWindow` |
+| `CloseSelf()` | 便捷关闭自身，等价于 UIModule.Instance.CloseWindow(GetType())。 走非创建式获取：窗口销毁/场景卸载阶段 UIModule 可能已随之消失，此时"关闭自己"无对象可关， 静默返回即可——若走 Instance 会重建 DDOL 宿主（详见 TryGetExisting 的说明）。 | `AesirBaseWindow` |
 | `StartCoroutine_Auto(IEnumerator)` | — | `MonoBehaviour` |
 
 </div>

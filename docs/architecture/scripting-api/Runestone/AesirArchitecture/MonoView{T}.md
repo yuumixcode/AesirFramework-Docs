@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.MonoView<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `MonoView<T>`
 
-**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.IView<T>`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -26,6 +26,7 @@ public abstract class MonoView<T> : UnityEngine.MonoBehaviour,
 Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
+Runestone.AesirArchitecture.IView<T>, 
 Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
@@ -33,7 +34,7 @@ View 基类。通过泛型上下文获取模块访问能力，仅具备只读权
 
 **备注**
 
-与 AesirView{T} 功能相同，但直接继承 MonoBehaviour 而非 AesirMonoBehaviour， 不依赖 Odin 序列化。适用于不需要 Odin Inspector 特性的项目或需要最小依赖的场景。
+上下文绑定经 IView{T} 的默认接口实现（DIM）自动指向 Instance 单例， 与 AesirView{T} 功能相同，但直接继承 MonoBehaviour 而非 AesirMonoBehaviour， 不依赖 Odin 序列化。适用于不需要 Odin Inspector 特性的项目或需要最小依赖的场景。
 
 ## 属性
 

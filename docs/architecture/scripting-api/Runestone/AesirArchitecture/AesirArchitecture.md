@@ -57,7 +57,7 @@ public AesirArchitecture()
 | 名称 | 描述 |
 | :--- | :--- |
 | [`DontDestroyOnLoad`](#property-dontdestroyonload) | 获取 DDOL 开关的当前取值（只读）。 |
-| [`Instance`](#property-instance) | 获取全局唯一的架构管理器实例 |
+| [`Instance`](#property-instance) | 获取全局唯一的架构宿主实例（框架根 GameObject 持有者，承载 [Aesir Architecture] 宿主物体） |
 | [`DontDestroyOnLoadFieldName`](#property-dontdestroyonloadfieldname) | — |
 
 </div>
@@ -108,7 +108,7 @@ public bool DontDestroyOnLoad { get; }
 
 ### Instance {#property-instance}
 
-获取全局唯一的架构管理器实例
+获取全局唯一的架构宿主实例（框架根 GameObject 持有者，承载 [Aesir Architecture] 宿主物体）
 
 **备注**
 

@@ -22,7 +22,7 @@ public static class AesirPlayerLoop
 基于 PlayerLoop 的生命周期钩子系统，无需 MonoBehaviour 即可接入游戏级帧回调。
 通过 Register 注册回调，order 越小越先执行；系统自动在域加载时注入 PlayerLoop。
 
-注入自愈：PlayerLoop 注入可能被第三方 SDK 用其缓存的副本调用 PlayerLoop.SetPlayerLoop 覆盖， 导致钩子静默失效。框架通过 EnsureInjected 自愈：域加载时与每次 Register 时 检测并补插缺失的注入点（注册即自愈）；用户也可手动调用。
+注入自愈：PlayerLoop 注入可能被第三方 SDK 用其缓存的副本调用 PlayerLoop.SetPlayerLoop 覆盖， 导致钩子静默失效。框架通过 EnsureInjected 自愈：域加载时与每次 Register 时 检测并补插缺失的注入点（注册即自愈，检测每帧至多一次）；用户也可手动调用。
 
 **备注**
 
@@ -40,9 +40,9 @@ public static class AesirPlayerLoop
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Register(AesirLifecyclePhase, Action, int)`](#method-register-aesirarchitecturelifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。 |
+| [`Register(AesirLifecyclePhase, Action, int)`](#method-register-aesirlifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。 |
 | [`EnsureInjected()`](#method-ensureinjected) | 确保两个注入点存在于当前 PlayerLoop。已存在时为空操作，缺失时重新注入。 |
-| [`Unregister(AesirLifecyclePhase, Action)`](#method-unregister-aesirarchitecturelifecyclephase-action) | 注销回调。 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。 |
+| [`Unregister(AesirLifecyclePhase, Action)`](#method-unregister-aesirlifecyclephase-action) | 注销回调。 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。 |
 
 </div>
 
@@ -61,7 +61,7 @@ public static class AesirPlayerLoop
 
 </div>
 
-### Register(AesirLifecyclePhase, Action, int) {#method-register-aesirarchitecturelifecyclephase-action-int}
+### Register(AesirLifecyclePhase, Action, int) {#method-register-aesirlifecyclephase-action-int}
 
 注册回调，order 越小越先执行，默认 0。
 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。
@@ -98,13 +98,16 @@ public static AutoRemoveListenerHandle Register(AesirLifecyclePhase phase, Actio
 
 **备注**
 
-PlayerLoop 注入的自愈入口，幂等可重复调用。第三方 SDK 若使用其缓存的 PlayerLoop 副本调用 PlayerLoop.SetPlayerLoop，会连同框架注入的两个子系统一起抹掉， 导致 BeforeUpdate / AfterUpdate 钩子静默失效。 此方法通过 ContainsSystem{TTarget} 检测后仅补插缺失的子系统， 并保留当前 PlayerLoop 中第三方已有的其他修改。调用时机： Initialize 在域加载时调用； Register 每次注册回调时调用（注册即自愈）； 用户在已知第三方 SDK 修改 PlayerLoop 后也可手动调用。
+PlayerLoop 注入的自愈入口，幂等可重复调用。第三方 SDK 若使用其缓存的 PlayerLoop 副本调用 PlayerLoop.SetPlayerLoop，会连同框架注入的两个子系统一起抹掉， 导致 BeforeUpdate / AfterUpdate 钩子静默失效。 此方法通过 ContainsSystem{TTarget} 检测后仅补插缺失的子系统， 并保留当前 PlayerLoop 中第三方已有的其他修改。调用时机： Initialize 在域加载时调用（无条件检测）； Register 每帧至多调用一次（同一帧内的重复注册复用检测结果）； 用户在已知第三方 SDK 修改 PlayerLoop 后也可手动调用（无条件检测）。
+手动调用本方法不受 Register 的每帧限流约束，可在同一帧内立即触发一次完整检测。
+
+为什么要限流：本方法内两次 ContainsSystem<T> 各自调用一次 PlayerLoop.GetCurrentPlayerLoop()，会把整棵 PlayerLoop 树从原生侧完整 marshall 到托管对象 （每层一次 PlayerLoopSystem[] 分配）。注册是启动期冷路径，若逐次自愈，N 个注册方就是 2N 次全树拷贝； 且稳态（每帧新增注册的运行期场景）会因每次注册都做整树封送而无法守住"零分配"承诺 （限流消除的正是这项自愈检测成本，Register 返回句柄时的闭包分配不在其列）。 故 Register 经 EnsureInjectedIfStaleThisFrame 以 Time.frameCount 限流： 同一帧内只有第一次注册付检测成本，跨帧的第一次注册必定重新检测——第三方 SDK 覆盖 PlayerLoop 后， 最迟下一帧的注册即完成自愈，不会留下永久失效的窗口。
 
 ``` csharp
 public static void EnsureInjected()
 ```
 
-### Unregister(AesirLifecyclePhase, Action) {#method-unregister-aesirarchitecturelifecyclephase-action}
+### Unregister(AesirLifecyclePhase, Action) {#method-unregister-aesirlifecyclephase-action}
 
 注销回调。
 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。

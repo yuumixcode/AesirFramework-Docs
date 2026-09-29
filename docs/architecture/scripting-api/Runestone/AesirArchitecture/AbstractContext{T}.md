@@ -38,7 +38,7 @@ System.IDisposable where T : new(), Runestone.AesirArchitecture.AbstractContext<
 
 释放流程（由 Dispose 触发）： 逆序于初始化地先销毁所有 Service 再逆序于初始化地销毁所有 Model 清空 Model 与 Service 容器 先 Service 后 Model 的销毁顺序确保 Service 在销毁时仍可访问所依赖的 Model。
 
-域加载安全：静态构造函数通过 Register(Action) 注册 _instance = null 重置回调。当 Unity 关闭 Domain Reload（Enter Play Mode Settings） 时，静态字段不会被运行时自动清零，该回调确保下次进入 Play 模式时单例被正确重建。 之所以经助手注册而非类内声明 [RuntimeInitializeOnLoadMethod]：泛型类中的该方法特性 会被 Unity 静默跳过（不执行也不报错），只能由非泛型的中心位置代为触发。
+域加载安全：静态构造函数通过 Register(Action) 注册"释放并置空单例"的重置回调。当 Unity 关闭 Domain Reload（Enter Play Mode Settings） 时，静态字段不会被运行时自动清零，该回调确保下次进入 Play 模式时单例被正确重建。 之所以经助手注册而非类内声明 [RuntimeInitializeOnLoadMethod]：泛型类中的该方法特性 会被 Unity 静默跳过（不执行也不报错），只能由非泛型的中心位置代为触发。
 
 ## 属性
 
@@ -91,7 +91,7 @@ public static T Instance { get; }
 | [`RegisterModel(TModel)`](#method-registermodel-tmodel) | 注册 Model 并绑定上下文。 若该类型已注册，视为动态替换：输出一条 Warning 日志，旧实例会被 Dispose 后再覆盖。 |
 | [`RegisterService(TService)`](#method-registerservice-tservice) | 注册 Service 并绑定上下文。 若上下文已完成统一初始化，则立即初始化该 Service。若该类型已注册，视为动态替换：输出一条 Warning 日志，旧实例会被 Dispose 后再覆盖。 |
 | [`Configure()`](#method-configure) | 配置上下文模块，子类在此注册 Model 和 Service。 |
-| [`OnDispose()`](#method-ondispose) | 子类可选覆写，在释放前执行自定义清理 |
+| [`OnDispose()`](#method-ondispose) | 子类可选覆写，在释放前执行自定义清理。 这是本类唯一的释放定制点——Dispose 非 virtual，不可覆写。 |
 
 </div>
 
@@ -161,6 +161,10 @@ public TService GetService<TService>()
 
 Reverse() 在关停路径产生一次枚举分配，属可接受的一次性开销。
 
+不可覆写：本方法刻意非 virtual（模板方法），以保证"解除单例缓存 + 清空容器"这段 框架级收尾永远被执行到底，不会被子类的部分实现跳过。自定义的释放逻辑请写入 OnDispose——它是本类唯一的释放定制点。
+
+异常安全：释放链路（OnDispose 与各模块的 Dispose，例如访问已被 上一局销毁的 MonoBehaviour）抛出的异常照旧向上传播（fail-fast），但收尾不变量放在 finally 中执行——置 Initialized 为 false 并解除单例缓存。 否则异常会让 Instance 长期指向半释放的上下文，且 Initialize 因 Initialized 早退而永不重建（与静态重置回调"先摘单例再释放"的硬化同构）。
+
 ``` csharp
 public void Dispose()
 ```
@@ -173,7 +177,9 @@ public void Dispose()
 **备注**
 
 此方法由 Instance 在首次访问时自动调用，通常不需要手动调用。
-执行步骤： 调用 Configure，让子类在其中通过 RegisterModel{TModel} 和 RegisterService{TService} 注册所有模块 按注册顺序遍历并调用各 Model 的 Initialize 按注册顺序遍历并调用各 Service 的 Initialize
+执行步骤： 调用 Configure，让子类在其中通过 RegisterModel{TModel} 和 RegisterService{TService} 注册所有模块。此阶段只登记，不初始化 （Initialized 尚未置位，注册不触发初始化） 按注册顺序遍历并初始化全部 Model（跳过已初始化者） 按注册顺序遍历并初始化全部 Service（跳过已初始化者）
+
+初始化期注册：模块的 OnInitialize 中注册新模块时，GetAll() 的快照已经取定， 新模块不在本轮快照内；此时 Initialized 仍为 false，故注册不会触发即时初始化。 每一步都以「重复取快照直到没有未初始化模块」补齐，保证新增模块在本次 Initialize 返回前完成初始化且不重复初始化。
 
 若已初始化则直接返回，保证幂等性。初始化过程中抛出的异常直接向上传播，不做回滚—— 初始化失败属启动期编程错误，应修复根因（见 Instance 备注）。
 
@@ -237,7 +243,8 @@ protected abstract void Configure()
 
 ### OnDispose() {#method-ondispose}
 
-子类可选覆写，在释放前执行自定义清理
+子类可选覆写，在释放前执行自定义清理。
+这是本类唯一的释放定制点——Dispose 非 virtual，不可覆写。
 
 ``` csharp
 protected virtual void OnDispose()

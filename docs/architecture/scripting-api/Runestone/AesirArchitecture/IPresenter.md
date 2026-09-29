@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IPresenter 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `Runestone.AesirArchitecture.ICanExecuteCommand`，`Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanGetModel`，`System.IDisposable`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Runestone.AesirArchitecture.ICanExecuteQuery`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`，`System.IDisposable`，`Runestone.AesirArchitecture.ICanExecuteCommand`
 
 **类型参数**
 
@@ -20,12 +20,12 @@ description: "Runestone.AesirArchitecture.IPresenter 的 API 文档"
 ## 声明
 
 ``` csharp
-public interface IPresenter : Runestone.AesirArchitecture.ICanExecuteCommand, 
-Runestone.AesirArchitecture.ICanExecuteQuery, 
+public interface IPresenter : Runestone.AesirArchitecture.ICanExecuteQuery, 
 Runestone.AesirArchitecture.IContextHolder, 
 Runestone.AesirArchitecture.ICanGetModel, 
+Runestone.AesirArchitecture.ICanGetService, 
 System.IDisposable, 
-Runestone.AesirArchitecture.ICanGetService
+Runestone.AesirArchitecture.ICanExecuteCommand
 ```
 
 泛型 MVP 中介接口。绑定指定上下文类型，实现者自动获得 Context 绑定。

@@ -13,7 +13,7 @@ description: "Runestone.AesirArchitecture.AesirView<T> 的 API 文档"
 
 **继承链:** `System.Object` → `UnityEngine.Object` → `UnityEngine.Component` → `UnityEngine.Behaviour` → `UnityEngine.MonoBehaviour` → `Sirenix.OdinInspector.SerializedMonoBehaviour` → `Runestone.AesirArchitecture.AesirMonoBehaviour` → `AesirView<T>`
 
-**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IContextHolder`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.ICanGetService`
+**实现接口:** `Sirenix.Serialization.ISupportsPrefabSerialization`，`Runestone.AesirArchitecture.IContextHolder`，`UnityEngine.ISerializationCallbackReceiver`，`Runestone.AesirArchitecture.IView`，`Runestone.AesirArchitecture.ICanGetModel`，`Runestone.AesirArchitecture.IView<T>`，`Runestone.AesirArchitecture.ICanGetService`
 
 **类型参数**
 
@@ -24,10 +24,11 @@ description: "Runestone.AesirArchitecture.AesirView<T> 的 API 文档"
 ``` csharp
 public abstract class AesirView<T> : Runestone.AesirArchitecture.AesirMonoBehaviour, 
 Sirenix.Serialization.ISupportsPrefabSerialization, 
-UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IContextHolder, 
+UnityEngine.ISerializationCallbackReceiver, 
 Runestone.AesirArchitecture.IView, 
 Runestone.AesirArchitecture.ICanGetModel, 
+Runestone.AesirArchitecture.IView<T>, 
 Runestone.AesirArchitecture.ICanGetService where T : new(), Runestone.AesirArchitecture.AbstractContext<T>
 ```
 
@@ -35,7 +36,7 @@ View 基类。通过泛型上下文获取模块访问能力，仅具备只读权
 
 **备注**
 
-通过显式接口实现 Context 自动绑定到 Instance 单例， 使 View 无需手动引用即可访问上下文中的只读数据。
+上下文绑定经 IView{T} 的默认接口实现（DIM）自动指向 Instance 单例， 使 View 无需手动引用即可访问上下文中的只读数据。
 继承自 AesirMonoBehaviour，在编辑器环境或配置允许时自动获得 Odin 序列化能力。
 
 ## 属性

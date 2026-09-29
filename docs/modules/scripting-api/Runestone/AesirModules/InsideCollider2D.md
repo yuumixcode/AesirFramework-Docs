@@ -23,6 +23,11 @@ public sealed class InsideCollider2D : Runestone.AesirModules.ISubscriberFilter
 
 仅投递给位于发布者 Collider2D 范围内的订阅者。用于空间局域广播（如爆炸半径）， 订阅者位置取其 Transform.position。发布者挂多个 Collider2D 时取第一个。
 
+**备注**
+
+已知成本（有意保留，未做缓存）：ShouldReceive 每订阅者每趟 调用一次，因此 emitterGo.GetComponent<Collider2D>() 在同一趟分发内会重复执行 N 次 （N = 该事件的订阅者数）；发布者在一趟内不变，属可消除的冗余。
+之所以不缓存：ISubscriberFilter 只以 AesirEventArgs 为入参， 没有"一趟分发"的起止信号，缓存只能按发布者跨趟保留——而 Collider2D 可能被运行时增删替换， 跨趟缓存会拿到失效引用并导致过滤结果错误。宁可多一次 GetComponent， 也不引入隐蔽的时序缺陷；若日后需要优化，应由 EventModule 在分发侧 解析一次并下传，而非在过滤器内部自治缓存。
+
 ## 构造方法
 
 <div class="api-summary-table" markdown="1">

@@ -55,6 +55,7 @@ public T Value { get; }
 | :--- | :--- |
 | [`AddListener(Action<T>)`](#method-addlistener-action-t) | 添加监听者。回调参数为新值。 |
 | [`AddListenerAndInvoke(Action<T>)`](#method-addlistenerandinvoke-action-t) | 添加监听并立即触发一次当前值，用于初始化时同步监听方状态。 |
+| [`ClearListeners()`](#method-clearlisteners) | 清空所有监听。 |
 | [`InvokeEvent()`](#method-invokeevent) | 触发值变更通知，用于强制刷新监听方状态。 |
 | [`RemoveListener(Action<T>)`](#method-removelistener-action-t) | 移除监听者。 |
 
@@ -115,6 +116,19 @@ public abstract AutoRemoveListenerHandle AddListenerAndInvoke(Action<T> callback
 | `AutoRemoveListenerHandle` | 返回一个 AutoRemoveListenerHandle，释放后自动移除监听。 |
 
 </div>
+
+### ClearListeners() {#method-clearlisteners}
+
+清空所有监听。
+
+**备注**
+
+清除全部监听引用，防止因监听者未释放导致的内存泄漏。清除的是监听者而非值本身。
+供持有只读接口的 View / Presenter 在对象池对象归还前统一摘除全部监听： 实现类型均为 sealed，无法经继承补出该能力，只读接口暴露本成员是"只持有接口"场景下的唯一入口。
+
+``` csharp
+public abstract void ClearListeners()
+```
 
 ### InvokeEvent() {#method-invokeevent}
 

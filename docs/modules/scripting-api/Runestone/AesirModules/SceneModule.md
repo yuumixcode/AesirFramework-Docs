@@ -72,9 +72,9 @@ public static readonly IReadOnlyList<string> PresetBootstrapSceneNames;
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AddedScenePaths`](#property-addedscenepaths) | 叠加场景路径（只读，静态门面）。含所有经本模块 Additive 加载、尚未卸载的场景。 |
-| [`SceneLoadedEvent`](#property-sceneloadedevent) | 场景加载完成事件（静态门面，经单例转发）。Single 与 Additive 均触发；参数为场景路径。 在 onCompleted 回调之前广播。 |
-| [`SceneUnloadedEvent`](#property-sceneunloadedevent) | 场景卸载完成事件（静态门面，经单例转发）。参数为场景路径。在 onUnloaded / onAllUnloaded 回调之前广播。 |
+| [`AddedScenePaths`](#property-addedscenepaths) | 叠加场景路径（只读快照，静态门面）。含所有经本模块 Additive 加载、尚未卸载的场景。 返回 _addedScenePaths 的副本：调用方既无法回转 List<string> 修改模块状态， 也不会在监听者于广播回调里触发 CompleteLoad / CompleteUnload 时被抛 InvalidOperationException。本属性不在逐帧路径上（仅状态查询与测试断言使用），无需缓存。 |
+| [`SceneLoadedEvent`](#property-sceneloadedevent) | 场景加载完成事件（静态门面）。Single 与 Additive 均触发；参数为场景路径。 在 onCompleted 回调之前广播。事件对象为静态共享，访问不创建模块实例。 |
+| [`SceneUnloadedEvent`](#property-sceneunloadedevent) | 场景卸载完成事件（静态门面）。参数为场景路径。在 onUnloaded / onAllUnloaded 回调之前广播。 事件对象为静态共享，访问不创建模块实例。 |
 | [`LastLoadedScene`](#property-lastloadedscene) | 最后一个已经加载的场景，Scene 结构体（静态门面，经单例转发）。 |
 | [`BootstrapSceneAssetWrapper`](#property-bootstrapsceneassetwrapper) | 启动场景引用（静态门面，经单例转发）。编辑器 BootstrapSceneHelper 的工作流之外， 供用户代码读取路径/名称自行编排启动流程。预放置实例的序列化字段非 null 时优先返回； 未赋值时回退 SceneModuleConfigSO 的全局启动场景（无需预放置即可在 Project 窗口配置）， 两者均未配置时返回 null。 |
 | [`Instance`](#property-instance) | 全局单例入口。 优先在已加载场景中查找预放置的实例；未找到时在 AesirModules（DDOL）下创建子物体。 |
@@ -115,7 +115,12 @@ public static readonly IReadOnlyList<string> PresetBootstrapSceneNames;
 
 ### AddedScenePaths {#property-addedscenepaths}
 
-叠加场景路径（只读，静态门面）。含所有经本模块 Additive 加载、尚未卸载的场景。
+叠加场景路径（只读快照，静态门面）。含所有经本模块 Additive 加载、尚未卸载的场景。
+返回 _addedScenePaths 的副本：调用方既无法回转 List<string> 修改模块状态， 也不会在监听者于广播回调里触发 CompleteLoad / CompleteUnload 时被抛 InvalidOperationException。本属性不在逐帧路径上（仅状态查询与测试断言使用），无需缓存。
+
+**备注**
+
+只读查询，不创建模块实例：无实例时返回空列表（等价于"没有本模块加载的叠加场景"）。
 
 ``` csharp
 public static IReadOnlyList<string> AddedScenePaths { get; }
@@ -123,7 +128,7 @@ public static IReadOnlyList<string> AddedScenePaths { get; }
 
 ### SceneLoadedEvent {#property-sceneloadedevent}
 
-场景加载完成事件（静态门面，经单例转发）。Single 与 Additive 均触发；参数为场景路径。 在 onCompleted 回调之前广播。
+场景加载完成事件（静态门面）。Single 与 Additive 均触发；参数为场景路径。 在 onCompleted 回调之前广播。事件对象为静态共享，访问不创建模块实例。
 
 ``` csharp
 public static MiniEvent<string> SceneLoadedEvent { get; }
@@ -131,7 +136,7 @@ public static MiniEvent<string> SceneLoadedEvent { get; }
 
 ### SceneUnloadedEvent {#property-sceneunloadedevent}
 
-场景卸载完成事件（静态门面，经单例转发）。参数为场景路径。在 onUnloaded / onAllUnloaded 回调之前广播。
+场景卸载完成事件（静态门面）。参数为场景路径。在 onUnloaded / onAllUnloaded 回调之前广播。 事件对象为静态共享，访问不创建模块实例。
 
 ``` csharp
 public static MiniEvent<string> SceneUnloadedEvent { get; }
@@ -140,6 +145,10 @@ public static MiniEvent<string> SceneUnloadedEvent { get; }
 ### LastLoadedScene {#property-lastloadedscene}
 
 最后一个已经加载的场景，Scene 结构体（静态门面，经单例转发）。
+
+**备注**
+
+只读查询，不创建模块实例：无实例时返回 default（等价于"本模块尚未加载过任何场景"）。
 
 ``` csharp
 public static Scene LastLoadedScene { get; }

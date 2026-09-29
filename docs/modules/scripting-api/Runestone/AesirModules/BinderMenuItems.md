@@ -9,7 +9,7 @@ description: "Runestone.AesirModules.BinderMenuItems 的 API 文档"
 
     - **种类:** `static class`
     - **命名空间:** `Runestone.AesirModules`
-    - **程序集:** `Runestone.AesirModules.OdinInspector`
+    - **程序集:** `Runestone.AesirModules.Editor.OdinInspector`
 
 **继承链:** `System.Object` → `BinderMenuItems`
 

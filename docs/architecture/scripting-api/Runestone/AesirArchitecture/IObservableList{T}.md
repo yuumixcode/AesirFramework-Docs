@@ -11,7 +11,7 @@ description: "Runestone.AesirArchitecture.IObservableList<T> 的 API 文档"
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`System.Collections.Generic.IEnumerable<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`System.Collections.Generic.ICollection<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
+**实现接口:** `System.Collections.Generic.IReadOnlyList<T>`，`Runestone.AesirArchitecture.IReadOnlyObservableList<T>`，`System.Collections.Generic.IEnumerable<T>`，`System.Collections.IEnumerable`，`System.Collections.Generic.IList<T>`，`Runestone.AesirArchitecture.IObservableCollection<T>`，`System.Collections.Generic.ICollection<T>`，`System.Collections.Generic.IReadOnlyCollection<T>`
 
 **类型参数**
 
@@ -22,12 +22,12 @@ description: "Runestone.AesirArchitecture.IObservableList<T> 的 API 文档"
 ``` csharp
 [DefaultMember]
 public interface IObservableList<T> : System.Collections.Generic.IReadOnlyList<T>, 
-System.Collections.Generic.IEnumerable<T>, 
 Runestone.AesirArchitecture.IReadOnlyObservableList<T>, 
+System.Collections.Generic.IEnumerable<T>, 
 System.Collections.IEnumerable, 
 System.Collections.Generic.IList<T>, 
-System.Collections.Generic.ICollection<T>, 
 Runestone.AesirArchitecture.IObservableCollection<T>, 
+System.Collections.Generic.ICollection<T>, 
 System.Collections.Generic.IReadOnlyCollection<T> 
 ```
 
@@ -79,7 +79,7 @@ public int Count { get; }
 
 **备注**
 
-每添加一项触发一次 Add 通知；如需"整体刷新一次通知"的语义，可先 Clear 再逐项 Add。
+每添加一项触发一次 Add 通知；需要"清空后重建"语义时可先 Clear （触发一次 Reset）再逐项添加——共 Reset + N×Add 次通知，监听方按 Reset"重建视图"处理后逐项接收增量。
 
 ``` csharp
 public abstract void AddRange(IEnumerable<T> items)
