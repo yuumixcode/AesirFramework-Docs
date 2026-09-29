@@ -23,7 +23,7 @@ hide:
 
 <div class="aesir-hero__meta">
 <span>Unity / 团结引擎 2022.3+</span>
-<span>Architecture + Modules 0.30.0</span>
+<span>Architecture + Modules 0.31.0</span>
 <span>MIT License</span>
 </div>
 

@@ -100,7 +100,6 @@ nav = [
           { "MonoLifecycleProxy.ListenerEntry" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/MonoLifecycleProxy.ListenerEntry.md" },
           { "MonoLifecycleProxy.PendingChange" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/MonoLifecycleProxy.PendingChange.md" },
           { "MonoLifecycleProxy" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/MonoLifecycleProxy.md" },
-          { "MonoLifecycleProxyExtensions" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/MonoLifecycleProxyExtensions.md" },
           { "MonoViewController<T>" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/MonoViewController{T}.md" },
           { "MonoView<T>" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/MonoView{T}.md" },
           { "ObservableCollectionUtility" = "architecture/scripting-api/architecture/scripting-api/Runestone/AesirArchitecture/Internal/ObservableCollectionUtility.md" },

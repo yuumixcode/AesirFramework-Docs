@@ -11,34 +11,15 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.30.0** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.30.0** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.31.0** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.31.0** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
 
-## [Unreleased]
+## [0.31.0] - 2026-09-29
 
-### 移除
-
-- **`AesirScheduler` 帧粒度时间调度器整体移除(破坏性)** —— 该原语自 0.21.0 引入后全仓零使用(源码引用仅存在于自身定义与专属测试,示例与 Runtime 无一处调用);需要延时请用 `MonoLifecycleProxy` 帧代理 + 计时字段,或直接把驱动方挂在 GameObject 上用协程
-- **`ObservableQueue<T>` 整体移除(破坏性)** —— 队列是四集合中频率最低的一种且是唯一无写侧接口的集合;内置家族收敛为 List / Dictionary / HashSet,需要 FIFO 队列时使用上游 `Cysharp.ObservableCollections`
-
-### Aesir Modules
-
-- **Changed**
-
-    - **日志输出统一收敛到包门面 `AesirModulesDebug`(日志文案变更)** —— 生产路径此前有 50 余处绕开门面的裸 `Debug.Log*`(含无前缀者),覆盖面含事件模块绑定失败告警、ScriptDocGenerator 全模块与 `BootstrapSceneHelper`;`[ScriptDocGeneratorAPI]` 前缀改用门面 source 次前缀保留。**代价是控制台文本前缀形态改变**(彩色加粗主前缀 + 中括号次前缀),文本子串不变。唯一有意例外是 `AesirDependencyInstaller`(其所在程序集必须零引用,补齐依赖期间门面不可用),已在类 remarks 写明。
-
-    - **`EventModule` 双注册表 `AttributeBindings` / `DynamicBindings` 收窄为 internal(破坏性)** —— 二者是实现细节,订阅/退订必须经公开 API 走同一套绑定键与死引用清理;业务代码若直接读过会编译失败。
-
-    - **`BinderEditorSettings` 改为真持久化(行为变更)** —— 此前类上没有 `[FilePath]`、自身 `Save()` 只做 `SetDirty` + `SaveAssets`(对非资产对象无效),值"进程内活、单例重建即回默认";现补 `[FilePath("ScriptableSingleton/AesirModules/BinderEditorSettings.asset", ProjectFolder)]` 并改调基类 `Save(true)`,重启编辑器后后缀列表 / 默认后缀 / 最近命名空间保留。
-
-    - **`UIRoot` 重复实例改 `Destroy(this)`(行为变更)** —— 只销毁本组件,不连带销毁用户物体上的其它组件与已搭好的四层 Canvas 层级;`UIRoot.CreateInputModule` 与 `AesirEventUtility` 绑定键缓存一并纳入域加载期静态重置。
-
-- **Fixed**
-
-    - **`SceneEditorSettings` 四个私有字段漏 `[SerializeField]`** —— 类上有 `[FilePath]` 但字段都没带标记,设置文件里没有对应键,值只活在当前进程内,重建单例(编辑器重启 / 切项目)即回落默认:场景模块的 Bootstrapper 开关静默失效。补标记。
+**仓库级变更**:三轮审查修复全量落地(复核 / 终审 / 修复优化方案),覆盖初始化语义、程序集边界、静态重置、日志规范、持久化与分发裁剪等 100 余项,含多处破坏性 API 变更(见下)。分发侧 `auto-publish-branches.yml` 在 subtree split 后剔除开发侧 `Samples/` 与 `Documentation/`——UPM 产物只保留 `~` 镜像,消费工程不再无条件多出样例程序集,也不会与 Package Manager 导入的样例撞 GUID;开发仓库接入 UniTask(`com.cysharp.unitask`,UPM Git URL)用于双态验证。
 
 ### Aesir Architecture
 
@@ -50,9 +31,13 @@
 
     - **`AesirArchitecturePlayerLoop` → `AesirPlayerLoop`、`AesirArchitectureLifecyclePhase` → `AesirLifecyclePhase`(破坏性改名)** —— 该类型是跨包共用的框架级帧钩子工件(RAA 对外公共 API,RAM 侧零引用、无对照角色),按命名规范"跨包共用 → 直接 `Aesir` + 语义名、不带包名段"精简;宿主 `AesirArchitecture` 与门面 `AesirArchitectureDebug` 与 RAM 的 `AesirModules` / `AesirModulesDebug` 成对,保留全名。迁移:调用点改 `AesirPlayerLoop.Register(AesirLifecyclePhase.BeforeUpdate, …)`。
 
-    - **更新器窗口刷新回调拆分** —— `AesirUpdateController` 构造器新增可省的"仅重绘"回调,进度 tick 与状态文本变更不再触发窗口重算列表(此前每次 tick 都走一遍列表重算)。
+    - **初始化语义修正(破坏性修复)** —— `Initialize()` 曾在调用 `Configure()` 之前就置位内部标志,使 `Configure()` 里注册的每个模块**当场初始化一次、遍历时再初始化一次**(订阅重复注册、计数/加载类副作用翻倍),且"先全部 Model 后全部 Service"的两阶段顺序被打乱。现改为「集体初始化未完成时注册只登记、完成后注册立即初始化」,遍历期间注册的模块由"重复取快照直到没有未初始化模块"同轮补齐。
 
-    - AbstractContext 容器字段改声明为 `IGenericLocator<T>` 接口类型(DIP 落地);`GetAll()` 改为调用时刻快照——枚举期间注册/注销不再抛「集合已修改」异常,初始化遍历期注册的模块立即初始化。
+    - **`AbstractContext<T>.Dispose()` 由 `virtual` 收为非虚(破坏性)** —— 类上同时存在两个析构扩展点,子类覆写 `Dispose()` 漏调 `base` 会留下"单例缓存不清 + `Initialized` 残留"的僵尸上下文;定制点统一为 `OnDispose()`,收尾段(置 `Initialized = false` + 摘单例缓存)移入 `finally` 保证不变量。
+
+    - AbstractContext 容器字段改声明为 `IGenericLocator<T>` 接口类型(DIP 落地);`GetAll()` 改为调用时刻快照——枚举期间注册/注销不再抛「集合已修改」异常。`ClearListeners()` 补进 `IObservableCollection<T>` / `IReadOnlyObservableValue<T>` 接口面(对象池回收时的退订入口);`RemoveListenerHandleCollection` 收 internal。
+
+    - 更新器窗口刷新回调拆分——`AesirUpdateController` 构造器新增可省的"仅重绘"回调,进度 tick 与状态文本变更不再触发窗口重算列表(此前每次 tick 都走一遍列表重算)。
 
     - 更新器服务层/编排层职责分离(SRP):确认框文案构建迁入 `AesirUpdateController`,`UpdatePackagesAsync` 导入期收进度条改为回调;已知包登记统一到 `AesirGetStartedService.KnownPackages`(补 DirName 字段,更新器与概览卡片共用,新增公开包只改一处);更新日志拉取阶段套 30 秒整轮预算(此前双包串行最坏约 64 秒不可逃生)。
 
@@ -62,15 +47,65 @@
 
 - **Fixed**
 
-    - 更新器差集清理对「新清单为空」补守卫(数据损坏级):远程 update-info.json 半截 JSON / 缺 files 字段时不再把整包判为残留删光,与上次清单守卫对称。
+    - **域重载重置链路无异常隔离 + 先 Dispose 后置空** —— `ResetStaticsAll` 的遍历无 `try/catch`,任一回调抛异常即中断后续全部重置;`AbstractContext<T>` 的回调 `Dispose()` 抛异常时 `_instance` 永不清空。现逐回调 `try/catch`(记警告后继续)且先取 `_instance` 置空再 `Dispose`。
 
-    - `RemoveListenerOnSceneUnloadedTrigger` 宿主销毁时逐桶执行句柄移除(此前只清桶不 Dispose,其他场景的监听永久残留);`AesirAssetPaths` 静态构造异常护栏(「类型中毒」降级为单次可恢复的路径降级);`ObservableDictionary` / `ObservableHashSet` 补 `[SerializeField]`(失实注释修复后 Inspector 编辑初始元素真实生效);`ObservableHashSet` 批量方法先物化源序列(传集合自身不再中断);`CloneCollection.Contains` 真实现 + 死构造器删除 + 注释中文化。
+    - **更新器差集清理两处数据安全缺陷** —— ① 对"新清单为空"补守卫(远程 update-info.json 半截 JSON / 缺 files 字段时不再把整包判为残留删光,与上次清单守卫对称);② 差集前缀改按包目录名从清单反推(安装根被移动到其它文件夹时,清理此前静默失效、残留持续累积)。
+
+    - **`ScriptingSymbolEditorUtilityTests` 改写真实宏定义符号导致 Test Runner 中途域重载** —— 每次 `PlayerSettings` 变更都会请求 "Define symbols changed" 全量脚本重编译,编译完成时本轮 EditMode 尚未结束,Test Runner 报 `Unexpected assembly reload happened while running tests` 并丢失上下文;增删语义抽为纯函数,测试改纯逻辑断言(真实写入属手动验证项)。
+
+    - `RemoveListenerOnSceneUnloadedTrigger` 宿主销毁时逐桶执行句柄移除(此前只清桶不 Dispose,其他场景的监听永久残留);`AesirAssetPaths` 静态构造异常护栏(「类型中毒」降级为单次可恢复的路径降级);`ObservableDictionary` / `ObservableHashSet` 补 `[SerializeField]`(失实注释修复后 Inspector 编辑初始元素真实生效);`ObservableHashSet` 批量方法先物化源序列(传集合自身不再中断);`CloneCollection.Contains` 真实现 + 死构造器删除 + 注释中文化;两个集合的「零分配」宣称修正为仅 `Invoke` 路径成立。
 
 - **Removed**
+
+    - **`AesirScheduler` 帧粒度时间调度器整体移除(破坏性)** —— 该原语自 0.21.0 引入后全仓零使用(源码引用仅存在于自身定义与专属测试,示例与 Runtime 无一处调用);需要延时请用 `MonoLifecycleProxy` 帧代理 + 计时字段,或直接把驱动方挂在 GameObject 上用协程。
 
     - **`ObservableQueue<T>`**(破坏性)——四集合中使用频率最低且唯一无写侧接口;内置家族收敛为三种高频集合(List / Dictionary / HashSet),队列用上游 Cysharp.ObservableCollections。
 
     - **`MonoLifecycleProxyExtensions` 整类**(破坏性)——6 个公开扩展方法全仓零使用且均为一行转发,`UnregisterCustomLifecycle` 的 receiver 不参与逻辑、暗示错误心智模型;更新器死入口 `FetchLatestReleaseSnapshotAsync` 与 `Internal/ListExtensions.cs` 死文件。
+
+### Aesir Modules
+
+- **Added**
+
+    - **UniTask 驱动链 PlayMode 测试程序集 `Runestone.AesirModules.Tests.UniTask`** —— 覆盖 `SceneModuleUniTask` 全部 8 个公开 API(含入口即取消、加载中取消、宿主销毁不悬挂、进度归一化),`defineConstraints` 双守卫,未装 UniTask 的工程整体不编译。
+
+    - 日志门面补 `ScriptDocGeneratorTag`;测试守护网新增三处(`UIRoot.CreateInputModule` / `AesirEventUtility.KeyCache` 静态重置、重复实例只销毁自身组件——该行为在 EditMode 下不可断言,落在 PlayMode 程序集)。
+
+- **Changed**
+
+    - **测试程序集按「是否依赖 Odin 类型」重新划分** —— 原先编辑器测试程序集带 `ODIN_INSPECTOR` 门控,未装 Odin(或活动平台非 Editor)时整程序集静默不编译、`Tests/Editor/UI/` 的 44 个用例在 Test Runner 中消失且零报错;现分两层:真正依赖 Odin 类型的用例(Binder 4 文件 + ScriptDocGenerator 全模块)迁入门控程序集 `Runestone.AesirModules.Tests.Editor.OdinInspector`,其余留在基线程序集(保留 `Sirenix.*.dll` 预编译引用但移除门控——指向不存在程序集的预编译引用会被 Unity 静默忽略)。
+
+    - **Binder 编辑器工具链移出 Player 构建 + ScriptDocGenerator 运行时代码解除对 Odin 运行时程序集的依赖** —— 3,400+ 行编辑器工具链(BinderAssistant 全程序集扫描、代码生成器、写脚本)不再随 Standalone 打包(纯文本逻辑 + 整文件 `#if UNITY_EDITOR` 两道防线);ScriptDocGenerator 新增 `NiceTypeName` 承接类型格式化(逐条移植 Sirenix 规则,27/27 输出一致)。
+
+    - **日志输出统一收敛到包门面 `AesirModulesDebug`(日志文案变更)** —— 生产路径此前有 50 余处绕开门面的裸 `Debug.Log*`(含无前缀者),覆盖面含事件模块绑定失败告警、ScriptDocGenerator 全模块与 `BootstrapSceneHelper`;`[ScriptDocGeneratorAPI]` 前缀改用门面 source 次前缀保留。**代价是控制台文本前缀形态改变**(彩色加粗主前缀 + 中括号次前缀),文本子串不变。唯一有意例外是 `AesirDependencyInstaller`(其所在程序集必须零引用,补齐依赖期间门面不可用),已在类 remarks 写明。
+
+    - **`EventModule` 双注册表 `AttributeBindings` / `DynamicBindings` 收窄为 internal(破坏性)** —— 二者是实现细节,订阅/退订必须经公开 API 走同一套绑定键与死引用清理;业务代码若直接读过会编译失败。
+
+    - **`BinderEditorSettings` 改为真持久化(行为变更)** —— 此前类上没有 `[FilePath]`、自身 `Save()` 只做 `SetDirty` + `SaveAssets`(对非资产对象无效),值"进程内活、单例重建即回默认";现补 `[FilePath("ScriptableSingleton/AesirModules/BinderEditorSettings.asset", ProjectFolder)]` 并改调基类 `Save(true)`,重启编辑器后后缀列表 / 默认后缀 / 最近命名空间保留。
+
+    - **`UIRoot` 重复实例改 `Destroy(this)`(行为变更)** —— 只销毁本组件,不连带销毁用户物体上的其它组件与已搭好的四层 Canvas 层级;`UIRoot.CreateInputModule` 与 `AesirEventUtility` 绑定键缓存一并纳入域加载期静态重置。
+
+    - `AudioModule` 通道维度收敛为单一数据源 `AudioChannel`(新增通道改动点由约 20 处降到约 4 处,公开成员与 PlayerPrefs 键名逐字不变);样例程序集 `autoReferenced` 归位为 `false`(样例类型不再自动进入用户代码补全)。
+
+- **Fixed**
+
+    - **序列化数据层静默失效** —— `UIRoot` 四层 Canvas 引用表因 `readonly` + 缺 `[SerializeField]` 两个条件同时不满足,永远以空列表进入运行时(层子物体改名即新建重复 Canvas、同 `sortingOrder` 叠加渲染);`SceneEditorSettings` 与 `RuntimeInitializeLoadTypeSettings` 的私有字段同样漏标——类上有 `[FilePath]`,设置文件里却没有键,值只活在当前进程内,重建单例(编辑器重启 / 切项目)即回落默认:场景模块的 Bootstrapper 开关与示例的五个时机开关静默失效。
+
+    - **面板 / 窗口的销毁反清理可被子类屏蔽** —— `OnDestroy` 由 private 改 `protected virtual` 并在 remarks 强制调 `base`,同时 `UIModule` 增加按 Unity 假 null 驱逐已销毁记录的自愈(此前子类写了 `OnDestroy` 就会让注册表残留已销毁实例,之后每次 Show/Open 抛 `MissingReferenceException` 且无自愈路径)。
+
+    - **`EventModule` 预放置路线不受 `DontDestroyOnLoad` 保护**(补序列化字段 + Awake 守卫);**`FindAnyObjectByType` 跳过 inactive 预放置模块**(全模块统一为 `FindObjectsInactive.Include`,`uiCanvasConfigSO` / `bootstrapScene` / `sfxSourceCount` 等 Inspector 配置不再从第一帧起被静默忽略)。
+
+    - **`SubclassSelector` 下拉滤掉全部事件参数子类** —— 过滤用 `IsDefined(SerializableAttribute, inherit: false)` 只看类型自身声明的特性,而 `AesirEventArgs` 已带 `[Serializable]`、派生类无需重复标注,导致 SO 资产化主路径下拉恒为空;改为继承判定。**`RaiseEvent` 重入时共享参数实例的 `Sender` 被内层覆写**——三个内建过滤器全部依赖 `Sender`,会静默错投或漏投;改为分发开始时取局部 sender 并逐绑定重新断言。
+
+    - **`SceneAssetWrapper` 判等与哈希统一主键(行为变更)** —— 原 `Equals` 按 GUID、`GetHashCode` 按路径,同一场景在移动/改名后会 `Equals == true` 而哈希不等,`Dictionary` / `HashSet` 静默保留重复条目、查找漏命中;现路径优先、任一侧无路径时回退 GUID。另:GUID 自愈分支补回写 Addressables 地址(此前静默降级为 `Unsafe` 被拒绝加载)。
+
+    - **`SceneModule` 场景事件改静态持有**(`dontDestroyOnLoad` 取消勾选 + Single 模式加载销毁宿主后,DDOL 常驻系统永久收不到广播);`AddedScenePaths` 改返回快照(此前外泄内部可变列表,遍历期变更抛异常且可强转回写);`UnloadScene` 补"最后一个已加载场景"保护(改按真实场景数统计,排除 `DontDestroyOnLoad` 伪场景)。
+
+    - **更新器重载锁泄漏(整会话无法域重载,只能重启)** —— 收尾重构为「加锁移入 `try` + 局部配平标志 + 顺序改为先解锁再清 Busy」,任何异常路径恰好解锁一次;配套 `SessionState` 标记 + 域加载兜底恢复被强杀流程残留的进度条与重载锁。
+
+    - **`ScriptDocGenerator` 的 PropertyTree 域重载泄漏**(每次域重载 GC 报错)与**绘制期资产库操作**(单例解析收敛到 `OnEnable`、实例按域缓存,消灭绘制回调里的 `CreateAsset` + 全项目重扫);`ScriptDocGeneratorUtility` 双 Front Matter 缺陷(重生成已带 FM 的文件会叠加两份);调试检查模式 `ShowIf` 组合改单一复合条件——Odin 对同一成员的多个 `ShowIf` 是 OR 语义,该缺陷曾让 TypeData 列表无视调试开关常驻窗口。
+
+    - **UniTask 门控测试程序集从未参与编译(8 条用例静默消失)** —— 该程序集自身漏声明 `com.cysharp.unitask` 的 `versionDefines`,而 versionDefines 产生的宏只对声明它的程序集可见,故约束永不满足、程序集被静默排除出编译管线;补一份 versionDefines 并新增两条守卫。PlayMode 套件首次真跑另暴露两处用例缺陷(进度末值断言与生产语义相反、缺场景卫生被同学例遗留的双实例污染,现以"锚场景 + 按 Scene 句柄逐个卸载"根治)。
 
 ## [0.30.0] - 2026-09-27
 

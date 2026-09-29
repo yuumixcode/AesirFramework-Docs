@@ -29,7 +29,7 @@ Mono 生命周期事件代理。作为全局单例挂载在 [Aesir Architecture]
 
 **备注**
 
-通过 Instance 访问实例方法 AddListener、RemoveListener 等， 或通过 MonoLifecycleProxyExtensions 扩展方法快捷调用。
+通过 `Instance` 访问实例方法 `AddListener`、`RemoveListener` 等。
 
 可排序监听列表：每个事件维护一个 List{T} 存储 ListenerEntry， 使用 Order + InsertionIndex 稳定排序，按排序结果依次调用回调。 与 AesirPlayerLoop 的排序机制一致。
 

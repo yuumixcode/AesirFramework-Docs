@@ -36,7 +36,6 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`MiniEvent`](<Runestone/AesirArchitecture/MiniEvent.md>) | 单参事件 |
 | [`MiniEvent<T>`](<Runestone/AesirArchitecture/MiniEvent{T}.md>) | 单参事件 |
 | [`MonoLifecycleProxy`](<Runestone/AesirArchitecture/MonoLifecycleProxy.md>) | Mono 生命周期事件代理。作为全局单例挂载在 [Aesir Architecture] GameObject 上， 将 Unity 原生生命周期回调和自定义 PlayerLo… |
-| [`MonoLifecycleProxyExtensions`](<Runestone/AesirArchitecture/MonoLifecycleProxyExtensions.md>) | Mono 生命周期事件扩展方法集合。 |
 | [`MonoView<T>`](<Runestone/AesirArchitecture/MonoView{T}.md>) | View 基类。通过泛型上下文获取模块访问能力，仅具备只读权限。 |
 | [`MonoViewController<T>`](<Runestone/AesirArchitecture/MonoViewController{T}.md>) | View + Controller 双角色基类。通过泛型上下文获取模块访问能力，无 Odin 依赖。 |
 | [`ObservableDictionary{TKey, TValue}`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
