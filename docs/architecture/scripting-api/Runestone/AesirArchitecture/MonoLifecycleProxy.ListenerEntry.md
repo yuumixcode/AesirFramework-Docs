@@ -23,7 +23,7 @@ private struct MonoLifecycleProxy.ListenerEntry : System.ValueType
 
 **备注**
 
-InsertionIndex 是自增序号，当多个条目的 Order 相同时， 使用 InsertionIndex 作为次级排序键，确保相同优先级的回调按注册顺序执行，实现稳定排序。 与 AesirArchitecturePlayerLoop 的 HookEntry 结构一致。
+InsertionIndex 是自增序号，当多个条目的 Order 相同时， 使用 InsertionIndex 作为次级排序键，确保相同优先级的回调按注册顺序执行，实现稳定排序。 与 AesirPlayerLoop 的 HookEntry 结构一致。
 
 ## 字段
 

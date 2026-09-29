@@ -25,7 +25,7 @@ internal static class ObservableCollectionDrawerHelper
 
 调试信息经反射读取（ObservableCollectionInspectorUtility）。 未安装 Odin Inspector 时本文件整体不参与编译，纯代码 API 不受影响。
 
-覆盖 ObservableList{T}、ObservableDictionary{TKey, TValue}、 ObservableHashSet{T}、ObservableQueue{T} 四种集合。
+覆盖 ObservableList{T}、ObservableDictionary{TKey, TValue}、 ObservableHashSet{T} 三种集合。
 
 ## 方法
 

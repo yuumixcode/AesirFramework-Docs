@@ -17,6 +17,61 @@
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
 
+## [Unreleased]
+
+### 移除
+
+- **`AesirScheduler` 帧粒度时间调度器整体移除(破坏性)** —— 该原语自 0.21.0 引入后全仓零使用(源码引用仅存在于自身定义与专属测试,示例与 Runtime 无一处调用);需要延时请用 `MonoLifecycleProxy` 帧代理 + 计时字段,或直接把驱动方挂在 GameObject 上用协程
+- **`ObservableQueue<T>` 整体移除(破坏性)** —— 队列是四集合中频率最低的一种且是唯一无写侧接口的集合;内置家族收敛为 List / Dictionary / HashSet,需要 FIFO 队列时使用上游 `Cysharp.ObservableCollections`
+
+### Aesir Modules
+
+- **Changed**
+
+    - **日志输出统一收敛到包门面 `AesirModulesDebug`(日志文案变更)** —— 生产路径此前有 50 余处绕开门面的裸 `Debug.Log*`(含无前缀者),覆盖面含事件模块绑定失败告警、ScriptDocGenerator 全模块与 `BootstrapSceneHelper`;`[ScriptDocGeneratorAPI]` 前缀改用门面 source 次前缀保留。**代价是控制台文本前缀形态改变**(彩色加粗主前缀 + 中括号次前缀),文本子串不变。唯一有意例外是 `AesirDependencyInstaller`(其所在程序集必须零引用,补齐依赖期间门面不可用),已在类 remarks 写明。
+
+    - **`EventModule` 双注册表 `AttributeBindings` / `DynamicBindings` 收窄为 internal(破坏性)** —— 二者是实现细节,订阅/退订必须经公开 API 走同一套绑定键与死引用清理;业务代码若直接读过会编译失败。
+
+    - **`BinderEditorSettings` 改为真持久化(行为变更)** —— 此前类上没有 `[FilePath]`、自身 `Save()` 只做 `SetDirty` + `SaveAssets`(对非资产对象无效),值"进程内活、单例重建即回默认";现补 `[FilePath("ScriptableSingleton/AesirModules/BinderEditorSettings.asset", ProjectFolder)]` 并改调基类 `Save(true)`,重启编辑器后后缀列表 / 默认后缀 / 最近命名空间保留。
+
+    - **`UIRoot` 重复实例改 `Destroy(this)`(行为变更)** —— 只销毁本组件,不连带销毁用户物体上的其它组件与已搭好的四层 Canvas 层级;`UIRoot.CreateInputModule` 与 `AesirEventUtility` 绑定键缓存一并纳入域加载期静态重置。
+
+- **Fixed**
+
+    - **`SceneEditorSettings` 四个私有字段漏 `[SerializeField]`** —— 类上有 `[FilePath]` 但字段都没带标记,设置文件里没有对应键,值只活在当前进程内,重建单例(编辑器重启 / 切项目)即回落默认:场景模块的 Bootstrapper 开关静默失效。补标记。
+
+### Aesir Architecture
+
+- **Added**
+
+    - `IView<T>` 泛型表现层接口(默认接口实现绑定 `AbstractContext<T>.Instance` 单例,对齐 `IController<T>` / `IPresenter<T>`):View 适配对(AesirView / MonoView)与 VC 适配对(AesirViewController / MonoViewController)改经 DIM 绑定并删除手写显式实现,VC 实例额外获得 `IController<T>` 可赋值性;`IGenericLocator<T>` 新增 `GetAllEntries()` 诊断成员并继承 `IDisposable`。
+
+- **Changed**
+
+    - **`AesirArchitecturePlayerLoop` → `AesirPlayerLoop`、`AesirArchitectureLifecyclePhase` → `AesirLifecyclePhase`(破坏性改名)** —— 该类型是跨包共用的框架级帧钩子工件(RAA 对外公共 API,RAM 侧零引用、无对照角色),按命名规范"跨包共用 → 直接 `Aesir` + 语义名、不带包名段"精简;宿主 `AesirArchitecture` 与门面 `AesirArchitectureDebug` 与 RAM 的 `AesirModules` / `AesirModulesDebug` 成对,保留全名。迁移:调用点改 `AesirPlayerLoop.Register(AesirLifecyclePhase.BeforeUpdate, …)`。
+
+    - **更新器窗口刷新回调拆分** —— `AesirUpdateController` 构造器新增可省的"仅重绘"回调,进度 tick 与状态文本变更不再触发窗口重算列表(此前每次 tick 都走一遍列表重算)。
+
+    - AbstractContext 容器字段改声明为 `IGenericLocator<T>` 接口类型(DIP 落地);`GetAll()` 改为调用时刻快照——枚举期间注册/注销不再抛「集合已修改」异常,初始化遍历期注册的模块立即初始化。
+
+    - 更新器服务层/编排层职责分离(SRP):确认框文案构建迁入 `AesirUpdateController`,`UpdatePackagesAsync` 导入期收进度条改为回调;已知包登记统一到 `AesirGetStartedService.KnownPackages`(补 DirName 字段,更新器与概览卡片共用,新增公开包只改一处);更新日志拉取阶段套 30 秒整轮预算(此前双包串行最坏约 64 秒不可逃生)。
+
+    - README 中英快速开始改快捷档主线(第一课 3 个脚本跑通数据闭环,严格档移入「进阶」);三档文件数统一按脚本计;结构树补 Documentation 三项与 Getting Started 文件;`[InternalContext]` 首次获得文档说明;AI 编码指南 Quick 档模板改只读属性暴露写法(不再教公开可变字段)。
+
+    - `AesirScheduler` 自愈注释改实话(自愈仅发生在首次注册,被第三方覆盖后需手动 `EnsureInjected()`);ResetStatics 死防御分支删除(两处);三个 Odin AttributeProcessor 收窄 `internal sealed`;`MonoLifecycleProxy.GetListenerCount` 收 internal;`AesirMonoBehaviour` / `AesirScriptableObject` 补 `ODIN_INSPECTOR_EDITOR_ONLY` 数据丢失警告。
+
+- **Fixed**
+
+    - 更新器差集清理对「新清单为空」补守卫(数据损坏级):远程 update-info.json 半截 JSON / 缺 files 字段时不再把整包判为残留删光,与上次清单守卫对称。
+
+    - `RemoveListenerOnSceneUnloadedTrigger` 宿主销毁时逐桶执行句柄移除(此前只清桶不 Dispose,其他场景的监听永久残留);`AesirAssetPaths` 静态构造异常护栏(「类型中毒」降级为单次可恢复的路径降级);`ObservableDictionary` / `ObservableHashSet` 补 `[SerializeField]`(失实注释修复后 Inspector 编辑初始元素真实生效);`ObservableHashSet` 批量方法先物化源序列(传集合自身不再中断);`CloneCollection.Contains` 真实现 + 死构造器删除 + 注释中文化。
+
+- **Removed**
+
+    - **`ObservableQueue<T>`**(破坏性)——四集合中使用频率最低且唯一无写侧接口;内置家族收敛为三种高频集合(List / Dictionary / HashSet),队列用上游 Cysharp.ObservableCollections。
+
+    - **`MonoLifecycleProxyExtensions` 整类**(破坏性)——6 个公开扩展方法全仓零使用且均为一行转发,`UnregisterCustomLifecycle` 的 receiver 不参与逻辑、暗示错误心智模型;更新器死入口 `FetchLatestReleaseSnapshotAsync` 与 `Internal/ListExtensions.cs` 死文件。
+
 ## [0.30.0] - 2026-09-27
 
 **仓库级变更**:Git 分支策略重构——版本分支(`AesirXxx-v<版本>`,随发版轮换并删除)废弃,改为常驻滚动分支 `AesirArchitecture-latest` / `AesirModules-latest`(CI 每次推送 main 时 subtree split 滚动更新,分支名永久固定):Git URL 一次输入持续可用,升级 = Package Manager 移除后用同一 URL 重新添加;钉旧版本用 Release tag(`?path=Assets/Runestone/<包目录>#v<版本>`,tag 永久保留);CI 自动清理远端残留的版本分支。

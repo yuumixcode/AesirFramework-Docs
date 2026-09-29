@@ -25,9 +25,8 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`AbstractSubmodule`](<Runestone/AesirArchitecture/AbstractSubmodule.md>) | 子模块基类。持有上下文引用，通过 OnInitialize 和 OnDispose 管理生命周期。 Model 和 Service 的公共逻辑统一在此实现。 |
 | [`AesirArchitecture`](<Runestone/AesirArchitecture/AesirArchitecture.md>) | Aesir Architecture 接入 MonoBehaviour 生命周期的持久化物体对象。 |
 | [`AesirArchitectureDebug`](<Runestone/AesirArchitecture/AesirArchitectureDebug.md>) | AesirArchitecture 内部日志工具。 所有架构模块的日志输出应走此工具，以醒目的颜色和 [AesirArchitecture] 标识区分来源。 Log/Warni… |
-| [`AesirArchitecturePlayerLoop`](<Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.md>) | 基于 PlayerLoop 的生命周期钩子系统，无需 MonoBehaviour 即可接入游戏级帧回调。 通过 Register 注册回调，order 越小越先执行；系统自动在… |
+| [`AesirPlayerLoop`](<Runestone/AesirArchitecture/AesirPlayerLoop.md>) | 基于 PlayerLoop 的生命周期钩子系统，无需 MonoBehaviour 即可接入游戏级帧回调。 通过 Register 注册回调，order 越小越先执行；系统自动在… |
 | [`AesirMonoBehaviour`](<Runestone/AesirArchitecture/AesirMonoBehaviour.md>) | RAA 架构标准 MonoBehaviour 基类，根据运行环境自动选择序列化方式。 |
-| [`AesirScheduler`](<Runestone/AesirArchitecture/AesirScheduler.md>) | 帧粒度时间调度器 —— 纯 C# 静态 API，为无协程能力的 Model / Service / Command 提供合法的延时执行手段。 |
 | [`AesirScriptableObject`](<Runestone/AesirArchitecture/AesirScriptableObject.md>) | RAA 架构标准 ScriptableObject 基类，根据运行环境自动选择序列化方式。 |
 | [`AesirView<T>`](<Runestone/AesirArchitecture/AesirView{T}.md>) | View 基类。通过泛型上下文获取模块访问能力，仅具备只读权限，AesirView 自动支持 Odin Inspector 序列化。 |
 | [`AesirViewController<T>`](<Runestone/AesirArchitecture/AesirViewController{T}.md>) | View + Controller 双角色基类。通过泛型上下文获取模块访问能力，自动支持 Odin Inspector 序列化。 |
@@ -43,7 +42,6 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`ObservableDictionary{TKey, TValue}`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
 | [`ObservableHashSet<T>`](<Runestone/AesirArchitecture/ObservableHashSet{T}.md>) | 可观察集合实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只读订阅。 |
 | [`ObservableList<T>`](<Runestone/AesirArchitecture/ObservableList{T}.md>) | 可观察列表实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读订阅。 |
-| [`ObservableQueue<T>`](<Runestone/AesirArchitecture/ObservableQueue{T}.md>) | 可观察队列实现。 |
 | [`ObservableValue<T>`](<Runestone/AesirArchitecture/ObservableValue{T}.md>) | 可观察属性实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableValue{T} 只读订阅。 |
 | [`PlayerLoopUtility`](<Runestone/AesirArchitecture/PlayerLoopUtility.md>) | PlayerLoop 操作的静态工具类，提供子系统的插入、查询与描述功能。 供框架内部和外部用户扩展 PlayerLoop，不局限于 AesirArchitectureLife… |
 | [`RemoveListenerExtensions`](<Runestone/AesirArchitecture/RemoveListenerExtensions.md>) | 事件监听器自动移除扩展方法类，用于绑定移除操作到 Unity 生命周期 |
@@ -62,10 +60,9 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate`](<Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate.md>) | PlayerLoop 子系统 type 标识，在 PostLateUpdate 之后执行 |
-| [`AesirArchitecturePlayerLoop.AesirArchitectureScriptRunBeforeUpdate`](<Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.AesirArchitectureScriptRunBeforeUpdate.md>) | PlayerLoop 子系统 type 标识，在 Update 之前执行 |
-| [`AesirArchitecturePlayerLoop.HookEntry`](<Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.HookEntry.md>) | 回调条目，记录单个生命周期回调及其排序信息 |
-| [`AesirScheduler.ScheduledTask`](<Runestone/AesirArchitecture/AesirScheduler.ScheduledTask.md>) | 待结算任务 |
+| [`AesirPlayerLoop.AesirScriptRunAfterUpdate`](<Runestone/AesirArchitecture/AesirPlayerLoop.AesirScriptRunAfterUpdate.md>) | PlayerLoop 子系统 type 标识，在 PostLateUpdate 之后执行 |
+| [`AesirPlayerLoop.AesirScriptRunBeforeUpdate`](<Runestone/AesirArchitecture/AesirPlayerLoop.AesirScriptRunBeforeUpdate.md>) | PlayerLoop 子系统 type 标识，在 Update 之前执行 |
+| [`AesirPlayerLoop.HookEntry`](<Runestone/AesirArchitecture/AesirPlayerLoop.HookEntry.md>) | 回调条目，记录单个生命周期回调及其排序信息 |
 | [`AutoRemoveListenerHandle`](<Runestone/AesirArchitecture/AutoRemoveListenerHandle.md>) | 自动移除监听句柄。包装注销回调。 |
 | [`CollectionChangedEventArgs<T>`](<Runestone/AesirArchitecture/CollectionChangedEventArgs{T}.md>) | 集合变更事件参数。每次变更携带单个变更项；批量操作（AddRange / RemoveRange 等）由集合逐项触发事件。 |
 | [`MonoLifecycleProxy.ListenerEntry`](<Runestone/AesirArchitecture/MonoLifecycleProxy.ListenerEntry.md>) | 监听条目，记录单个回调及其排序信息 |
@@ -73,7 +70,6 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`ObservableDictionary{TKey, TValue}.Enumerator{TKey, TValue}`](<Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.Enumerator{TKey, TValue}.md>) | 可观察字典实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableDictionary{TKey, TValue} 只读订阅。 |
 | [`ObservableHashSet<T>.Enumerator<T>`](<Runestone/AesirArchitecture/ObservableHashSet{T}.Enumerator{T}.md>) | 可观察集合实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableHashSet{T} 只读订阅。 |
 | [`ObservableList<T>.Enumerator<T>`](<Runestone/AesirArchitecture/ObservableList{T}.Enumerator{T}.md>) | 可观察列表实现。 Model 层持有可写实例，View 层通过 IReadOnlyObservableList{T} 只读订阅。 |
-| [`ObservableQueue<T>.Enumerator<T>`](<Runestone/AesirArchitecture/ObservableQueue{T}.Enumerator{T}.md>) | 可观察队列实现。 |
 
 </div>
 
@@ -127,7 +123,7 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`AesirArchitectureLifecyclePhase`](<Runestone/AesirArchitecture/AesirArchitectureLifecyclePhase.md>) | 游戏级生命周期阶段，对应 PlayerLoop 子系统插入点 |
+| [`AesirLifecyclePhase`](<Runestone/AesirArchitecture/AesirLifecyclePhase.md>) | 游戏级生命周期阶段，对应 PlayerLoop 子系统插入点 |
 | [`MonoLifecycleEvent`](<Runestone/AesirArchitecture/MonoLifecycleEvent.md>) | Mono 生命周期事件类型，涵盖 Unity 原生生命周期回调和自定义 PlayerLoop 阶段。 |
 
 </div>
@@ -179,7 +175,6 @@ description: "Runestone.AesirArchitecture 系列命名空间的 Scripting API �
 | [`ObservableDictionaryDrawer{TKey, TValue}`](<Runestone/AesirArchitecture/Editor/ObservableDictionaryDrawer{TKey, TValue}.md>) | ## 构造方法 |
 | [`ObservableHashSetDrawer<T>`](<Runestone/AesirArchitecture/Editor/ObservableHashSetDrawer{T}.md>) | 可观察集合（HashSet）的内联调试面板。 |
 | [`ObservableListDrawer<T>`](<Runestone/AesirArchitecture/Editor/ObservableListDrawer{T}.md>) | 可观察列表的内联调试面板。 |
-| [`ObservableQueueDrawer<T>`](<Runestone/AesirArchitecture/Editor/ObservableQueueDrawer{T}.md>) | 可观察队列的内联调试面板。 |
 | [`QuickCreateSOMenuItem`](<Runestone/AesirArchitecture/Editor/QuickCreateSOMenuItem.md>) | 右键快捷生成 ScriptableObject 资源文件。 项目同时安装 Aesir Inspector（独立包，写入 AESIR_INSPECTOR 宏）时本类整体不参与编译… |
 | [`ScriptingSymbolEditorUtility`](<Runestone/AesirArchitecture/Editor/ScriptingSymbolEditorUtility.md>) | 脚本宏定义工具，用于管理 PlayerSettings 中的 Scripting Define Symbols。 遍历所有构建目标（排除 Unknown 和 Dedicated… |
 

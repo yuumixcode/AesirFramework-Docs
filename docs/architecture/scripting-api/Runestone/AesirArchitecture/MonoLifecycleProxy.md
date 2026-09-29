@@ -31,13 +31,13 @@ Mono 生命周期事件代理。作为全局单例挂载在 [Aesir Architecture]
 
 通过 Instance 访问实例方法 AddListener、RemoveListener 等， 或通过 MonoLifecycleProxyExtensions 扩展方法快捷调用。
 
-可排序监听列表：每个事件维护一个 List{T} 存储 ListenerEntry， 使用 Order + InsertionIndex 稳定排序，按排序结果依次调用回调。 与 AesirArchitecturePlayerLoop 的排序机制一致。
+可排序监听列表：每个事件维护一个 List{T} 存储 ListenerEntry， 使用 Order + InsertionIndex 稳定排序，按排序结果依次调用回调。 与 AesirPlayerLoop 的排序机制一致。
 
 快照语义：与原生 C# 多播委托一致，每趟遍历基于调用开始时的监听列表进行。 回调执行中发起的 AddListener / RemoveListener 等变更进入挂起队列， 本趟结束后按发生顺序统一应用——调用期间新增的监听下一趟才生效，被移除的监听若尚未执行 仍会在本趟执行一次（随后失效），且增删不会导致其他监听被跳过或重复执行。
 
 自动取消订阅：通过 Register(MonoBehaviour) 注册的 MonoBehaviour， 其所有监听句柄会绑定到目标 GameObject 的 OnDestroy 事件，物体销毁时自动从代理中取消订阅。 非 MonoBehaviour 对象通过 Register(object) 注册，返回组合句柄由调用方管理生命周期。
 
-PlayerLoop 集成：BeforeUpdate 和 AfterUpdate 通过注册到 AesirArchitecturePlayerLoop 实现，Awake 时注册、OnDestroy 时注销。
+PlayerLoop 集成：BeforeUpdate 和 AfterUpdate 通过注册到 AesirPlayerLoop 实现，Awake 时注册、OnDestroy 时注销。
 
 ICustomXXX 自动注册：调用 RegisterAuto(object) 传入实现了任意 ICustomXXX 接口的对象（MonoBehaviour 或纯 C# 类均可），代理会自动扫描并注册所有对应方法到匹配的生命周期事件。
 

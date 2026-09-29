@@ -1,6 +1,6 @@
 # 内置功能模块
 
-Aesir Architecture 的运行时代码由三层组成:**架构核心**(Core —— Context 与 MVC / MVP 角色)、**内置功能模块**(Modules —— 本页主角)、**基础设施**(Common)。五个内置功能模块与架构角色解耦 —— [MiniEvent](#module-event)、Observable 家族、[GenericLocator](#module-locator)、[AesirScheduler](#module-aesir-scheduler) 均为纯 C# 类型,不依赖 Context 或场景物体即可独立使用;同时又深度服务于核心架构(Context 用 GenericLocator 托管注册表,Model 用 ObservableValue 承载数据)。
+Aesir Architecture 的运行时代码由三层组成:**架构核心**(Core —— Context 与 MVC / MVP 角色)、**内置功能模块**(Modules —— 本页主角)、**基础设施**(Common)。五个内置功能模块与架构角色解耦 —— [MiniEvent](#module-event)、Observable 家族、[GenericLocator](#module-locator) 均为纯 C# 类型,不依赖 Context 或场景物体即可独立使用;同时又深度服务于核心架构(Context 用 GenericLocator 托管注册表,Model 用 ObservableValue 承载数据)。
 
 ## 组成地图
 
@@ -18,7 +18,7 @@ Aesir Architecture 的运行时代码由三层组成:**架构核心**(Core —�
 | **Observable 可观察** | `Modules/Observable` | [ObservableValue\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableValue{T}.md) + List / Dictionary / HashSet 三件套 | 响应式属性与可观察集合,读写分离由类型系统闭环 |
 | **CustomLifecycle 自定义生命周期** | `Modules/CustomLifecycle` | [MonoLifecycleProxy](scripting-api/Runestone/AesirArchitecture/MonoLifecycleProxy.md) + ICustom* 接口家族 | 把 Unity 原生回调统一为可订阅事件,任意对象可接入 |
 | **Locator 定位器** | `Modules/Locator` | [GenericLocator\<T\>](scripting-api/Runestone/AesirArchitecture/GenericLocator{T}.md) | 按类型注册 / 查询 / 获取实例,注册顺序保序 |
-| **Utilities 工具** | `Modules/Utilities` | [AesirArchitecturePlayerLoop](scripting-api/Runestone/AesirArchitecture/AesirArchitecturePlayerLoop.md) / AesirScheduler / [PlayerLoopUtility](scripting-api/Runestone/AesirArchitecture/PlayerLoopUtility.md) | 游戏级帧钩子、帧粒度时间调度、PlayerLoop 自由扩展 |
+| **Utilities 工具** | `Modules/Utilities` | [AesirPlayerLoop](scripting-api/Runestone/AesirArchitecture/AesirPlayerLoop.md) / [PlayerLoopUtility](scripting-api/Runestone/AesirArchitecture/PlayerLoopUtility.md) | 游戏级帧钩子、PlayerLoop 自由扩展 |
 
 ---
 
@@ -96,7 +96,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 | `Move` | 被移动元素 + 移动前后两个索引 |
 | `Reset` | 无附加字段(Clear / Sort / Reverse 共用,按重建视图处理) |
 
-事件语义:无变更的写操作不通知(赋相同值 / Remove 不存在元素 / Clear 空集合);批量操作(`AddRange` / `InsertRange` / `RemoveRange` / 集合代数运算)逐项通知;字典值更新以 `Replace` 表达;字典与 HashSet 无索引概念,载荷索引固定 -1;写操作完成后才通知(回调中集合已是变更后状态),fail-fast 与原生事件一致。另含上游没有的 `ObservableQueue<T>`(队列)。
+事件语义:无变更的写操作不通知(赋相同值 / Remove 不存在元素 / Clear 空集合);批量操作(`AddRange` / `InsertRange` / `RemoveRange`)逐项通知;字典值更新以 `Replace` 表达;字典与 HashSet 无索引概念,载荷索引固定 -1;写操作完成后才通知(回调中集合已是变更后状态),fail-fast 与原生事件一致。内置三种高频集合(List / Dictionary / HashSet),队列等其他集合形态用上游 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)。
 
 ### 不变型只读接口(有意设计)
 
@@ -168,7 +168,7 @@ locator.Unregister<Sword>();          // 注销后再注册,追加到顺序末�
 
 **作用**:封装 Unity PlayerLoop 这一引擎底层能力,为纯 C# 代码(无 MonoBehaviour)提供游戏级帧驱动与延时手段 —— 架构里的 Model / Service / Command 不持有协程,延时需求在这里闭环。
 
-### AesirArchitecturePlayerLoop — 游戏级帧钩子
+### AesirPlayerLoop — 游戏级帧钩子
 
 无需 MonoBehaviour,把回调注入 PlayerLoop 的两个阶段:
 
@@ -178,69 +178,13 @@ locator.Unregister<Sword>();          // 注销后再注册,追加到顺序末�
 | `AfterUpdate` | `PlayerLoop.PostLateUpdate` 之后 | 读取当前帧最终状态 |
 
 ```csharp
-AesirArchitecturePlayerLoop.Register(
-    AesirArchitectureLifecyclePhase.BeforeUpdate, MyFrameCallback, order: 0);  // 返回句柄
+AesirPlayerLoop.Register(
+    AesirLifecyclePhase.BeforeUpdate, MyFrameCallback, order: 0);  // 返回句柄
 ```
 
 - **注入自愈** —— 第三方 SDK 用缓存副本 `SetPlayerLoop` 会抹掉注入点;`EnsureInjected()` 在域加载时与每次 Register 时自动补插,也可手动调用
 - **稳定排序** —— `order` 越小越先执行,同 order 按注册顺序
 - **趟末生效** —— 遍历期间 Register / Unregister 缓存到趟末统一执行
-
-### AesirScheduler — 帧粒度时间调度(0.21.0 新增) {#module-aesir-scheduler}
-
-**为什么需要它**:纯 C# 层(Model / Service / Command)没有任何原生延时手段 —— `StartCoroutine` 是 MonoBehaviour 实例方法,`Invoke` 同理,`Task.Delay` 不接 Unity 主线程与 `timeScale`。AesirScheduler 用两个 API 补上这个缺口;任务经 BeforeUpdate 钩子结算,无需任何场景物体,首次使用自动注册钩子:
-
-```csharp
-AesirScheduler.Delay(3f, () => Debug.Log("3 秒后(帧粒度)"));
-AesirScheduler.NextFrame(() => RefreshView());   // 下一帧执行,等价于 Delay(0f)
-int pending = AesirScheduler.PendingCount;        // 待结算任务数
-```
-
-#### 与 PlayerLoop 帧钩子的分工 {#module-scheduler-vs-hook}
-
-`AesirArchitecturePlayerLoop` 与 AesirScheduler 是互补的两层,不是替代关系:**前者是"帧驱动"原语**(每帧持续调用,直到注销),**后者是"延时"原语**(到点调用一次,触发即自动出队)。用帧钩子手写延时可行,但等于每次都在实现一个没有测试保护的迷你调度器:
-
-```csharp
-// 手写版:"3 秒后执行一次"的帧钩子实现
-float deadline = Time.time + 3f;
-AutoRemoveListenerHandle handle = default;
-handle = AesirArchitecturePlayerLoop.Register(
-    AesirArchitectureLifecyclePhase.BeforeUpdate, () =>
-{
-    if (Time.time < deadline) return;   // ① 到期前每帧空转
-    MyAction();
-    handle.Dispose();                    // ② 忘写这行 = 回调永久滞留钩子,每帧空转到域重载
-});
-```
-
-| 维度 | 帧钩子手写延时 | AesirScheduler |
-|------|--------------|----------------|
-| 空转成本 | 任务期内每帧轮询;N 个延时任务占 N 个钩子槽 | N 个任务共享 1 个钩子槽(懒注册,空队列时钩子零成本直接返回) |
-| 清理责任 | 忘记 Dispose 即泄漏 | 触发即自动出队,无需清理 |
-| 计时 | 自己比对 `Time.time` | 内建游戏时间计时,`timeScale = 0` 期间正确暂停 |
-| 每任务分配 | 闭包捕获 deadline / handle,产生堆分配 | 结构体任务写入复用列表,调度机制稳态零分配 |
-| 边界语义 | 自己保证(同帧投递?回调内再注册?触发后重跑?) | BornFrame 守卫(最早下一帧)、先出队后投递(异常不重跑)、快照投递,测试用例锁定 |
-
-类比 MonoBehaviour 世界:`Update()` 与 `yield WaitForSeconds` 的关系 —— 有 Update 并不意味着不需要 WaitForSeconds;AesirScheduler 就是纯 C# 层的 WaitForSeconds / `yield null`。
-
-**选型** —— 三种时间需求,三个去处:
-
-| 需求 | 用什么 |
-|------|--------|
-| 每帧持续执行(逐帧逻辑) | `AesirArchitecturePlayerLoop.Register`(或 ICustomUpdate 接口) |
-| 一次性延时 / 下一帧 | `AesirScheduler.Delay` / `NextFrame` |
-| 周期性重复(每 0.5 秒刷一次) | 不做 —— 帧钩子 + 自身计时,或业务层协程 |
-
-有意收窄的能力边界:
-
-| 边界 | 含义 |
-|------|------|
-| 帧粒度 | 计时按帧结算,`Delay(0.05f)` 在 60fps 下约 3-4 帧后触发;所有任务最早下一帧执行(含 `Delay(0)`,不做同帧投递) |
-| 游戏时间 | 计时基于 `Time.time`,受 `timeScale` 影响(`timeScale = 0` 期间暂停计时) |
-| 一次性任务 | 无句柄、无取消、无暂停、不池化;高频反复调度请评估直接持有句柄型事件 |
-| 仅主线程 | 框架铁律;从异步回调访问请先调度回主线程 |
-
-语义要点:回调内再调度的新任务从下一帧开始参与结算;回调不应抛异常(fail-fast —— 抛出时异常向上传播由 PlayerLoop 捕获记日志,本趟后续任务跳过且不补投递);`seconds` 为 NaN 时不设防(任务永不触发,极简原则);任务列表与结算缓冲复用,稳态零分配,空队列时钩子零成本直接返回。
 
 ### PlayerLoopUtility — PlayerLoop 自由扩展
 
@@ -274,10 +218,10 @@ PlayerLoop 操作的静态工具类,供框架内外扩展使用,不局限于上�
 | Model 承载数据与外界订阅 | Observable(ObservableValue / 可观察集合) |
 | 跨模块通信 | 互相 GetModel + ObservableValue 订阅,或直接引用 MiniEvent(不做事件总线) |
 | 纯 C# 对象的帧驱动 | CustomLifecycle(接口自动注册)或 Utilities(PlayerLoop 帧钩子) |
-| Model / Service / Command 的延时执行 | Utilities(AesirScheduler —— 无协程能力者的合法延时手段) |
+| Model / Service / Command 的延时执行 | `MonoLifecycleProxy` 帧代理 + 计时字段(或协程) |
 | 监听泄漏防护 | Event(句柄 + 触发器家族),所有订阅 API 统一返回 AutoRemoveListenerHandle |
 
-模块间唯一的方向性依赖:Observable 与 CustomLifecycle 构建在 Event 的 MiniEvent 之上(变更通知、生命周期事件都是 MiniEvent);AesirScheduler 构建在 AesirArchitecturePlayerLoop 之上(BeforeUpdate 钩子结算)。其余模块彼此独立,可按需取用。
+模块间唯一的方向性依赖:Observable 与 CustomLifecycle 构建在 Event 的 MiniEvent 之上(变更通知、生命周期事件都是 MiniEvent)。其余模块彼此独立,可按需取用。
 
 ## 继续阅读
 

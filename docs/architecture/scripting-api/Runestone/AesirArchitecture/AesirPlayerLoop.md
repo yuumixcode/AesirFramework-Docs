@@ -1,9 +1,9 @@
 ---
-title: AesirArchitecturePlayerLoop
-description: "Runestone.AesirArchitecture.AesirArchitecturePlayerLoop 的 API 文档"
+title: AesirPlayerLoop
+description: "Runestone.AesirArchitecture.AesirPlayerLoop 的 API 文档"
 ---
 
-# `AesirArchitecturePlayerLoop`
+# `AesirPlayerLoop`
 
 !!! note ""
 
@@ -11,12 +11,12 @@ description: "Runestone.AesirArchitecture.AesirArchitecturePlayerLoop 的 API �
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**继承链:** `System.Object` → `AesirArchitecturePlayerLoop`
+**继承链:** `System.Object` → `AesirPlayerLoop`
 
 ## 声明
 
 ``` csharp
-public static class AesirArchitecturePlayerLoop
+public static class AesirPlayerLoop
 ```
 
 基于 PlayerLoop 的生命周期钩子系统，无需 MonoBehaviour 即可接入游戏级帧回调。
@@ -40,9 +40,9 @@ public static class AesirArchitecturePlayerLoop
 
 | 名称 | 描述 |
 | :--- | :--- |
-| [`Register(AesirArchitectureLifecyclePhase, Action, int)`](#method-register-aesirarchitecturelifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。 |
+| [`Register(AesirLifecyclePhase, Action, int)`](#method-register-aesirarchitecturelifecyclephase-action-int) | 注册回调，order 越小越先执行，默认 0。 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。 |
 | [`EnsureInjected()`](#method-ensureinjected) | 确保两个注入点存在于当前 PlayerLoop。已存在时为空操作，缺失时重新注入。 |
-| [`Unregister(AesirArchitectureLifecyclePhase, Action)`](#method-unregister-aesirarchitecturelifecyclephase-action) | 注销回调。 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。 |
+| [`Unregister(AesirLifecyclePhase, Action)`](#method-unregister-aesirarchitecturelifecyclephase-action) | 注销回调。 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。 |
 
 </div>
 
@@ -61,13 +61,13 @@ public static class AesirArchitecturePlayerLoop
 
 </div>
 
-### Register(AesirArchitectureLifecyclePhase, Action, int) {#method-register-aesirarchitecturelifecyclephase-action-int}
+### Register(AesirLifecyclePhase, Action, int) {#method-register-aesirarchitecturelifecyclephase-action-int}
 
 注册回调，order 越小越先执行，默认 0。
 返回 AutoRemoveListenerHandle，Dispose 时自动注销本次注册，与全框架监听句柄风格一致。 忽略返回值的调用方须在持有者销毁前手动调用 Unregister 注销——匿名委托无法经 Unregister 定位注销，只能依赖返回的句柄；若均未注销，回调将永久残留并阻止目标对象被回收。
 
 ``` csharp
-public static AutoRemoveListenerHandle Register(AesirArchitectureLifecyclePhase phase, Action callback, int order = 0)
+public static AutoRemoveListenerHandle Register(AesirLifecyclePhase phase, Action callback, int order = 0)
 ```
 
 **参数**
@@ -76,7 +76,7 @@ public static AutoRemoveListenerHandle Register(AesirArchitectureLifecyclePhase 
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `phase` | `AesirArchitectureLifecyclePhase` | 目标生命周期阶段，决定回调在哪一帧阶段执行 |
+| `phase` | `AesirLifecyclePhase` | 目标生命周期阶段，决定回调在哪一帧阶段执行 |
 | `callback` | `Action` | 每帧执行的回调委托，必须为非空委托实例 |
 | `order` | `int` | 执行优先级，值越小越先执行；同 order 时按注册顺序执行 |
 
@@ -104,7 +104,7 @@ PlayerLoop 注入的自愈入口，幂等可重复调用。第三方 SDK 若使�
 public static void EnsureInjected()
 ```
 
-### Unregister(AesirArchitectureLifecyclePhase, Action) {#method-unregister-aesirarchitecturelifecyclephase-action}
+### Unregister(AesirLifecyclePhase, Action) {#method-unregister-aesirarchitecturelifecyclephase-action}
 
 注销回调。
 必须传入注册时的同一委托实例，匿名函数无法通过此方法注销。
@@ -114,7 +114,7 @@ public static void EnsureInjected()
 若在回调遍历期间调用此方法，注销操作不会立即执行，而是被缓存到待处理命令列表中， 待当前阶段所有回调遍历结束后才统一执行，以避免遍历期间修改集合导致异常。
 
 ``` csharp
-public static void Unregister(AesirArchitectureLifecyclePhase phase, Action callback)
+public static void Unregister(AesirLifecyclePhase phase, Action callback)
 ```
 
 **参数**
@@ -123,7 +123,7 @@ public static void Unregister(AesirArchitectureLifecyclePhase phase, Action call
 
 | 名称 | 类型 | 说明 |
 | :--- | :--- | :--- |
-| `phase` | `AesirArchitectureLifecyclePhase` | 目标生命周期阶段 |
+| `phase` | `AesirLifecyclePhase` | 目标生命周期阶段 |
 | `callback` | `Action` | 要注销的回调委托，必须与注册时传入的实例相同 |
 
 </div>

@@ -76,7 +76,7 @@ var model = GameContext.Instance.GetModel<IScoreModel>();
 - **非泛型类**:类内 `[RuntimeInitializeOnLoadMethod(SubsystemRegistration)]` 自重置
 - **泛型类**:静态构造函数经 `ResetStaticsAssistant.Register()` 注册重置回调(泛型类中的 RIOLM 会被 Unity 静默跳过,助手补位)
 
-`AesirArchitecturePlayerLoop` 同样在 SubsystemRegistration 阶段自动注入 PlayerLoop;第三方 SDK 覆盖 PlayerLoop 后由 `EnsureInjected()` 自愈(域加载时、每次 Register 时自动检测,也可手动调用)。
+`AesirPlayerLoop` 同样在 SubsystemRegistration 阶段自动注入 PlayerLoop;第三方 SDK 覆盖 PlayerLoop 后由 `EnsureInjected()` 自愈(域加载时、每次 Register 时自动检测,也可手动调用)。
 
 ## DDOL 显式决策
 

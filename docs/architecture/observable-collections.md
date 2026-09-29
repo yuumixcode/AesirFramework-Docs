@@ -1,8 +1,8 @@
 # 可观察集合
 
-Aesir Architecture 为独立游戏内置的四种高频集合 —— `ObservableList<T>`、`ObservableDictionary<TKey, TValue>`、`ObservableHashSet<T>`、`ObservableQueue<T>`,组合 BCL 集合存储 + MiniEvent 零分配事件,与 [ObservableValue](observable.md) 同一套读写分离与句柄模式。
+Aesir Architecture 为独立游戏内置的三种高频集合 —— `ObservableList<T>`、`ObservableDictionary<TKey, TValue>`、`ObservableHashSet<T>`,组合 BCL 集合存储 + MiniEvent 零分配事件,与 [ObservableValue](observable.md) 同一套读写分离与句柄模式。
 
-> 类型命名参考 Cysharp/ObservableCollections(MIT),通知语义为本项目自有约定(单轨、无变更不通知、批量逐项)。需要同步视图 / R3 / 环形缓冲等高级能力时可直接使用上游库 —— 两者可在同一项目**共存**,见文末[与上游的关系](#upstream)。
+> 类型命名参考 Cysharp/ObservableCollections(MIT),通知语义为本项目自有约定(单轨、无变更不通知、批量逐项)。队列等其他集合形态与同步视图 / R3 / 环形缓冲等高级能力可直接使用上游库 —— 两者可在同一项目**共存**,见文末[与上游的关系](#upstream)。
 
 ## 集合家族
 
@@ -11,9 +11,8 @@ Aesir Architecture 为独立游戏内置的四种高频集合 —— `Observable
 | [ObservableList\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableList{T}.md) | 背包、任务列表、排行榜 | `AddRange` / `InsertRange` / `RemoveRange` / `Move` / `Sort` / `Reverse` |
 | [ObservableDictionary\<TKey, TValue\>](scripting-api/Runestone/AesirArchitecture/ObservableDictionary{TKey, TValue}.md) | 配置表、属性表、名称索引 | 索引器分流(新键 Add / 已有键 Replace 含旧值) |
 | [ObservableHashSet\<T\>](scripting-api/Runestone/AesirArchitecture/ObservableHashSet{T}.md) | 在线玩家、去重标记 | Add / Remove / Contains 与批量增删(0.23.0 起不再继承 `ISet<T>`,不含集合代数——需要时用内部 `HashSet<T>` 或上游) |
-| [`ObservableQueue<T>`](scripting-api/Runestone/AesirArchitecture/ObservableQueue{T}.md) | 消息队列、回合队列 | `EnqueueRange` / `DequeueRange`(队尾入队 / 队首出队) |
 
-四者统一经 `AddListener` / `RemoveListener` 订阅变更,并各自提供 `ClearListeners()` 一次清空全部监听。
+三者统一经 `AddListener` / `RemoveListener` 订阅变更,并各自提供 `ClearListeners()` 一次清空全部监听。
 
 ## 单轨变更通知
 
@@ -76,13 +75,14 @@ list.AddListener(OnChanged).RemoveListenerWhenGameObjectOnDisable(this);
 
 | 需求 | 建议 |
 |------|------|
-| 四种高频集合 + 单轨通知 | 用本模块 |
+| 三种高频集合 + 单轨通知 | 用本模块 |
+| 队列等其他集合形态 | 使用上游 |
 | 同步视图与过滤器(列表驱动 GameObject / UI) | 使用上游 |
 | R3 响应式(`ObserveAdd` / `ObserveSort` …) | 使用上游 + `ObservableCollections.R3` |
 | 环形缓冲区 / 栈 / 交替索引列表 | 使用上游 |
 | `INotifyCollectionChanged`(WPF/XAML)绑定 | 使用上游 |
 
-**共存保证**:程序集(`ObservableCollections` vs `Runestone.AesirArchitecture`)、UPM 包名、命名空间三层完全隔离,互不引用 —— 同一项目可同时安装两库。跨库同名类型共 7 个(四种集合与 `IObservableCollection<T>` / `IReadOnlyObservableList<T>` / `IReadOnlyObservableDictionary<TKey, TValue>`);同一源文件同时 `using` 两个命名空间并裸引用同名类型时会产生 CS0104 二义性,用命名空间别名(`using AesirList = Runestone.AesirArchitecture.ObservableList<T>;`)或完全限定名解决。推荐按模块划分文件,同一文件只 `using` 一侧;两套体系不混用(上游扩展方法作用于上游类型)。
+**共存保证**:程序集(`ObservableCollections` vs `Runestone.AesirArchitecture`)、UPM 包名、命名空间三层完全隔离,互不引用 —— 同一项目可同时安装两库。跨库同名类型共 6 个(三种集合与 `IObservableCollection<T>` / `IReadOnlyObservableList<T>` / `IReadOnlyObservableDictionary<TKey, TValue>`);同一源文件同时 `using` 两个命名空间并裸引用同名类型时会产生 CS0104 二义性,用命名空间别名(`using AesirList = Runestone.AesirArchitecture.ObservableList<T>;`)或完全限定名解决。推荐按模块划分文件,同一文件只 `using` 一侧;两套体系不混用(上游扩展方法作用于上游类型)。
 
 ## 继续阅读
 

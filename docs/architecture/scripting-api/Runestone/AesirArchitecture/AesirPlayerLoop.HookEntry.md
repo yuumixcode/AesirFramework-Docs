@@ -1,9 +1,9 @@
 ---
-title: AesirArchitecturePlayerLoop.HookEntry
-description: "Runestone.AesirArchitecture.AesirArchitecturePlayerLoop.HookEntry 的 API 文档"
+title: AesirPlayerLoop.HookEntry
+description: "Runestone.AesirArchitecture.AesirPlayerLoop.HookEntry 的 API 文档"
 ---
 
-# `AesirArchitecturePlayerLoop.HookEntry`
+# `AesirPlayerLoop.HookEntry`
 
 !!! note ""
 
@@ -11,12 +11,12 @@ description: "Runestone.AesirArchitecture.AesirArchitecturePlayerLoop.HookEntry 
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**继承链:** `System.Object` → `System.ValueType` → `AesirArchitecturePlayerLoop.HookEntry`
+**继承链:** `System.Object` → `System.ValueType` → `AesirPlayerLoop.HookEntry`
 
 ## 声明
 
 ``` csharp
-private struct AesirArchitecturePlayerLoop.HookEntry : System.ValueType
+private struct AesirPlayerLoop.HookEntry : System.ValueType
 ```
 
 回调条目，记录单个生命周期回调及其排序信息

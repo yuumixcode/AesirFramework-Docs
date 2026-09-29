@@ -18,7 +18,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 count.SetValueSilently(5);
 ```
 
-**可观察集合家族**:`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` / `ObservableQueue<T>` 提供单轨变更通知 `AddListener`——无变更不通知、批量操作逐项通知、Sort / Reverse / Clear 走 Reset、监听句柄可绑定 Unity 生命周期自动移除,与 ObservableValue 同一套读写分离与句柄模式。同步视图 / R3 集成等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)——两者可共存(程序集与命名空间完全隔离,同一项目可同时安装)。
+**可观察集合家族**:`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` 提供单轨变更通知 `AddListener`——无变更不通知、批量操作逐项通知、Sort / Reverse / Clear 走 Reset、监听句柄可绑定 Unity 生命周期自动移除,与 ObservableValue 同一套读写分离与句柄模式。队列等其他集合形态与同步视图 / R3 集成等高级能力不做,需要时推荐 [Cysharp/ObservableCollections](https://github.com/Cysharp/ObservableCollections)——两者可共存(程序集与命名空间完全隔离,同一项目可同时安装)。
 
 ## MiniEvent — 零分配轻量事件
 
@@ -46,31 +46,33 @@ doorOpened.Invoke();
 
 反模式:用 `public Action Xxx { get; set; }` 代替 `event`(外部可整体替换 / 置空 / 触发);用 MiniEvent 承载持续变化的状态(新订阅者拿不到当前值)。
 
-## PlayerLoop 原生生命周期
+## PlayerLoop 原生生命周期 {#playerloop-hooks}
 
-`AesirArchitecturePlayerLoop` 将自定义子系统注入 Unity PlayerLoop,无需 MonoBehaviour:
+`AesirPlayerLoop` 将自定义子系统注入 Unity PlayerLoop,无需 MonoBehaviour:
 
 ```csharp
-AesirArchitecturePlayerLoop.Register(
-    AesirArchitectureLifecyclePhase.BeforeUpdate, MyFrameCallback);
+AesirPlayerLoop.Register(
+    AesirLifecyclePhase.BeforeUpdate, MyFrameCallback);
 
 // 第三方 SDK 修改 PlayerLoop 后调用一次即可自愈(Register 期也会自动检测)
-AesirArchitecturePlayerLoop.EnsureInjected();
+AesirPlayerLoop.EnsureInjected();
 ```
 
 可用阶段:`BeforeUpdate`(Update 前)、`AfterUpdate`(PostLateUpdate 后)。
 
-## AesirScheduler — 帧粒度时间调度
+## 延时与下一帧
 
-纯 C# 静态 API,为无协程能力的 Model / Service / Command 提供合法延时手段;经 PlayerLoop BeforeUpdate 钩子结算,无需任何场景物体:
+框架不内置时间调度原语(0.30.0 起连帧粒度调度器也已整体移除,原 `AesirScheduler` 全仓零使用)。需要"延时执行"时有两条现成路径:
 
 ```csharp
-AesirScheduler.Delay(3f, () => Debug.Log("3 秒后(帧粒度)"));
-AesirScheduler.NextFrame(() => RefreshView());   // 下一帧执行
+// ① 纯 C# 对象:用生命周期代理拿到帧回调,配合计时字段自行判定(无场景物体)
+MonoLifecycleProxy.Instance.AddListener(MonoLifecycleEvent.Update, OnTick);
+
+// ② 需要协程语义时,把驱动方挂在 GameObject 上,用 Unity 原生协程
+yield return new WaitForSeconds(3f);
 ```
 
-有意收窄的能力边界:帧粒度精度(任务最早下一帧执行)、游戏时间(受 `timeScale` 影响)、一次性任务——无句柄、无取消、无暂停、不池化;仅主线程;空队列时钩子零成本。回调内再调度的新任务从下一帧开始参与结算。
-
+帧驱动本身由 [PlayerLoop 帧钩子](#playerloop-hooks) 提供(每帧持续调用直到注销);"到点调一次"属于业务层的计时字段,不再由框架代管。
 ## MonoLifecycleProxy — 生命周期代理
 
 将 Unity 原生回调统一为可订阅的 MiniEvent;调用期增删监听为**快照语义**(挂起队列趟末应用,对齐原生多播委托),稳态零分配。PlaneWar 示例中与 MiniEvent、ObservableValue 组合运用。

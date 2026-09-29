@@ -1,9 +1,9 @@
 ---
-title: AesirArchitectureLifecyclePhase
-description: "Runestone.AesirArchitecture.AesirArchitectureLifecyclePhase 的 API 文档"
+title: AesirLifecyclePhase
+description: "Runestone.AesirArchitecture.AesirLifecyclePhase 的 API 文档"
 ---
 
-# `AesirArchitectureLifecyclePhase`
+# `AesirLifecyclePhase`
 
 !!! note ""
 
@@ -11,14 +11,14 @@ description: "Runestone.AesirArchitecture.AesirArchitectureLifecyclePhase 的 AP
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**继承链:** `System.Object` → `System.ValueType` → `System.Enum` → `AesirArchitectureLifecyclePhase`
+**继承链:** `System.Object` → `System.ValueType` → `System.Enum` → `AesirLifecyclePhase`
 
 **实现接口:** `System.IFormattable`，`System.IComparable`，`System.IConvertible`
 
 ## 声明
 
 ``` csharp
-public enum AesirArchitectureLifecyclePhase : System.Enum, 
+public enum AesirLifecyclePhase : System.Enum, 
 System.IFormattable, 
 System.IComparable, 
 System.IConvertible
@@ -46,7 +46,7 @@ System.IConvertible
 逻辑帧结束：在 PlayerLoop.PostLateUpdate 之后执行，读取当前帧所有状态
 
 ``` csharp
-public const AesirArchitectureLifecyclePhase AfterUpdate;
+public const AesirLifecyclePhase AfterUpdate;
 ```
 
 ### BeforeUpdate {#field-beforeupdate}
@@ -54,7 +54,7 @@ public const AesirArchitectureLifecyclePhase AfterUpdate;
 逻辑帧开始：在 PlayerLoop.Update 之前执行，架构优先运算
 
 ``` csharp
-public const AesirArchitectureLifecyclePhase BeforeUpdate;
+public const AesirLifecyclePhase BeforeUpdate;
 ```
 
 ## 方法

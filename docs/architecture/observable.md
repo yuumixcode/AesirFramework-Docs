@@ -27,7 +27,7 @@ model.Count.AddListenerAndInvoke(OnCountChanged)
 
 ## 可观察集合家族
 
-`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` / `ObservableQueue<T>` —— 组合 BCL 集合存储 + MiniEvent 零分配事件,与 ObservableValue 同一套读写分离与句柄模式。单一变更通知 `AddListener`:无变更不通知、批量操作逐项通知、Sort / Reverse / Clear 走 Reset,监听句柄可绑定 Unity 生命周期自动移除。
+`ObservableList<T>` / `ObservableDictionary<TKey, TValue>` / `ObservableHashSet<T>` —— 组合 BCL 集合存储 + MiniEvent 零分配事件,与 ObservableValue 同一套读写分离与句柄模式。单一变更通知 `AddListener`:无变更不通知、批量操作逐项通知、Sort / Reverse / Clear 走 Reset,监听句柄可绑定 Unity 生命周期自动移除。队列等其他集合形态用上游 Cysharp.ObservableCollections。
 
 Action 载荷表、各集合专属能力、句柄生命周期与上游共存说明见[可观察集合](observable-collections.md)。
 
@@ -73,7 +73,7 @@ this.RegisterCustomLifecycle();
 
 调用期增删监听为**快照语义**(挂起队列趟末按发生顺序应用,对齐原生多播委托):监听者在回调中安全地增删监听,不会跳帧或抛集合修改异常。
 
-## AesirArchitecturePlayerLoop — 游戏级帧钩子
+## AesirPlayerLoop — 游戏级帧钩子
 
 无需 MonoBehaviour,把回调注入 Unity PlayerLoop 的两个阶段:
 
@@ -83,12 +83,12 @@ this.RegisterCustomLifecycle();
 | `AfterUpdate` | `PlayerLoop.PostLateUpdate` 子系统**之后** | 读取当前帧最终状态 |
 
 ```csharp
-AesirArchitecturePlayerLoop.Register(
-    AesirArchitectureLifecyclePhase.BeforeUpdate, MyFrameCallback, order: 0);
+AesirPlayerLoop.Register(
+    AesirLifecyclePhase.BeforeUpdate, MyFrameCallback, order: 0);
 
 // 持有者销毁前必须注销(传入同一委托实例,匿名函数无法注销)
-AesirArchitecturePlayerLoop.Unregister(
-    AesirArchitectureLifecyclePhase.BeforeUpdate, MyFrameCallback);
+AesirPlayerLoop.Unregister(
+    AesirLifecyclePhase.BeforeUpdate, MyFrameCallback);
 ```
 
 特性:

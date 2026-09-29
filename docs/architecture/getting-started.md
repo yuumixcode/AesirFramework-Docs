@@ -35,21 +35,72 @@ https://github.com/yuumixcode/AesirFramework.git?path=Assets/Runestone/AesirArch
 
 ## 第一个 MVC 应用
 
+第一课(快捷档)3 个脚本跑通数据闭环:Context + Model + View 兼 Controller 面板。
+
 ### 1. 定义 Context
 
 ```csharp
 using Runestone.AesirArchitecture;
 
+// [InternalContext]:标记为框架内部用途,使其不出现在用户工作流的 Context 选择器中
+//(如 AesirModules Binder 的「Context 类型」下拉)。业务项目通常**不加**该标记。
 public class CounterContext : AbstractContext<CounterContext>
 {
     protected override void Configure()
     {
-        RegisterModel<ICounterModel>(new CounterModel());
+        // 第一课按具体类注册(无接口抽象)
+        RegisterModel(new CounterModel());
     }
 }
 ```
 
 ### 2. 定义 Model
+
+```csharp
+[Serializable]
+public sealed class CounterModel : AbstractModel
+{
+    // 私有字段 + 只读属性暴露可写 ObservableValue(快捷档 View 可直改,封装不倒退)
+    [SerializeField] ObservableValue<int> count = new ObservableValue<int>(0);
+
+    public ObservableValue<int> Count => count;
+}
+```
+
+### 3. 定义面板(View 兼 Controller)
+
+```csharp
+public class CounterPanel : MonoViewController<CounterContext>
+{
+    [SerializeField] Text countText;
+    [SerializeField] Button increaseButton;
+
+    CounterModel _model;
+
+    void Start()
+    {
+        // GetModel 缓存为字段,避免每次字典查找
+        _model = this.GetModel<CounterModel>();
+        // AddListenerAndInvoke:订阅并立即触发一次(拿到当前值);物体销毁自动退订
+        _model.Count.AddListenerAndInvoke(UpdateCountText)
+            .RemoveListenerWhenGameObjectOnDestroyed(gameObject);
+    }
+
+    void OnEnable() => increaseButton.onClick.AddListener(Increase);
+    void OnDisable() => increaseButton.onClick.RemoveListener(Increase);
+
+    // 快捷档特有写法:View 兼 Controller 直改 ObservableValue
+    void Increase() => _model.Count.Value++;
+
+    public void UpdateCountText(int count) => countText.text = count.ToString();
+}
+```
+
+三个脚本挂上场景物体、按 Play 即可运行。完整示例见 `Counter-Mvc-Quick`。
+
+### 进阶:标准档与严格档
+
+标准档起 Model 收窄为**只读暴露 + 写方法**(View 拆出 `MonoView<T>` 与 Controller 分离);严格档进一步**按接口注册**、写入经 Command 分发、加工读取走 Query:
 
 ```csharp
 public interface ICounterModel : IModel
@@ -69,11 +120,13 @@ public sealed class CounterModel : AbstractModel, ICounterModel
 
     protected override void OnInitialize() { }
 }
+
+// 严格档:按接口注册(Register 与 Get 类型参数必须一致)
+RegisterModel<ICounterModel>(new CounterModel());
 ```
 
-### 3. 定义 View
-
 ```csharp
+// 严格档的 View 改用 MonoView<T>(仅只读能力)并按业务窄接口持有纯 C# Controller
 public class UICounterPanel : MonoView<CounterContext>
 {
     [SerializeField] Text countText;
@@ -97,7 +150,7 @@ public class UICounterPanel : MonoView<CounterContext>
 }
 ```
 
-### 4. 使用 Command / Query(严格档)
+### Command / Query(严格档写入 / 加工读取)
 
 ```csharp
 // 定义命令(写操作)

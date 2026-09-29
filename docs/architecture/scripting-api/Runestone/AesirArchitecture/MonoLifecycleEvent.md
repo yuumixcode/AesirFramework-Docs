@@ -31,7 +31,7 @@ Mono 生命周期事件类型，涵盖 Unity 原生生命周期回调和自定�
 枚举值按 Unity 执行顺序排列，订阅者可监听任意阶段的事件。
 不包含 Awake / OnEnable / OnDisable / OnDestroy / Start 事件——因为 MonoLifecycleProxy 是挂载在 DontDestroyOnLoad GameObject 上的懒创建单例， 这些回调仅在代理自身创建或应用退出时触发，外部无法有效订阅。
 
-BeforeUpdate 和 AfterUpdate 由 AesirArchitecturePlayerLoop 驱动，分别对应每帧 Update 之前和 PostLateUpdate 之后。 其余事件由 MonoLifecycleProxy 在对应 Unity 回调中直接触发。
+BeforeUpdate 和 AfterUpdate 由 AesirPlayerLoop 驱动，分别对应每帧 Update 之前和 PostLateUpdate 之后。 其余事件由 MonoLifecycleProxy 在对应 Unity 回调中直接触发。
 
 ## 字段
 
@@ -56,7 +56,7 @@ BeforeUpdate 和 AfterUpdate 由 AesirArchitecturePlayerLoop 驱动，分别对�
 
 **备注**
 
-由 AesirArchitecturePlayerLoop 的 AfterUpdate 阶段驱动。
+由 AesirPlayerLoop 的 AfterUpdate 阶段驱动。
 常见场景：帧结束状态快照、性能采样、延迟队列执行、读取当前帧所有模块的最终状态。
 
 ``` csharp
@@ -69,7 +69,7 @@ public const MonoLifecycleEvent AfterUpdate;
 
 **备注**
 
-由 AesirArchitecturePlayerLoop 的 BeforeUpdate 阶段驱动。
+由 AesirPlayerLoop 的 BeforeUpdate 阶段驱动。
 常见场景：输入采样、帧前状态快照、在所有 Update 逻辑之前执行的高优先级预处理。
 
 ``` csharp

@@ -1,9 +1,9 @@
 ---
-title: AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate
-description: "Runestone.AesirArchitecture.AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate 的 API 文档"
+title: AesirPlayerLoop.AesirScriptRunBeforeUpdate
+description: "Runestone.AesirArchitecture.AesirPlayerLoop.AesirScriptRunBeforeUpdate 的 API 文档"
 ---
 
-# `AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate`
+# `AesirPlayerLoop.AesirScriptRunBeforeUpdate`
 
 !!! note ""
 
@@ -11,19 +11,19 @@ description: "Runestone.AesirArchitecture.AesirArchitecturePlayerLoop.AesirArchi
     - **命名空间:** `Runestone.AesirArchitecture`
     - **程序集:** `Runestone.AesirArchitecture`
 
-**继承链:** `System.Object` → `System.ValueType` → `AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate`
+**继承链:** `System.Object` → `System.ValueType` → `AesirPlayerLoop.AesirScriptRunBeforeUpdate`
 
 ## 声明
 
 ``` csharp
-private struct AesirArchitecturePlayerLoop.AesirArchitectureScriptRunAfterUpdate : System.ValueType
+private struct AesirPlayerLoop.AesirScriptRunBeforeUpdate : System.ValueType
 ```
 
-PlayerLoop 子系统 type 标识，在 PostLateUpdate 之后执行
+PlayerLoop 子系统 type 标识，在 Update 之前执行
 
 **备注**
 
-与 AesirArchitectureScriptRunBeforeUpdate 同构的空类型标识，不包含任何运行时逻辑。
+此空结构体仅作为 PlayerLoopSystem.type 的类型标识使用， 让 PlayerLoopUtility.ContainsSystem<T> 能够检测自定义子系统是否已注入， 避免重复注入。不包含任何运行时逻辑。
 
 ## 方法
 

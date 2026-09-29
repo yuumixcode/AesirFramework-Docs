@@ -29,7 +29,7 @@ System.Collections.Generic.IReadOnlyCollection<T>
 
 **备注**
 
-由 ObservableList{T} / ObservableDictionary{TKey, TValue} / ObservableHashSet{T} / ObservableQueue{T} 统一实现。
+由 ObservableList{T} / ObservableDictionary{TKey, TValue} / ObservableHashSet{T} 统一实现。
 变更通知为单轨事件（内部由 MiniEvent{T} 承载）：无变更的写操作不通知 （索引器赋相同值、Remove 不存在的元素、Clear 空集合等）；批量操作逐项通知； Sort / Reverse / Clear 以 Reset 通知（无附加字段）。
 
 AddListener 返回 AutoRemoveListenerHandle， 可用 using 语句在作用域结束时自动移除，或经 RemoveListenerExtensions 绑定到 Unity 生命周期（OnDestroy / OnDisable / 场景卸载）自动清理。
