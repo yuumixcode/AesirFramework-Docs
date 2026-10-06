@@ -31,6 +31,8 @@ public interface IGenericLocator<T> : System.IDisposable where T : class
 
 注册与查询须使用相同的类型参数。若以具体类型注册（如 Register<Sword>）， 再以接口类型查询（如 Get<IWeapon>），将返回 null。
 
+继承 IDisposable 而非另行声明 Dispose，目的是让"清空容器"成为契约的一部分： AbstractContext{T}.Dispose 只持有 IGenericLocator<T> 抽象， 需要经接口而非具体实现清空。清空仅解除注册关系，不销毁被注册的实例—— 实例的释放由调用方（如 Context 逆序 Dispose 模块）负责。
+
 ## 方法
 
 <div class="api-summary-table" markdown="1">
@@ -41,7 +43,6 @@ public interface IGenericLocator<T> : System.IDisposable where T : class
 | [`GetAll()`](#method-getall) | 按注册顺序获取所有已注册的实例。 |
 | [`Get()`](#method-get) | 获取已注册的实例，不存在则返回 null。 |
 | [`TryGet(ref TItem)`](#method-tryget-ref-titem) | 尝试获取已注册的实例。返回是否成功找到对应类型的注册。 |
-| [`Dispose()`](#method-dispose) | 释放定位器：清空全部注册（等价于清空容器，AbstractContext{T} 的收尾即依赖此语义）， 不销毁被注册的实例——实例的释放由调用方（如 Context 逆序 Dispose 模块）负责。 |
 | [`Register(Type, T)`](#method-register-type-t) | 注册实例，以 Type 作为键。重复注册将覆盖已有实例。 |
 | [`Register(TItem)`](#method-register-titem) | 注册实例，以 typeof(TItem) 作为键。重复注册将覆盖已有实例。 |
 | [`Unregister()`](#method-unregister) | 注销指定类型的注册。 |
@@ -138,18 +139,6 @@ public abstract bool TryGet<TItem>(out ref TItem instance)
 | `bool` | 成功找到则返回 true；未注册则返回 false。 |
 
 </div>
-
-### Dispose() {#method-dispose}
-
-释放定位器：清空全部注册（等价于清空容器，AbstractContext{T} 的收尾即依赖此语义）， 不销毁被注册的实例——实例的释放由调用方（如 Context 逆序 Dispose 模块）负责。
-
-**备注**
-
-声明为继承 IDisposable 的目的是让"清空容器"成为契约的一部分： Dispose 只持有 IGenericLocator<T> 抽象， 需要经接口而非具体实现清空。
-
-``` csharp
-public abstract void Dispose()
-```
 
 ### Register(Type, T) {#method-register-type-t}
 
