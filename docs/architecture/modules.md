@@ -167,7 +167,7 @@ locator.Unregister<Sword>();          // 注销后再注册,追加到顺序末�
 
 ## Utilities — 工具模块 {#module-utilities}
 
-**作用**:封装 Unity PlayerLoop 这一引擎底层能力,为纯 C# 代码(无 MonoBehaviour)提供游戏级帧驱动 —— 框架不内置时间调度原语(0.31.1 起连帧粒度调度器也已整体移除),需要延时请用 MonoLifecycleProxy 帧代理 + 计时字段,或直接把驱动方挂在 GameObject 上用协程。
+**作用**:封装 Unity PlayerLoop 这一引擎底层能力,为纯 C# 代码(无 MonoBehaviour)提供游戏级帧驱动 —— 框架不内置时间调度原语(0.31.2 起连帧粒度调度器也已整体移除),需要延时请用 MonoLifecycleProxy 帧代理 + 计时字段,或直接把驱动方挂在 GameObject 上用协程。
 
 ### AesirPlayerLoop — 游戏级帧钩子
 

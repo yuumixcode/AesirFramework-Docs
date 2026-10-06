@@ -9,7 +9,7 @@
 
 | 依赖 | 必需性 | 说明 |
 |------|--------|------|
-| `cn.runestone.aesir.architecture` | **必需** | 两包同号发版,推荐同版本安装(如 0.31.1);经 Git URL 安装时需同时添加两个包的 URL |
+| `cn.runestone.aesir.architecture` | **必需** | 两包同号发版,推荐同版本安装(如 0.31.2);经 Git URL 安装时需同时添加两个包的 URL |
 | — | — | 包本身不声明任何依赖;运行包内测试需工程自带 `com.unity.test-framework` |
 
 ## 可选集成

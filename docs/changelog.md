@@ -11,11 +11,18 @@
 
 | 子包 | 包名 | 版本 |
 |------|------|------|
-| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.31.1** |
-| Aesir Modules | `cn.runestone.aesir.modules` | **0.31.1** |
+| Aesir Architecture | `cn.runestone.aesir.architecture` | **0.31.2** |
+| Aesir Modules | `cn.runestone.aesir.modules` | **0.31.2** |
 
 !!! tip "版本策略"
     两包同号发版(CI 校验一致),推荐同版本安装。Aesir Modules 依赖 Aesir Architecture;Aesir Architecture 不依赖任何 Aesir 子包。
+
+## [0.31.2] - 2026-10-06
+
+**补丁版本**:RAA 侧编译告警清理,无功能变更。
+
+- **`IGenericLocator<T>` 删除冗余的 `Dispose()` 声明**:接口本已继承 `IDisposable`,另行声明同名同签名的成员只是隐藏继承成员(编译告警 `CS0108`),并非新增契约。删除后接口契约完全不变,实现类与调用点零改动;原声明上承载的语义文档(清空仅解除注册关系、不销毁被注册的实例;`AbstractContext<T>.Dispose` 只持有接口抽象、需经接口而非具体实现清空)上移到接口级备注。本站该 API 页同步(方法摘要表 / 成员详情段 / 类级备注)
+- Aesir Modules 源码与 0.31.1 一致,本次仅随 RAA 的告警修复同步版本号
 
 ## [0.31.1] - 2026-09-29
 
